@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">抢钢宝</string>
+
+    <string name="in_progress">加载中,请稍候…</string>
+    <string name="error">错误</string>
+    <string name="press_again_to_exit">再按一次退出应用</string>
+</resources>
