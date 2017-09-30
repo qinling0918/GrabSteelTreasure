@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -48,6 +49,10 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
     private long backPressTimer;
 
     @Nullable @BindView(R.id.toolbar) public Toolbar toolbar;
+
+    //支持vector drawable
+    //static { AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +112,7 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
             setSupportActionBar(toolbar);
             if (canBack()) {
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     if (canBack()) {
                         View navIcon = getToolbarNavigationIcon(toolbar);
@@ -178,12 +183,6 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         superOnBackPressed(clickTwiceToExit);
     }
 
-
-
-
-  /*  private void showProgress() {
-        showProgress(0,true);
-    }*/
 
     @Override
     public void showProgress(int resId) {

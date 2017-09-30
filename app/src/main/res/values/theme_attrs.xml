@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="icon_color" format="color|reference"/>
+    <attr name="dividerColor" format="color|reference"/>
+
+</resources>

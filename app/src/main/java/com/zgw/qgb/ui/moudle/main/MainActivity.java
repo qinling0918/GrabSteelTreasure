@@ -1,12 +1,18 @@
 package com.zgw.qgb.ui.moudle.main;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseActivity;
+import com.zgw.qgb.base.adapter.BaseRecyclerAdapter;
+import com.zgw.qgb.base.adapter.BaseViewHolder;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 
 /**
@@ -43,5 +49,27 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         super.onCreate(savedInstanceState);
 
         mPresenter.login();
+    }
+
+    @OnClick(R.id.tv_main)
+    public void onViewClicked(View view) {
+        //SettingsActivity.startActivity(mContext);
+            //throw new RuntimeException("This is a crash");
+        BaseRecyclerAdapter adapter = new BaseRecyclerAdapter() {
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+            }
+
+            @Override
+            protected BaseViewHolder viewHolder(ViewGroup parent, int viewType) {
+                return null;
+            }
+
+            @Override
+            protected void onBindView(BaseViewHolder holder, int position) {
+
+            }
+        };
     }
 }

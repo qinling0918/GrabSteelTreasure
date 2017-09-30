@@ -100,4 +100,4 @@ class HomePageFragment : Fragment() {
             return fragment
         }
     }
-}// Required empty public constructor
+}
