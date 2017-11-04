@@ -2,7 +2,11 @@ package com.zgw.qgb.base.mvp;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.Toolbar;
+
+import com.trello.rxlifecycle2.LifecycleTransformer;
 
 /**
  * Created by tsinling on 17/9/8
@@ -25,6 +29,8 @@ public interface IView {
     void showMessage(@NonNull String titleRes, @NonNull String msgRes);
 
     boolean isLoggedIn();
+
+    <T> LifecycleTransformer<T> bind2Lifecycle();
 
  /*   void onRequireLogin();
 

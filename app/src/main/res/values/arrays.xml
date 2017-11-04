@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="bottom_tab_title" translatable="false">
+        <item>@string/quotes</item>
+        <item>@string/find</item>
+        <item>@string/purchase</item>
+        <item>@string/message</item>
+        <item>@string/mine</item>
+    </string-array>
+
+    <integer-array name="bottom_tab_icon_id" translatable="false">
+        <item>@drawable/ic_main_quote</item>
+        <item>@drawable/ic_main_find</item>
+        <item>@drawable/ic_main_purchase</item>
+        <item>@drawable/ic_main_message</item>
+        <item>@drawable/ic_main_mine</item>
+    </integer-array>
+
+    <array name="bottom_tab_icon" translatable="false">
+        <item>@drawable/ic_back</item>
+        <item>@drawable/ic_back</item>
+        <item>@drawable/ic_back</item>
+        <item>@drawable/ic_back</item>
+        <item>@drawable/ic_back</item>
+    </array>
+
+
+
+
+
+    <string-array name="languages_array" translatable="false">
+        <item>English</item>
+        <item>Deutsch</item>
+        <item>Türk</item>
+        <item>简体中文</item>
+        <item>正體中文</item>
+        <item>Bahasa Indonesia</item>
+        <item>Русский</item>
+        <item>Italiano</item>
+        <item>日本語</item>
+        <item>Lietuvos</item>
+        <item>Português (Brasil)</item>
+        <item>Český</item>
+        <item>Español</item>
+        <item>Български</item>
+    </string-array>
+
+    <string-array name="languages_array_values" translatable="false">
+        <item>en</item>
+        <item>de</item>
+        <item>tr</item>
+        <item>zh-rCN</item>
+        <item>zh-rTW</item>
+        <item>in</item>
+        <item>ru</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>lt</item>
+        <item>pt-rBR</item>
+        <item>cs</item>
+        <item>es</item>
+        <item>bg</item>
+    </string-array>
+
+
+
+    <string-array name="trending_days_array" translatable="false">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
+
+
+
+    <string-array name="review_methods" translatable="false">
+        <item>APPROVE</item>
+        <item>REQUEST CHANGES</item>
+        <item>COMMENT</item>
+    </string-array>
+
+
+</resources>

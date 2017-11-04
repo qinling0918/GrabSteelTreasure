@@ -10,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -25,10 +24,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.zgw.qgb.R;
 
 import java.util.Arrays;
+
+//import com.annimon.stream.IntStream;
 
 
 /**
@@ -213,20 +213,56 @@ public class ViewHelper {
         return a < 0.5 ? Color.BLACK : Color.WHITE;
     }
 
- /*   public static boolean isEllipsed(@NonNull TextView textView) {
+    public static boolean isEllipsed(@NonNull TextView textView) {
         Layout layout = textView.getLayout();
         if (layout != null) {
-            int lines = layout.getLineCount();
-            if (lines > 0) {
-                return IntStream.range(0, lines).anyMatch(line -> layout.getEllipsisCount(line) > 0);
+            final int lineCount = layout.getLineCount();
+            for (int i = 0; i < lineCount; i++) {
+                if (layout.getEllipsisCount(i) > 0) {
+                    return true;
+                }
             }
         }
         return false;
-    }*/
+    }
 
     @NonNull
     public static TextView getTabTextView(@NonNull TabLayout tabs, int tabIndex) {
         return (TextView) (((LinearLayout) ((LinearLayout) tabs.getChildAt(0)).getChildAt(tabIndex)).getChildAt(1));
 
     }
+
+    /**
+     * 获取文字高度,不限于文本控件的高度
+     * @param pTextView
+     * @return
+     */
+    public static int getTextHeight(TextView pTextView) {
+        Layout layout = pTextView.getLayout();
+        int desired = layout.getLineTop(pTextView.getLineCount());
+        int padding = pTextView.getCompoundPaddingTop() + pTextView.getCompoundPaddingBottom();
+        return desired + padding;
+}
+
+    /**
+     *
+     * @param textView
+     * @return int[]  size    size[0] 宽   size[1] 高
+     */
+    public static int[] getTextViewWidthAndHeight(TextView textView) {
+        int w = View.MeasureSpec.makeMeasureSpec(0,
+                View.MeasureSpec.UNSPECIFIED);
+        int h = View.MeasureSpec.makeMeasureSpec(0,
+                View.MeasureSpec.UNSPECIFIED);
+        textView.measure(w, h);
+        int height = textView.getMeasuredHeight();
+        int width = textView.getMeasuredWidth();
+
+        int[] size = new int[]{width,height};
+
+        return size;
+    }
+
+
+
 }

@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 
 import java.lang.ref.WeakReference;
@@ -34,6 +34,7 @@ public  class BasePresenter<V extends IView> implements IPresenter<V>{
     public void attachView(V view) {
         viewRef = new WeakReference<V>(view);
         mContext = getContext();
+        Log.d("onDestroy", "attachView"+Thread.currentThread().getName() + isViewAttached());
     }
 
 
@@ -50,6 +51,8 @@ public  class BasePresenter<V extends IView> implements IPresenter<V>{
     @UiThread
     @NonNull
     public V getView() {
+
+        Log.d("onDestroy", "getView"+Thread.currentThread().getName());
         if (!isViewAttached()) throw new NullPointerException("view is not attached");
         return viewRef.get();
     }
@@ -60,6 +63,7 @@ public  class BasePresenter<V extends IView> implements IPresenter<V>{
             viewRef.clear();
             viewRef = null;
         }
+        Log.d("onDestroy","detachView"+Thread.currentThread().getName());
     }
 
     protected Context getContext(){

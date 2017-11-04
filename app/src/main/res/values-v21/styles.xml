@@ -1,9 +1,7 @@
 <resources>
 
-    -<style parent="android:Theme.Material.Light.Dialog.Alert" name="Dialog.AppCompat.Loading">
-
-    <item name="android:colorAccent">?attr/colorAccent</item>
-    <item name="icon_color">@color/icon_color</item>
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
 
 </style>
 

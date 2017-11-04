@@ -86,24 +86,28 @@ public class AppHelper {
         return builder.toString();
     }*/
 
-/*    public static void updateAppLanguage(@NonNull Context context) {
+    public static void updateAppLanguage(@NonNull Context context) {
         String lang = PrefGetter.getAppLanguage();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             updateResources(context, lang);
         }
         updateResourcesLegacy(context, lang);
-    }*/
+    }
 
-/*
     private static void updateResources(Context context, String language) {
         Locale locale = getLocale(language);
         Locale.setDefault(locale);
         Configuration configuration = context.getResources().getConfiguration();
-        configuration.setLocale(locale);
-        context.createConfigurationContext(configuration);
-    }
-*/
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            configuration.setLocale(locale);
+            context.createConfigurationContext(configuration);
+        }else{
+            configuration.locale = locale;
+            context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+        }
+
+    }
     @SuppressWarnings("deprecation")
     private static void updateResourcesLegacy(Context context, String language) {
         Locale locale = getLocale(language);
@@ -132,13 +136,13 @@ public class AppHelper {
         return locale;
     }
 
-  /*  public static String getDeviceName() {
+   /* public static String getDeviceName() {
         if (isEmulator()) {
             return "Android Emulator";
         }
         return DeviceNameGetter.getInstance().getDeviceName();
-    }
-*/
+    }*/
+
     public static boolean isEmulator() {
         return Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.startsWith("unknown")

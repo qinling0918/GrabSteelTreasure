@@ -21,7 +21,6 @@ public final class DebugHelper {
     private    Boolean isDebug = null;
 
     public boolean isDebug(){
-        //return isDebug==null?false:isDebug.booleanValue();
         return isDebug!=null&&isDebug;
     }
     /**
@@ -31,7 +30,7 @@ public final class DebugHelper {
      */
     public void syscIsDebug(Context context){
         if (isDebug ==null){
-            isDebug =context.getApplicationInfo() !=null &&(context.getApplicationInfo().flags& ApplicationInfo.FLAG_DEBUGGABLE)!=0;
+            isDebug =context.getApplicationInfo() !=null && (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)!=0;
         }
     }
 }

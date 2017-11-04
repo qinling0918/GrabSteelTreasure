@@ -1,24 +1,16 @@
 package com.zgw.qgb;
 
-import android.app.Activity;
 import android.app.Application;
-import android.os.Bundle;
-import android.os.Looper;
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
+import com.squareup.leakcanary.LeakCanary;
 import com.zgw.qgb.helper.ActivityMgr;
-import com.zgw.qgb.helper.CrashlyticsTree;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
 
-import io.fabric.sdk.android.Fabric;
-import timber.log.Timber;
+import java.util.Locale;
 
 
 /**
@@ -31,6 +23,7 @@ public class App extends Application {
         super.onCreate();
         //支持vector drawable
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         instance = this;
         init();
     }
@@ -40,38 +33,25 @@ public class App extends Application {
         return instance;
     }
 
+    public static Context getContext() {
+        return getInstance().getApplicationContext();
+    }
+
     private void init() {
+        LeakCanary.install(this);
+        //AppHelper.updateAppLanguage(this); 未完成
         DebugHelper.getInstance().syscIsDebug(this);
         ActivityMgr.getInstance().init(this);
-        RudenessScreenHelper.getInstance().init(this,720);
-        initFabric();
-        initTimber();
+        RudenessScreenHelper.getInstance().init(this,720)/*.activate()*/;
+        //FabricHelper.getInstance().init(this);
+        //Timber.plant(isDebug() ? new Timber.DebugTree() : new CrashlyticsTree());
     }
 
-    private boolean isDebug() {
+    public boolean isDebug() {
         return DebugHelper.getInstance().isDebug();
     }
-
-    private void initFabric() {
-        Fabric fabric = new Fabric.Builder(this)
-                .kits(new Crashlytics.Builder()
-                        .core(new CrashlyticsCore.Builder().disabled(isDebug()).build())
-                        .build())
-                .debuggable(isDebug())
-                .build();
-        Fabric.with(fabric);
-       // Fabric.with(this, new Crashlytics());
+    public static Locale getLocale() {
+        return Locale.CHINA;
     }
-
-    private void initTimber() {
-        if (isDebug()) {
-            //使用时将Timber 进行再次封装
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            Timber.plant(new CrashlyticsTree());
-        }
-    }
-
-
 
 }

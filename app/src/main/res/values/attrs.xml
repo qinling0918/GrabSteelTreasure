@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--分段控制器-->
+    <declare-styleable name="SegmentControl">
+        <attr name="cornerRadius" format="dimension|reference" />  <!--设置背景的圆角半径-->
+        <attr name="normalColor" format="color|reference" /><!--设置未选中的颜色-->
+        <attr name="selectedColor" format="color|reference" /><!--  设置选中后的颜色-->
+        <attr name="backgroundColors" format="color|reference" />  <!--设置边框、选中的背景和分割线的颜色，可以使用ColorStateList来同时设置选中和未选中的颜色，和textColors一样，设置这个属性后，selectedColor和normalColor会对边框和背景失去作用-->
+        <attr name="textColors" format="color|reference" /> <!-- 设置文字内容的颜色，可以使用ColorStateList来设置选中和未选中的颜色，这个属性设置以后，之前设置的selectedColor和normalColor对文字内容失去作用-->
+        <attr name="texts" format="string|reference" />  <!--texts 设置文字内容，通过'|'分隔开-->
+        <attr name="android:textSize" />
+        <attr name="android:orientation" />
+        <attr name="boundWidth" format="dimension|reference" /> <!-- 外部边框的width  设置边框的粗细-->
+        <attr name="separatorWidth" format="dimension|reference" /> <!-- 内部边框的width   设置分割线的粗细-->
+        <attr name="gaps" format="dimension|reference" />
+        <attr name="horizonGap" format="dimension|reference" /> <!-- 横向的边距-->
+        <attr name="verticalGap" format="dimension|reference" /> <!--纵向上的边距-->
+    </declare-styleable>
+
+
+</resources>

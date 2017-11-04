@@ -6,15 +6,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxFragment;
+import com.zgw.qgb.R;
 import com.zgw.qgb.base.mvp.IPresenter;
 import com.zgw.qgb.base.mvp.IView;
 
-
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import icepick.Icepick;
@@ -33,6 +37,13 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
     protected P mPresenter;
     private Unbinder unbinder;
 
+    @Nullable
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
+    @Nullable
+    @BindView(R.id.tv_title)
+    public TextView tv_title;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -41,28 +52,38 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
         }
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = getPresenter();
-        checkNotNull(mPresenter,"presenter can't be null");
+        checkNotNull(mPresenter, "presenter can't be null");
+        initData();
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             Icepick.restoreInstanceState(this, savedInstanceState);
             mPresenter.onRestoreInstanceState(savedInstanceState);
         }
     }
-    @SuppressLint("RestrictedApi") @Nullable @Override
+
+    /**
+     * 用来初始化数据,
+     */
+    protected void initData() {}
+
+    @SuppressLint("RestrictedApi")
+    @Nullable
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (fragmentLayout() != 0) {
             final Context contextThemeWrapper = new ContextThemeWrapper(getContext(), getContext().getTheme());
             LayoutInflater themeAwareInflater = inflater.cloneInContext(contextThemeWrapper);
             View view = themeAwareInflater.inflate(fragmentLayout(), container, false);
             unbinder = ButterKnife.bind(this, view);
+
             return view;
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
 
     protected abstract int fragmentLayout();
 
@@ -79,15 +100,18 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
         mPresenter.detachView();
     }
 
-    @Override public void onDestroyView() {
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         if (unbinder != null) unbinder.unbind();
     }
 
-    @Override public void onDetach() {
+    @Override
+    public void onDetach() {
         super.onDetach();
         callback = null;
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -118,16 +142,30 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
 
     @Override
     public void showMessage(int titleRes, int msgRes) {
-        callback.showMessage(titleRes,msgRes);
+        callback.showMessage(titleRes, msgRes);
     }
 
     @Override
     public void showMessage(@NonNull String titleRes, @NonNull String msgRes) {
-        callback.showMessage(titleRes,msgRes);
+        callback.showMessage(titleRes, msgRes);
     }
 
     @Override
     public boolean isLoggedIn() {
         return callback.isLoggedIn();
     }
+
+    @Override
+    public <T> LifecycleTransformer<T> bind2Lifecycle() {
+        return bindToLifecycle();
+    }
+
+    public void setTitle(CharSequence title) {
+        if (tv_title != null){
+            tv_title.setText(title);
+        }
+
+    }
+
+
 }

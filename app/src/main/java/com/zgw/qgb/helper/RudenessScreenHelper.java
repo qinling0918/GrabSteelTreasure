@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.WindowManager;
 
+import com.zgw.qgb.helper.utils.EmptyUtils;
 import com.zgw.qgb.interf.ActivityLifecycleCallbacks;
 
 import java.lang.reflect.Field;
@@ -89,8 +90,10 @@ public class RudenessScreenHelper {
     /**
      * @param application application
      * @param width       设计稿宽度
+     *
+     * 返回值为自己,不推荐这么用,此处只是为了实现链式编程
      */
-    public void init(Application application, float width) {
+    public RudenessScreenHelper init(Application application, float width) {
         mApplication = application;
         designWidth = width;
 
@@ -111,6 +114,7 @@ public class RudenessScreenHelper {
             }
 
         };
+        return getInstance();
     }
 
     private void resetDensity(Activity activity) {
@@ -122,12 +126,9 @@ public class RudenessScreenHelper {
      * 激活本方案
      */
     public void activate() {
-        if (null == mApplication) {
-            throw new NullPointerException("Please initialize in application");
-        }
-        if (designWidth == 0){
-            throw new RuntimeException("designWidth should be greater than 0");
-        }
+        EmptyUtils.checkNotNull(mApplication,"Please initialize in application");
+        EmptyUtils.checkNotNull(designWidth,"designWidth should be greater than 0");
+
         resetDensity(mApplication, designWidth);
         mApplication.registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }
@@ -136,9 +137,7 @@ public class RudenessScreenHelper {
      * 恢复系统原生方案
      */
     public void inactivate() {
-        if (null == mApplication) {
-            throw new RuntimeException("You do not have to initialize so do not have to do this");
-        }
+        EmptyUtils.checkNotNull(mApplication,"Please initialize in application");
         restoreDensity(mApplication);
         mApplication.unregisterActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }

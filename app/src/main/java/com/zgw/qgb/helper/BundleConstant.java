@@ -5,6 +5,9 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import static com.zgw.qgb.helper.BundleConstant.ExtraType.EDIT_GIST_COMMENT_EXTRA;
+import static com.zgw.qgb.helper.BundleConstant.ExtraType.FOR_RESULT_EXTRA;
+import static com.zgw.qgb.helper.BundleConstant.ExtraType.NEW_GIST_COMMENT_EXTRA;
 
 
 /**
@@ -25,20 +28,19 @@ public class BundleConstant {
     public static final String EXTRA_TYPE = "extra_type";
     public static final String YES_NO_EXTRA = "yes_no_extra";
     public static final String NOTIFICATION_ID = "notification_id";
-    public static final String IS_ENTERPRISE = "is_enterprise";
     public static final String REVIEW_EXTRA = "review_extra";
     public static final int REQUEST_CODE = 2016;
     public static final int REVIEW_REQUEST_CODE = 2017;
     public static int REFRESH_CODE = 64;
 
 
-   /*  @StringDef({
+     @StringDef({
             NEW_GIST_COMMENT_EXTRA,
             EDIT_GIST_COMMENT_EXTRA,
             FOR_RESULT_EXTRA
-    })*/
+    })
 
-    @Retention(RetentionPolicy.SOURCE) public @interface ExtraTYpe {
+    @Retention(RetentionPolicy.SOURCE) public @interface ExtraType {
         String FOR_RESULT_EXTRA = "for_result_extra";
         String EDIT_GIST_COMMENT_EXTRA = "edit_comment_extra";
         String NEW_GIST_COMMENT_EXTRA = "new_gist_comment_extra";

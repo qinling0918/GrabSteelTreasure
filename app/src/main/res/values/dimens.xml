@@ -2,4 +2,15 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="toolbarSize">48dp</dimen>
+
+   <!--main  bottom_navigation_bar-->
+    <dimen name="fixed_icon_grid">21dp</dimen>
+    <dimen name="fixed_height_bottom_padding">12dp</dimen>
+    <dimen name="fixed_label_active">12sp</dimen>
+    <item name="fixed_label_active_to_inactive_ratio" format="float" type="dimen">0.857</item>
+    <dimen name="fixed_icon_badge_grid_height">30dp</dimen> <!--this adds 3 dp extra to top and bottom icon -->
+    <dimen name="bottom_navigation_height">48dp</dimen>
+    <dimen name="badge_text_size">10sp</dimen><!-- 10 -->
+
 </resources>

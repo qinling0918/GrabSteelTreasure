@@ -16,6 +16,7 @@ import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 
+import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatDialogFragment;
 import com.zgw.qgb.base.mvp.IPresenter;
 import com.zgw.qgb.base.mvp.IView;
@@ -149,5 +150,10 @@ public abstract class BaseDialogFragment<P extends IPresenter> extends RxAppComp
     @Override
     public boolean isLoggedIn() {
         return callback.isLoggedIn();
+    }
+
+    @Override
+    public <T> LifecycleTransformer<T> bind2Lifecycle() {
+        return bindToLifecycle();
     }
 }

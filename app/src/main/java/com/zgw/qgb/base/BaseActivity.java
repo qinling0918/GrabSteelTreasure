@@ -6,13 +6,16 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jaeger.library.StatusBarUtil;
+import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
@@ -49,14 +52,13 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
     private long backPressTimer;
 
     @Nullable @BindView(R.id.toolbar) public Toolbar toolbar;
-
-    //支持vector drawable
-    //static { AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);}
+    @Nullable @BindView(R.id.tv_title) public TextView tv_title;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+
         if (layout() != 0) {
             setContentView(layout());
             ButterKnife.bind(this);
@@ -65,16 +67,24 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         mPresenter = createPresenter();
         checkNotNull(mPresenter,"presenter can't be null");
 
+        initData();
+
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             Icepick.restoreInstanceState(this, savedInstanceState);
             mPresenter.onRestoreInstanceState(savedInstanceState);
-            //mPresenter.onRestoreInstanceState(presenterStateBundle);
         }
 
         if (null!=toolbar){
             setupToolbarAndStatusBar(toolbar);
         }
 
+    }
+
+    protected abstract void initData();
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     @Override
@@ -87,10 +97,7 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
         mPresenter.onSaveInstanceState(outState);
-        //mPresenter.onSaveInstanceState(presenterStateBundle);
     }
-
-
 
     protected abstract P createPresenter();
 
@@ -106,13 +113,16 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         //return true;
     }
 
-    private void setupToolbarAndStatusBar(@Nullable Toolbar toolbar) {
+    public void setupToolbarAndStatusBar(@Nullable Toolbar toolbar) {
         changeStatusBarColor(isTransparent());
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+
+            resetTitle(getSupportActionBar().getTitle(),0);
+
             if (canBack()) {
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     if (canBack()) {
                         View navIcon = getToolbarNavigationIcon(toolbar);
@@ -127,6 +137,15 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
                     }
                 }
             }
+        }
+    }
+
+    private void resetTitle(CharSequence charSequence, int color) {
+        if (tv_title != null){
+            if (color != 0) tv_title.setTextColor(color);
+            tv_title.setText(charSequence);
+            getSupportActionBar().setTitle("");
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 
@@ -150,7 +169,19 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         }
     }
 
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (canBack()) {
+            if (item.getItemId() == android.R.id.home) {
+                onBackPressed();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void superOnBackPressed(boolean didClickTwice) {
         if (this instanceof MainActivity) {
@@ -240,7 +271,19 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         return false;
     }
 
-  /*  @Override
+    public <T> LifecycleTransformer<T> bind2Lifecycle(){
+        return bindToLifecycle();
+    }
+
+    @Override
+    protected void onTitleChanged(CharSequence title, int color) {
+        super.onTitleChanged(title, color);
+        resetTitle(title,color);
+    }
+
+
+
+    /*  @Override
     public void onRequireLogin() {
 
     }

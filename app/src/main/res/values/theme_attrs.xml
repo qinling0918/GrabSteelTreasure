@@ -2,5 +2,8 @@
 <resources>
     <attr name="icon_color" format="color|reference"/>
     <attr name="dividerColor" format="color|reference"/>
+    <attr name="titleColor" format="color|reference"/>
+    <attr name="toolbarSize" format="dimension"/>
+   <!-- <attr name="toolbarStyle" format="reference"/>-->
 
 </resources>

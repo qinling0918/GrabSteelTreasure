@@ -80,6 +80,11 @@ public class InputHelper {
         return id > Integer.MAX_VALUE ? (int) (id - Integer.MAX_VALUE) : (int) id;
     }
 
+    /**
+     * 将字符串首字母变成大写
+     * @param s
+     * @return
+     */
     public static String capitalizeFirstLetter(String s) {
         if (isEmpty(s)) {
             return "";
