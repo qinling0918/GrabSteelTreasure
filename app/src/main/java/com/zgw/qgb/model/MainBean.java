@@ -183,4 +183,9 @@ public class MainBean {
             this.Url = Url;
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

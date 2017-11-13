@@ -10,6 +10,6 @@ public class Constant {
 
     public final static String BaseUrl = "http://qgbtest.zgw.com/";
     public final static String BaseUrl_debug = "http://qgbtest.zgw.com/";
-    public final static String BaseUrl_local = "http://qgbtest.zgw.com/";
+    public final static String BaseUrl_local = "http://192.168.1.18:8026/";
 
 }

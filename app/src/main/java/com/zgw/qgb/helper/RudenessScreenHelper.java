@@ -61,7 +61,7 @@ public class RudenessScreenHelper {
      * @see #inactivate()
      */
     private static void restoreDensity(Context context) {
-        context.getResources().getDisplayMetrics().setToDefaults();
+        getDisplayMetrics().setToDefaults();
 
         DisplayMetrics metrics = getMetricsOnMiui(context.getResources());
         if (metrics != null)

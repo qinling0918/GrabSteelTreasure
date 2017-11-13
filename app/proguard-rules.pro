@@ -63,21 +63,23 @@
 }
 
 # Gson
--keepattributes Signature-keepattributes *Annotation*
+-keepattributes Signature
 -keep class sun.misc.Unsafe { *; }
 -keepattributes *Annotation*
 -keep class com.google.gson.stream.** { *; }
 # Application classes that will be serialized/deserialized over Gson 下面替换成自己的实体类
-#-keep class com.example.bean.** { *; }
+-keep class com.zgw.qgb.model.** { *; }
 
 #glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-**[] $VALUES;
-public *;
+  **[] $VALUES;
+  public *;
 }
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+# for DexGuard only 在dexguard时添加
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 
 

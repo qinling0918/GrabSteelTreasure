@@ -12,17 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jaeger.library.StatusBarUtil;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.mvp.IPresenter;
 import com.zgw.qgb.base.mvp.IView;
 import com.zgw.qgb.helper.AppHelper;
 import com.zgw.qgb.helper.PrefGetter;
+import com.zgw.qgb.helper.ToastUtils;
 import com.zgw.qgb.helper.ViewHelper;
 import com.zgw.qgb.ui.moudle.main.MainActivity;
 import com.zgw.qgb.ui.widgets.dialog.ProgressDialogFragment;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 import icepick.Icepick;
 import icepick.State;
 
@@ -48,7 +46,7 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
     protected Context mContext;
     @State boolean isProgressShowing;
     @State Bundle presenterStateBundle = new Bundle();
-    private Toast toast;
+    //private Toast toast;
     private long backPressTimer;
 
     @Nullable @BindView(R.id.toolbar) public Toolbar toolbar;
@@ -203,7 +201,7 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         if (backPressTimer + 2000 > System.currentTimeMillis()) {
             return true;
         } else {
-            Toast.makeText(App.getInstance(), R.string.press_again_to_exit, Toast.LENGTH_SHORT).show();
+            showMessage(R.string.press_again_to_exit,R.string.press_again_to_exit);
         }
         backPressTimer = System.currentTimeMillis();
         return false;
@@ -257,13 +255,19 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
     @Override
     public void showMessage(@NonNull String titleRes, @NonNull String msgRes) {
         hideProgress();
-        if (toast != null) toast.cancel();
+        if (titleRes.equals(getString(R.string.error))){
+            ToastUtils.showError(msgRes);
+        }else{
+
+
+        }
+       /* if (toast != null) toast.cancel();
         Context context = App.getInstance(); // WindowManager$BadTokenException
 
         toast = titleRes.equals(context.getString(R.string.error))
                 ? Toasty.error(context, msgRes, Toast.LENGTH_LONG)//可以用Toasty.custom 修改颜色
                 : Toasty.info(context, msgRes, Toast.LENGTH_LONG);
-        toast.show();
+        toast.show();*/
     }
 
     @Override

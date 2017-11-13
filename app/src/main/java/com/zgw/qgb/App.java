@@ -3,12 +3,14 @@ package com.zgw.qgb;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.zgw.qgb.helper.ActivityMgr;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
+import com.zgw.qgb.helper.ToastUtils;
 
 import java.util.Locale;
 
@@ -38,6 +40,7 @@ public class App extends Application {
     }
 
     private void init() {
+        MultiDex.install(this);
         LeakCanary.install(this);
         //AppHelper.updateAppLanguage(this); 未完成
         DebugHelper.getInstance().syscIsDebug(this);

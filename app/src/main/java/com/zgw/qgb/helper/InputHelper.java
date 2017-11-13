@@ -85,7 +85,7 @@ public class InputHelper {
      * @param s
      * @return
      */
-    public static String capitalizeFirstLetter(String s) {
+    public static String upperFirstLetter(String s) {
         if (isEmpty(s)) {
             return "";
         }
@@ -95,5 +95,48 @@ public class InputHelper {
         } else {
             return Character.toUpperCase(first) + s.substring(1);
         }
+    }
+
+
+    /**
+     * 转化为半角字符
+     *
+     * @param s 待转字符串
+     * @return 半角字符串
+     */
+    public static String toDBC(final String s) {
+        if (isEmpty(s)) return s;
+        char[] chars = s.toCharArray();
+        for (int i = 0, len = chars.length; i < len; i++) {
+            if (chars[i] == 12288) {
+                chars[i] = ' ';
+            } else if (65281 <= chars[i] && chars[i] <= 65374) {
+                chars[i] = (char) (chars[i] - 65248);
+            } else {
+                chars[i] = chars[i];
+            }
+        }
+        return new String(chars);
+    }
+
+    /**
+     * 转化为全角字符
+     *
+     * @param s 待转字符串
+     * @return 全角字符串
+     */
+    public static String toSBC(final String s) {
+        if (isEmpty(s)) return s;
+        char[] chars = s.toCharArray();
+        for (int i = 0, len = chars.length; i < len; i++) {
+            if (chars[i] == ' ') {
+                chars[i] = (char) 12288;
+            } else if (33 <= chars[i] && chars[i] <= 126) {
+                chars[i] = (char) (chars[i] + 65248);
+            } else {
+                chars[i] = chars[i];
+            }
+        }
+        return new String(chars);
     }
 }

@@ -10,20 +10,27 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.os.Build;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.text.Layout;
-import android.util.TypedValue;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 
 import java.util.Arrays;
@@ -35,6 +42,60 @@ import java.util.Arrays;
  * Created by kosh20111 on 10/7/2015 10:42 PM
  */
 public class ViewHelper {
+
+    /**
+     * 获取屏幕密度
+     *
+     * @return float
+     * @throws
+     */
+    public static float getDensity(Context context) {
+        return getDisplayMetrics(context).density;
+    }
+
+    public static DisplayMetrics getDisplayMetrics(Context context) {
+        return context.getResources().getDisplayMetrics();
+    }
+
+    /**
+     * 获取状态栏高度
+     *
+     * @return
+     * @return int
+     * @throws
+     */
+    public static int getStatusBarHeight() {
+        // Resources.getSystem() 可以在任何地方进行使用，但是有一个局限，只能获取系统本身的资源
+        return Resources.getSystem().getDimensionPixelSize(
+                Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android"));
+    }
+
+    /**
+     * 动态设置ListView的高度
+     * @param listView
+     */
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        if (listView == null) return;
+
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+
+    }
+
 
     @ColorInt
     public static int getPrimaryDarkColor(@NonNull Context context) {
@@ -110,19 +171,32 @@ public class ViewHelper {
         return color;
     }
 
-    public static int toPx(@NonNull Context context, int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, dp, context.getResources().getDisplayMetrics());
+
+     public static Resources getResources() {
+          return App.getContext().getResources();
+      }
+    public static int[] getDrawableId(@ArrayRes int id) {
+        TypedArray ar = getResources().obtainTypedArray(id);
+        final int len = ar.length();
+        final int[] resIds = new int[len];
+        for (int i = 0; i < len; i++){
+            resIds[i] = ar.getResourceId(i, 0);
+        }
+        ar.recycle();
+        return resIds;
     }
+
 
     public static void tintDrawable(@NonNull Drawable drawable, @ColorInt int color) {
         drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
-/*
     public static Drawable getDrawableSelector(int normalColor, int pressedColor) {
-        return new RippleDrawable(ColorStateList.valueOf(pressedColor), getRippleMask(normalColor), getRippleMask(normalColor));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return new RippleDrawable(ColorStateList.valueOf(pressedColor), getRippleMask(normalColor), getRippleMask(normalColor));
+        }
+        return getStateListDrawable(normalColor, pressedColor) ;
     }
-*/
 
     @Nullable
     private static Drawable getRippleMask(int color) {
@@ -164,17 +238,8 @@ public class ViewHelper {
         );
     }
 
-    private static boolean isTablet(@NonNull Resources resources) {
-        return (resources.getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
 
-    @SuppressWarnings("ConstantConditions") public static boolean isTablet(@NonNull Context context) {
-        return context != null && isTablet(context.getResources());
-    }
 
-    public static boolean isLandscape(@NonNull Resources resources) {
-        return resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-    }
 
     @NonNull
     @SuppressWarnings("WeakerAccess") public static Rect getLayoutPosition(@NonNull View view) {
@@ -183,10 +248,13 @@ public class ViewHelper {
         return myViewRect;
     }
 
-  /*  @SuppressWarnings("WeakerAccess") @Nullable
+    @SuppressWarnings("WeakerAccess") @Nullable
     public static String getTransitionName(@NonNull View view) {
-        return !InputHelper.isEmpty(view.getTransitionName()) ? view.getTransitionName() : null;
-    }*/
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return !InputHelper.isEmpty(view.getTransitionName()) ? view.getTransitionName() : null;
+        }
+        return null;
+    }
 
     @SuppressWarnings("WeakerAccess") public static void showKeyboard(@NonNull View v, @NonNull Context activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -245,24 +313,63 @@ public class ViewHelper {
 }
 
     /**
+     * 测量视图尺寸
      *
-     * @param textView
-     * @return int[]  size    size[0] 宽   size[1] 高
+     * @param view 视图
+     * @return arr[0]: 视图宽度, arr[1]: 视图高度
      */
-    public static int[] getTextViewWidthAndHeight(TextView textView) {
-        int w = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        int h = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        textView.measure(w, h);
-        int height = textView.getMeasuredHeight();
-        int width = textView.getMeasuredWidth();
-
-        int[] size = new int[]{width,height};
-
-        return size;
+    public static int[] measureView(final View view) {
+        ViewGroup.LayoutParams lp = view.getLayoutParams();
+        if (lp == null) {
+            lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+        }
+        int widthSpec = ViewGroup.getChildMeasureSpec(0, 0, lp.width);
+        int lpHeight = lp.height;
+        int heightSpec;
+        if (lpHeight > 0) {
+            heightSpec = View.MeasureSpec.makeMeasureSpec(lpHeight, View.MeasureSpec.EXACTLY);
+        } else {
+            heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        }
+        view.measure(widthSpec, heightSpec);
+        return new int[]{view.getMeasuredWidth(), view.getMeasuredHeight()};
     }
 
+    /**
+     * 在onCreate中获取视图的尺寸
+     * <p>需回调onGetSizeListener接口，在onGetSize中获取view宽高</p>
+     * <p>用法示例如下所示</p>
+     * <pre>
+     * SizeUtils.forceGetViewSize(view, new SizeUtils.onGetSizeListener() {
+     *     Override
+     *     public void onGetSize(final View view) {
+     *         view.getWidth();
+     *     }
+     * });
+     * </pre>
+     *
+     * @param view     视图
+     * @param listener 监听器
+     */
+    public static void forceGetViewSize(final View view, final onGetSizeListener listener) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                if (listener != null) {
+                    listener.onGetSize(view);
+                }
+            }
+        });
+    }
 
+    /**
+     * 获取到View尺寸的监听
+     */
+    public interface onGetSizeListener {
+        void onGetSize(View view);
+    }
 
 }

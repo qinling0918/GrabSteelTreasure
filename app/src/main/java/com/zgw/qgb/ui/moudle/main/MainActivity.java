@@ -136,7 +136,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     public void onTabUnselected(int position) {}
 
     @Override
-    public void onTabReselected(int position) {}
+    public void onTabReselected(int position) {
+
+    }
 
     @OnPageChange(R.id.vp_main_container)
     public void onPageSelected(int position) {

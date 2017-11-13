@@ -34,7 +34,7 @@ import static com.zgw.qgb.net.OkHttpConfig.DEFAULT_CONFIG;
 
 public class RetrofitProvider {
     public static String baseUrl = App.getInstance().isDebug()
-            ? Constant.BaseUrl_debug
+            ? Constant.BaseUrl_local
             : Constant.BaseUrl;
 
     private static Map<String, OkHttpConfig> configMap = new HashMap<>();

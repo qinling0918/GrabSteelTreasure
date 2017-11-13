@@ -1,25 +1,29 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 //apply plugin: 'io.fabric'
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.zgw.qgb"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+
     }
     buildTypes {
 
         release {
-            minifyEnabled false
+            //minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
+            minifyEnabled true
+            shrinkResources true
             //manifestPlaceholders = [fabric_apikey: "cf3dce553f5d21f249f1ea225fd3dc3ade213c08"]
             buildConfigField "String", "BaseUrl", '"https://qgbservices.zgw.com/"'
         }
@@ -28,7 +32,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             ext.alwaysUpdateBuildId = false
-
+            minifyEnabled false
             //manifestPlaceholders = [fabric_apikey: "cf3dce553f5d21f249f1ea225fd3dc3ade213c08"]
             buildConfigField "String", "BaseUrl", '"http://qgbtest.zgw.com/"'
         }
@@ -58,35 +62,28 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
     //support
     implementation "com.android.support:appcompat-v7:${supportVersion}"
-    //implementation "com.android.support:design:${supportVersion}"
+    implementation "com.android.support:design:${supportVersion}"
     implementation "com.android.support:cardview-v7:${supportVersion}"
     implementation "com.android.support:recyclerview-v7:${supportVersion}"
     implementation "com.android.support:support-v4:${supportVersion}"
     implementation "com.android.support:support-vector-drawable:${supportVersion}"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-
+    implementation 'com.android.support:multidex:1.0.2'
     //network
     implementation "com.squareup.retrofit2:retrofit:${retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${retrofit}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${retrofit}"
     implementation "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}"
     implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
-
     implementation "com.github.bumptech.glide:glide:${glideVersion}"
     implementation "com.github.bumptech.glide:okhttp3-integration:${glideVersion}"
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:support-vector-drawable:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    annotationProcessor "com.github.bumptech.glide:compiler:${glideVersion}"
 
+    kapt "com.github.bumptech.glide:compiler:${glideVersion}"
     implementation 'com.google.code.gson:gson:2.8.2'
-
     //view
     implementation 'com.github.GrenderG:Toasty:1.1.3', {
         exclude group: 'com.android.support'
@@ -98,7 +95,7 @@ dependencies {
     implementation 'com.ashokvarma.android:bottom-navigation-bar:2.0.3'
     /*implementation 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:2.0.2'*/
     implementation "frankiesardo:icepick:${icepickVersion}"
-    annotationProcessor "frankiesardo:icepick-processor:${icepickVersion}"
+    kapt "frankiesardo:icepick-processor:${icepickVersion}"
 
     //rx2
     implementation 'io.reactivex.rxjava2:rxjava:2.1.3'
@@ -110,13 +107,13 @@ dependencies {
     //tool
     implementation 'com.jakewharton.timber:timber:4.5.1'
     implementation "com.jakewharton:butterknife:${butterKnifeVersion}"
-    annotationProcessor "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+    kapt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
     implementation 'com.jaeger.statusbarutil:library:1.4.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     implementation 'com.annimon:stream:1.1.7'
 
     /* implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
