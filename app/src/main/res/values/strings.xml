@@ -27,4 +27,5 @@
     <!-- Strings related to Settings -->个人中心
 
     <string name="purchase_order_detail_min_quantity">最低起订量: &lt;font color=#FF2200>%s吨&lt;/font></string>
+    <string name="success_copied">复制成功</string>
 </resources>

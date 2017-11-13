@@ -1,6 +1,7 @@
 package com.zgw.qgb.ui.moudle.quote;
 
 import android.annotation.SuppressLint;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -110,9 +111,58 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 drawable.setBounds(0, 0, 72, 72);
                 tvWideNation.setError("Toast", drawable);
                 tvWideNation.requestFocus();*/
+                getSum();
                 break;
         }
     }
+    public void getSum() {
+        //二维数组中的行数
+        int rows = 4;
+        //二维数组的列数
+        int cols = 5;
+        //二维数组中元素的个数
+        int len = rows * cols;
+        //这个设置要计算的二维数组的内容
+        int[][] nums = new int[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                nums[i][j] = i * cols + j;
+            }
+        }
+        Point pa, pb, pc, pd;
+        //任意4个数的和
+        float sum = 0;
+        //以下四重循环是主体算法，其核心思路是完成20个元素取4个的组合
+        for (int a = 0; a < len - 3; a++) {
+            pa = getPoint(a);
+            sum = nums[pa.x][pa.y];
+            for (int b = a + 1; b < len - 2; b++) {
+                pb = getPoint(b);
+                sum += nums[pb.x][pb.y];
+                for (int c = b + 1; c < len - 1; c++) {
+                    pc = getPoint(c);
+                    sum += nums[pc.x][pc.y];
+                    for (int d = c + 1; d < len; d++) {
+                        pd = getPoint(d);
+                        sum += nums[pd.x][pd.y];
+                        //这里根据项目要求处理结果
+                        System.out.println("(" + pa.x + "," + pa.y + ")+("
+                                + pb.x + "," + pb.y + ")+(" + pc.x + "," + pc.y
+                                + ")+(" + pd.x + "," + pd.y + ")=" + sum);
 
+
+                    }
+                }
+            }
+        }
+    }
+
+    //根据二维数组的元素的行优先序号，计算其行号和列号
+    public Point getPoint(int v) {
+        Point p = new Point();
+        p.x = v / 5;
+        p.y = v % 5;
+        return p;
+    }
 
 }

@@ -17,9 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-
 import com.zgw.qgb.R;
-import com.zgw.qgb.helper.ViewHelper;
+import com.zgw.qgb.helper.AppHelper;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -111,7 +110,7 @@ import butterknife.Unbinder;
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                if (ViewHelper.isTablet(getActivity())) {
+                if (AppHelper.isTablet(getActivity())) {
                     if (dialog.getWindow() != null) {
                         dialog.getWindow().setLayout(
                                 ViewGroup.LayoutParams.WRAP_CONTENT,

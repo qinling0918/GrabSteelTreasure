@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.WindowManager;
 
 import com.zgw.qgb.helper.utils.EmptyUtils;
@@ -61,7 +60,7 @@ public class RudenessScreenHelper {
      * @see #inactivate()
      */
     private static void restoreDensity(Context context) {
-        getDisplayMetrics().setToDefaults();
+        context.getResources().getDisplayMetrics().setToDefaults();
 
         DisplayMetrics metrics = getMetricsOnMiui(context.getResources());
         if (metrics != null)
