@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -111,11 +112,11 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 drawable.setBounds(0, 0, 72, 72);
                 tvWideNation.setError("Toast", drawable);
                 tvWideNation.requestFocus();*/
-                getSum();
+                getSum(getPoint(5),getPoint(1),getPoint(2));
                 break;
         }
     }
-    public void getSum() {
+    public void getSum(Point... pa) {
         //二维数组中的行数
         int rows = 4;
         //二维数组的列数
@@ -129,7 +130,19 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 nums[i][j] = i * cols + j;
             }
         }
-        Point pa, pb, pc, pd;
+
+        float sum = 0;
+        StringBuilder build = new StringBuilder();
+        for (Point point : pa) {
+            if (null != point) {
+                sum += nums[point.x][point.y];
+                build.append("(" + point.x + "," + point.y + ")+ ");
+
+            }
+        }
+
+        Log.d(TAG, "getSum: "+build + sum);
+       /* Point pa, pb, pc, pd;
         //任意4个数的和
         float sum = 0;
         //以下四重循环是主体算法，其核心思路是完成20个元素取4个的组合
@@ -150,11 +163,13 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                                 + pb.x + "," + pb.y + ")+(" + pc.x + "," + pc.y
                                 + ")+(" + pd.x + "," + pd.y + ")=" + sum);
 
-
+                        Log.d(TAG, "getSum: "+"(" + pa.x + "," + pa.y + ")+("
+                                + pb.x + "," + pb.y + ")+(" + pc.x + "," + pc.y
+                                + ")+(" + pd.x + "," + pd.y + ")=" + sum);
                     }
                 }
             }
-        }
+        }*/
     }
 
     //根据二维数组的元素的行优先序号，计算其行号和列号

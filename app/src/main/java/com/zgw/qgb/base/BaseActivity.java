@@ -2,6 +2,7 @@ package com.zgw.qgb.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -64,7 +65,6 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
 
         mPresenter = createPresenter();
         checkNotNull(mPresenter,"presenter can't be null");
-
         initData();
 
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {

@@ -48,6 +48,9 @@ public class QuoteFragment extends BaseMainFragment<QuotePresenter> implements Q
 
         segmentControl.setOnSegmentControlClickListener(this);
         setupViewPager();
+
+
+
     }
 
     @Override
