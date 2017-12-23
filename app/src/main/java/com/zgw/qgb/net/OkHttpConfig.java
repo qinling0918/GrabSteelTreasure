@@ -28,4 +28,11 @@ public abstract class OkHttpConfig {
         @Override
         public void configHttps(OkHttpClient.Builder builder) {}
     };
+
+    public static final OkHttpConfig DOWNLOAD_CONFIG = new OkHttpConfig() {
+        @Override
+        public void configHttps(OkHttpClient.Builder builder) {
+
+        }
+    };
 }

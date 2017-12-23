@@ -1,10 +1,17 @@
 package com.zgw.qgb.ui.moudle.quote;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -12,13 +19,14 @@ import android.widget.TextView;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.helper.Bundler;
-import com.zgw.qgb.helper.ToastUtils;
+import com.zgw.qgb.net.extension.DownloadService;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteListPresenter;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.content.Context.BIND_AUTO_CREATE;
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
 
@@ -33,6 +41,20 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     TextView tvTitle;
     @BindView(R.id.tv_wide_nation)
     TextView tvWideNation;
+
+    private DownloadService.DownloadBinder downloadBinder;
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            downloadBinder = (DownloadService.DownloadBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            downloadBinder = null;
+        }
+    };
+
 
     private String title;
 
@@ -52,6 +74,14 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             title = getArguments().getString(EXTRA);
+        }
+
+        Intent intent = new Intent(getContext(), DownloadService.class);
+        getContext().startService(intent);//启动服务
+        getContext().bindService(intent, connection, BIND_AUTO_CREATE);//绑定服务
+        if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
     }
 
@@ -80,6 +110,8 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_title:
+
+                downloadBinder.startDownload("https://www.baidu.com/link?url=So1xpgGvy_9i9KOiN2mDoiH8FHFp0CzL6Ff53VT7PCuFwXfXOdmBe8w3ZV3KWveOtNGWg14j1UsWK7pGlQG_dA1465YJVt5zfyAdzZlf-WW&wd=&eqid=c58056be00002c18000000035a3cc9bc");
                /* ToastUtils.setBgColor(getResources().getColor(R.color.colorPrimary));
                 ToastUtils.setMsgColor(getResources().getColor(android.R.color.white));
                 ToastUtils.showLong("Toast" + num++);*/
@@ -95,15 +127,17 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 //ToastUtils.showLong(getString(R.string.message));
                 break;
             case R.id.tv_wide_nation:
+
+                downloadBinder.pauseDownload();
                 //showMessage(R.string.message,R.string.error);
 
 
-                Snackbar.make(tvTitle,"1213123",Snackbar.LENGTH_LONG).setText("123").setAction("123123123123123", new View.OnClickListener() {
+             /*   Snackbar.make(tvTitle,"1213123",Snackbar.LENGTH_LONG).setText("123").setAction("123123123123123", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ToastUtils.showNormal("1231");
                     }
-                }).show();
+                }).show();*/
               /*  ToastUtils.setBgColor(getResources().getColor(R.color.colorAccent));
                 ToastUtils.setMsgColor(getResources().getColor(android.R.color.white));
                 ToastUtils.showLong("Toast" + num++);*/

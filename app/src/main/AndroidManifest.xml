@@ -24,13 +24,20 @@
             </intent-filter>
         </activity>
 
+
         <!--
             <meta-data
             android:name="io.fabric.ApiKey"
             android:value="${fabric_apikey}" />
         -->
 
-        <activity android:name=".ui.moudle.quote.CityActivity"></activity>
+        <activity android:name=".ui.moudle.quote.CityActivity" />
+
+        <service
+            android:name=".net.extension.DownloadService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
     </application>
 
 </manifest>
