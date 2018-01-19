@@ -1,7 +1,9 @@
-package com.zgw.qgb.net.extension;
+package com.zgw.qgb.net.download;
 
 import android.os.AsyncTask;
 import android.os.Environment;
+
+import com.zgw.qgb.net.RetrofitProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,7 +76,9 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
             //已下载字节和文件总字节相等，说明已经下载完成了
             return TYPE_SUCCESS;
         }
-        OkHttpClient client=new OkHttpClient();
+        //OkHttpClient client=new OkHttpClient();
+        //提供progressManager  进度支持
+        OkHttpClient client= RetrofitProvider.provideOkHttp();
         /**
          * HTTP请求是有一个Header的，里面有个Range属性是定义下载区域的，它接收的值是一个区间范围，
          * 比如：Range:bytes=0-10000。这样我们就可以按照一定的规则，将一个大文件拆分为若干很小的部分，

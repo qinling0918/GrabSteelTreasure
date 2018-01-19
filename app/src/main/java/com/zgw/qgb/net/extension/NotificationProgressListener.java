@@ -1,9 +1,7 @@
 package com.zgw.qgb.net.extension;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.zgw.qgb.App;
@@ -13,7 +11,6 @@ import com.zgw.qgb.net.progressmanager.ProgressManager;
 import com.zgw.qgb.net.progressmanager.body.ProgressInfo;
 
 import java.io.File;
-import java.util.Locale;
 
 /**
  * Name:NotificationProgressListener
@@ -40,7 +37,7 @@ public class NotificationProgressListener implements ProgressListener {
                 .setContentTitle(fileName)
                 .setAutoCancel(true);
 
-        notificationManager.notify(url,url.hashCode(), notificationBuilder.build());
+        notificationManager.notify(url,url.hashCode(), notificationBuilder.build());//两个对象相等则它们的hashCode值必然相等；
     }
 
     @Override
@@ -70,7 +67,7 @@ public class NotificationProgressListener implements ProgressListener {
     int lastProgress = 0 ;
     private void sendNotification(int max, int progress, CharSequence content, long totalLength, long currentLength) {
 
-        int mRefreshTime = ProgressManager.getInstance().getmRefreshTime();
+        int mRefreshTime = ProgressManager.getInstance().getmRefreshTime();//若不调用setRefreshTime 获取的时间是默认值 ProgressManager.DEFAULT_REFRESH_TIME
         long speed = ((progress - lastProgress) * totalLength) / mRefreshTime ; //ms >s 比例 100  progress > 百分比 比例100  ,此时单位为  b/s
         long timeLeft = speed == 0 ? 0 : (totalLength - currentLength) / speed ;
         max = progress == max ? 0 : max; //当完成或者出现错误,则隐藏进度条

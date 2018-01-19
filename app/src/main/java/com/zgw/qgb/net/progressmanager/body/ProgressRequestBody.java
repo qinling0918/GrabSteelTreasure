@@ -17,6 +17,7 @@ package com.zgw.qgb.net.progressmanager.body;
 
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 
 import com.zgw.qgb.net.progressmanager.ProgressListener;
 
@@ -74,7 +75,7 @@ public class ProgressRequestBody extends RequestBody {
     }
 
     @Override
-    public void writeTo(BufferedSink sink) throws IOException {
+    public void writeTo(@NonNull BufferedSink sink) throws IOException {
         if (mBufferedSink == null) {
             mBufferedSink = Okio.buffer(new CountingSink(sink));
         }
@@ -83,8 +84,8 @@ public class ProgressRequestBody extends RequestBody {
             mBufferedSink.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            for (int i = 0; i < mListeners.length; i++) {
-                mListeners[i].onError(mProgressInfo.getId(), e);
+            for (ProgressListener mListener : mListeners) {
+                mListener.onError(mProgressInfo.getId(), e);
             }
             throw e;
         }
@@ -105,8 +106,8 @@ public class ProgressRequestBody extends RequestBody {
                 super.write(source, byteCount);
             } catch (IOException e) {
                 e.printStackTrace();
-                for (int i = 0; i < mListeners.length; i++) {
-                    mListeners[i].onError(mProgressInfo.getId(), e);
+                for (ProgressListener mListener : mListeners) {
+                    mListener.onError(mProgressInfo.getId(), e);
                 }
                 throw e;
             }
@@ -121,8 +122,7 @@ public class ProgressRequestBody extends RequestBody {
                     final long finalTempSize = tempSize;
                     final long finalTotalBytesRead = totalBytesRead;
                     final long finalIntervalTime = curTime - lastRefreshTime;
-                    for (int i = 0; i < mListeners.length; i++) {
-                        final ProgressListener listener = mListeners[i];
+                    for (final ProgressListener listener : mListeners) {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {

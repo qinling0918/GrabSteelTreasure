@@ -16,10 +16,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.helper.Bundler;
-import com.zgw.qgb.net.extension.DownloadService;
+import com.zgw.qgb.net.download.DownloadService;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteListPresenter;
 
@@ -127,8 +128,13 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 //ToastUtils.showLong(getString(R.string.message));
                 break;
             case R.id.tv_wide_nation:
-
-                downloadBinder.pauseDownload();
+                //ARouter.getInstance().build("/quote/city").navigation();
+                ARouter.getInstance().build("/ui/moudle/quote/city").navigation();
+                //ARouter.getInstance().build("/kotlin/test").navigation();
+               /* Intent intent = new Intent();
+                intent.setAction("com.zgw.qgb.ui.moudle.quote.CityActivity");
+                getActivity().startActivity(intent);*/
+                //downloadBinder.pauseDownload();
                 //showMessage(R.string.message,R.string.error);
 
 
@@ -146,7 +152,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 drawable.setBounds(0, 0, 72, 72);
                 tvWideNation.setError("Toast", drawable);
                 tvWideNation.requestFocus();*/
-                getSum(getPoint(5),getPoint(1),getPoint(2));
+                //getSum(getPoint(5),getPoint(1),getPoint(2));
                 break;
         }
     }
@@ -213,5 +219,13 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         p.y = v % 5;
         return p;
     }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getContext().unbindService(connection);//解绑服务
+    }
+
 
 }

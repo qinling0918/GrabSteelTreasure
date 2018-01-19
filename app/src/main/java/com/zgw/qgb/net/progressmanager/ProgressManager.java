@@ -66,6 +66,8 @@ public final class ProgressManager {
     private final Map<String, List<ProgressListener>> mResponseListeners = new WeakHashMap<>();
     private final Handler mHandler; //所有监听器在 Handler 中被执行,所以可以保证所有监听器在主线程中被执行
     private final Interceptor mInterceptor;
+
+
     private int mRefreshTime = DEFAULT_REFRESH_TIME; //进度刷新时间(单位ms),避免高频率调用
 
     private static volatile ProgressManager mProgressManager;
@@ -124,6 +126,7 @@ public final class ProgressManager {
     public void setRefreshTime(int refreshTime) {
         this.mRefreshTime = refreshTime;
     }
+    public int getmRefreshTime() { return mRefreshTime; }
 
     /**
      * 将需要被监听上传进度的 {@code url} 注册到管理器,此操作请在页面初始化时进行,切勿多次注册同一个(内容相同)监听器

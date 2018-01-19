@@ -1,4 +1,4 @@
-package com.zgw.qgb.net.extension;
+package com.zgw.qgb.net.download;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -17,6 +17,11 @@ import com.zgw.qgb.R;
 
 import java.io.File;
 
+/**
+ * 专门用来下载大文件的服务  支持暂停,取消,失败,成功,下载中回调监听.  另外还有下载时显示在通知栏
+ * 此处与ProgressManager连接,可以在其他位置根据url 来监听进度(onProgress与onError)
+ *
+ */
 public class DownloadService extends Service implements DownloadListener {
     private DownloadTask downloadTask;
 

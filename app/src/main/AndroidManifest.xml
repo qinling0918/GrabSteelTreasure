@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.zgw.qgb">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,28 +17,48 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--
+           <meta-data
+           android:name="io.fabric.ApiKey"
+           android:value="${fabric_apikey}" />
+       -->
         <activity android:name=".ui.moudle.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <activity android:name=".base.SchemeFilterActivity">
 
-        <!--
-            <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="${fabric_apikey}" />
-        -->
+            <intent-filter android:autoVerify="true" tools:targetApi="m">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- App scheme -->
+                <data
+                    android:host="m.aliyun.com"
+                    android:scheme="arouter" />
+                <!-- App Links -->
+                <data
+                    android:host="m.aliyun.com"
+                    android:scheme="http" />
+                <data
+                    android:host="m.aliyun.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
 
-        <activity android:name=".ui.moudle.quote.CityActivity" />
+
+        <activity android:name=".ui.moudle.quote.CityActivity"/>
 
         <service
-            android:name=".net.extension.DownloadService"
+            android:name=".net.download.DownloadService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false"><!--//是否可以被另一个Application的组件启动-->
         </service>
+
     </application>
 
 </manifest>
