@@ -1,11 +1,17 @@
 package com.zgw.qgb.ui.moudle.quote;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteMapContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteMapPresenter;
+
+import butterknife.BindView;
 
 
 /**
@@ -16,6 +22,9 @@ import com.zgw.qgb.ui.moudle.quote.presenter.QuoteMapPresenter;
 
 public class QuoteMapFragment extends BaseFragment<QuoteMapPresenter> implements QuoteMapContract.IQuoteMapView {
     private static final String ARG_PARAM1 = "param1";
+    @BindView(R.id.recycleview)
+    RecyclerView recycleview;
+
     private String mParam1;
 
     public QuoteMapFragment() {
@@ -35,7 +44,19 @@ public class QuoteMapFragment extends BaseFragment<QuoteMapPresenter> implements
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+
+
     }
+
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recycleview.setLayoutManager(new LinearLayoutManager(getContext()));
+
+    }
+
 
     @Override
     protected int fragmentLayout() {
@@ -46,4 +67,8 @@ public class QuoteMapFragment extends BaseFragment<QuoteMapPresenter> implements
     protected QuoteMapPresenter getPresenter() {
         return new QuoteMapPresenter(this);
     }
+
+
+
+
 }

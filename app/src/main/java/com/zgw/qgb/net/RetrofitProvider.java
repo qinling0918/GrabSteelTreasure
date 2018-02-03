@@ -44,11 +44,9 @@ public class RetrofitProvider {
 
     private static OkHttpClient provideOkHttpClient(String baseUrl, OkHttpConfig config) {
         checkBaseUrl(baseUrl);
-
         if (clientMap.get(baseUrl) != null) {
             return clientMap.get(baseUrl);
         }
-
         OkHttpClient.Builder builder = provideOkHttp().newBuilder();
 
         if (null != config){

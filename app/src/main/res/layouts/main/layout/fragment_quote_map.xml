@@ -6,6 +6,7 @@
     tools:context="com.zgw.qgb.ui.moudle.quote.QuoteListFragment">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycleview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>

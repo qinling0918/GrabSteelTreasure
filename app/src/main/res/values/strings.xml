@@ -28,4 +28,8 @@
 
     <string name="purchase_order_detail_min_quantity">最低起订量: &lt;font color=#FF2200>%s吨&lt;/font></string>
     <string name="success_copied">复制成功</string>
+    <string name="no_intent_handler">
+    没有可用的应用程序来处理此操作。
+    There are no applications available to handle this action.
+  </string>
 </resources>

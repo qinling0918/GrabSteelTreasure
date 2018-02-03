@@ -36,7 +36,7 @@ public final class EmptyUtils {
         if (obj == null) {
             return true;
         }
-        if (obj instanceof String && obj.toString().length() == 0) {
+        if (obj instanceof CharSequence && obj.toString().length() == 0) {
             return true;
         }
         if (obj.getClass().isArray() && Array.getLength(obj) == 0) {
@@ -92,5 +92,26 @@ public final class EmptyUtils {
             throw new NullPointerException(message);
         }
         return value;
+    }
+
+    /**
+     * 判断对象是否相等
+     *
+     * @param o1 对象1
+     * @param o2 对象2
+     * @return {@code true}: 相等<br>{@code false}: 不相等
+     */
+    public static boolean equals(Object o1, Object o2) {
+        return o1 == o2 || (o1 != null && o1.equals(o2));
+    }
+
+    /**
+     * 获取对象哈希值
+     *
+     * @param o 对象
+     * @return 哈希值
+     */
+    public static int hashCode(Object o) {
+        return o != null ? o.hashCode() : 0;
     }
 }

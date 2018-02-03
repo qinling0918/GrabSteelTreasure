@@ -12,8 +12,10 @@ import android.widget.TextView;
  * <p>
  * Input Helper to validate stuff related to input fields.
  */
-public class InputHelper {
-
+public final class InputHelper {
+    private InputHelper() {
+        // No instances.
+    }
     public static final String SPACE = "\u202F\u202F";
 
     private static boolean isWhiteSpaces(@Nullable String s) {
@@ -54,7 +56,11 @@ public class InputHelper {
 
     @NonNull
     public static String toNA(@Nullable String value) {
-        return isEmpty(value) ? "N/A" : value;
+        return valueOrDefault(value,"N/A");
+    }
+
+    public static String valueOrDefault(String string, String defaultString) {
+        return isWhiteSpaces(string) ? defaultString : string;
     }
 
     @NonNull
@@ -138,5 +144,15 @@ public class InputHelper {
             }
         }
         return new String(chars);
+    }
+
+    /**
+     * 返回字符串长度
+     *
+     * @param s 字符串
+     * @return null 返回 0，其他返回自身长度
+     */
+    public static int length(final CharSequence s) {
+        return s == null ? 0 : s.length();
     }
 }

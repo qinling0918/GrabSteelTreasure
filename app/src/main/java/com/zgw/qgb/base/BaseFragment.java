@@ -62,6 +62,8 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
             Icepick.restoreInstanceState(this, savedInstanceState);
             mPresenter.onRestoreInstanceState(savedInstanceState);
         }
+
+
     }
 
     /**

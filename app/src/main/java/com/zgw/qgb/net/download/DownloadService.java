@@ -27,9 +27,6 @@ public class DownloadService extends Service implements DownloadListener {
 
     private String downloadUrl;
 
-
-
-
     @Override
     public IBinder onBind(Intent intent) {
         return new DownloadBinder();
@@ -109,7 +106,7 @@ public class DownloadService extends Service implements DownloadListener {
         //PendingIntent是等待的Intent,这是跳转到一个Activity组件。当用户点击通知时，会跳转到MainActivity
        // PendingIntent pi= PendingIntent.getActivity(this,0,intent,0);
         /**
-         * 几乎Android系统的每一个版本都会对通知这部分功能进行获多或少的修改，API不稳定行问题在通知上面凸显的尤其严重。
+         * 几乎Android系统的每一个版本都会对通知这部分功能进行获多或少的修改，API不稳定性问题在通知上面凸显的尤其严重。
          * 解决方案是：用support库中提供的兼容API。support-v4库中提供了一个NotificationCompat类，使用它可以保证我们的
          * 程序在所有的Android系统版本中都能正常工作。
          */

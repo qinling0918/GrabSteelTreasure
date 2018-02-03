@@ -15,7 +15,7 @@ import java.util.List;
  * <p>
  * Created by tianlai on 16-7-11.
  */
-public abstract class RecyAdapter<T> extends RecyclerView.Adapter implements AdapterOperator<T> {
+public abstract class RecyAdapter<T> extends RecyclerView.Adapter implements AdapterOperator<T>  {
     protected  final String TAG = this.getClass().getSimpleName();
 
     protected Context context;
@@ -25,11 +25,13 @@ public abstract class RecyAdapter<T> extends RecyclerView.Adapter implements Ada
 
     protected InnerClickListener innerClickListener;
 
-    public RecyAdapter(Context context, LayoutInflater inflater) {
+    public RecyAdapter(Context context) {
+       this(context, new ArrayList<>());
+    }
+    public RecyAdapter(Context context, List<T> itemDatas) {
         this.context = context;
-        this.inflater = inflater;
-
-        itemDatas = new ArrayList<>();
+        this.inflater = LayoutInflater.from(context);;
+        this.itemDatas = itemDatas;
     }
 
     @Override
@@ -40,6 +42,7 @@ public abstract class RecyAdapter<T> extends RecyclerView.Adapter implements Ada
     @Override
     public abstract RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType);
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ((RecyHolder<T>) holder).bindData(this, position,itemDatas.get(position));
@@ -84,6 +87,8 @@ public abstract class RecyAdapter<T> extends RecyclerView.Adapter implements Ada
             notifyDataSetChanged();
         }
     }
+
+
 
     /**
      * 替换数据

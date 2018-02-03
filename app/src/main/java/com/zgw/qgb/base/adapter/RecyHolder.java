@@ -53,7 +53,7 @@ public abstract class RecyHolder<T> extends RecyclerView.ViewHolder implements H
      * @param viewId
      * @return
      */
-    public View find(int viewId) {
+    public  View find(int viewId) {
         return itemView.findViewById(viewId);
 
     }
