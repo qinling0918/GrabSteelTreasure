@@ -29,7 +29,7 @@ import okhttp3.Response;
 
  */
 
-
+//http://blog.csdn.net/seu_calvin/article/details/52415337
 
 public class DownloadTask extends Handler {
 
