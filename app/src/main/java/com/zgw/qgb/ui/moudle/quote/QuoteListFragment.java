@@ -396,7 +396,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        getContext().unbindService(connection);//解绑服务
+        //getContext().unbindService(connection);//解绑服务
     }
 
 

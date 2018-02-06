@@ -1,13 +1,20 @@
 package com.zgw.qgb.ui.moudle.main;
 
+import android.util.Log;
+
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.mvp.BasePresenter;
 import com.zgw.qgb.helper.rx.RxProgress;
+import com.zgw.qgb.helper.rx.Rxdownload;
 import com.zgw.qgb.model.MainBean;
 import com.zgw.qgb.net.RetrofitProvider;
 import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.ui.moudle.main.MainContract.IMainPresenter;
 import com.zgw.qgb.ui.moudle.main.MainContract.IMainView;
+
+import java.io.File;
+
+
 
 /**
  * Created by Tsinling on 2017/9/8 17:11.
@@ -29,10 +36,21 @@ public class MainPresenter extends BasePresenter<IMainView> implements IMainPres
                 .toObservable()
                 .subscribe(new BaseObserver<MainBean>() {
                     @Override
-                    public void onNext(MainBean mainBean) {
+                    public void onSuccess(MainBean mainBean) {
                         getView().setText(mainBean.toString());
                     }
                 });
+
+        Rxdownload.download("http://acj2.pc6.com/pc6_soure/2017-6/com.zgw.qgb_29.apk")
+                .compose(RxProgress.bindToLifecycle(getView(), R.string.message))
+
+                .subscribe(new BaseObserver<File>() {
+                    @Override
+                    public void onSuccess(File file) {
+                        Log.d("Rxdownload", file.getAbsolutePath());
+                    }
+                });
+
 
     }
 

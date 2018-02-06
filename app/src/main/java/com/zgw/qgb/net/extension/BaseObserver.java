@@ -3,6 +3,7 @@ package com.zgw.qgb.net.extension;
 import android.util.Log;
 
 import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 import retrofit2.HttpException;
 
@@ -12,13 +13,20 @@ import retrofit2.HttpException;
  * Created by tianyang on 2017/9/27.
  */
 
-public abstract class BaseObserver<T> implements Observer<T> {
+public abstract class BaseObserver<T> implements Observer<T> ,SingleObserver<T>{
 
     private static final String TAG = "BaseObserver";
 
     @Override
     public void onSubscribe(Disposable d) {
 
+    }
+
+
+
+    @Override
+    public void onNext(T t) {
+        onSuccess(t);
     }
 
     @Override
