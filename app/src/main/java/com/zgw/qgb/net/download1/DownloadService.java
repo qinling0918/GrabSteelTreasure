@@ -1,4 +1,4 @@
-package com.zgw.qgb.net.download;
+package com.zgw.qgb.net.download1;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,6 +15,8 @@ import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.utils.FileUtils;
 
+import java.io.File;
+
 /**
  * 专门用来下载大文件的服务  支持暂停,取消,失败,成功,下载中回调监听.  另外还有下载时显示在通知栏
  * 此处与ProgressManager连接,可以在其他位置根据url 来监听进度(onProgress与onError)
@@ -24,8 +26,7 @@ public class DownloadService extends Service implements DownloadListener {
     private DownloadTask downloadTask;
 
     private String downloadUrl;
-    private String filePath;
-    private String fileName;
+    private File file;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -48,11 +49,10 @@ public class DownloadService extends Service implements DownloadListener {
         public void  startDownload(String mDownloadUrl, String mfilePath, String mfileName){
             if(downloadTask==null){
                 downloadUrl= mDownloadUrl;
-                filePath= mfilePath;
-                fileName= mfileName;
+                file = FileUtils.getFile(mDownloadUrl,mfilePath,mfileName);
                 downloadTask=new DownloadTask(DownloadService.this);
                 //启动下载任务
-                downloadTask.execute(downloadUrl ,filePath, fileName);
+                downloadTask.execute(new DownloadInfo(file,mDownloadUrl));
                 startForeground(1,getNotification("Downloading...",0));
                 Toast.makeText(DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
             }
@@ -77,7 +77,7 @@ public class DownloadService extends Service implements DownloadListener {
                 if(downloadUrl!=null){
                     //取消下载时需要将文件删除，并将通知关闭
 
-                    FileUtils.deleteFile(FileUtils.getFile(downloadUrl,filePath,fileName));
+                    FileUtils.deleteFile(file);
                     getNotificationManager().cancel(1);
                     stopForeground(true);
                     Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
@@ -142,6 +142,8 @@ public class DownloadService extends Service implements DownloadListener {
         //notify(),接收两个参数，第一个参数是id:每个通知所指定的id都是不同的。第二个参数是Notification对象。
         getNotificationManager().notify(1,getNotification("Downloading...",progress));
     }
+
+
     /**
      * 观察小米下载,是在不同状态都有一个通知,多个下载任务进行时,同在下载中则显示一个
      * 有结束的则又开了一个通知,当全部结束又都整合到一个通知上,只是下载数量的变化
@@ -162,7 +164,7 @@ public class DownloadService extends Service implements DownloadListener {
      *用户下载失败
      */
     @Override
-    public void onFailed() {
+    public void onFailed(int errorCode, String errorMsg) {
         downloadTask=null;
         //下载失败时，将前台服务通知关闭，并创建一个下载失败的通知
         stopForeground(true);

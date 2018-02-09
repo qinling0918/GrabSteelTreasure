@@ -1,22 +1,15 @@
-package com.zgw.qgb.net.download;
+package com.zgw.qgb.delete;
 
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.zgw.qgb.App;
-import com.zgw.qgb.R;
-import com.zgw.qgb.helper.utils.FileUtils;
 import com.zgw.qgb.net.RetrofitProvider;
+import com.zgw.qgb.net.download.DownloadListener;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.RandomAccessFile;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -48,7 +41,6 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     private boolean isPaused=false;
 
     private int lastProgress;
-    //private ErrorCode errorCode = new ErrorCode();
 
     public DownloadTask(DownloadListener listener) {
         this.listener = listener;
@@ -62,19 +54,24 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     @Override
     protected Integer doInBackground(String... params) {
         InputStream is=null;
-
+        RandomAccessFile savedFile=null;
+        File file=null;
+        long downloadLength=0;   //记录已经下载的文件长度
+        //文件下载地址
         String downloadUrl=params[0];
-        File file= FileUtils.getFile(downloadUrl, params[1], params[2]);
-        if(!FileUtils.createOrExistsFile(file)){
-            Log.d("failed", "filePath 不合格");
-            return TYPE_FAILED;
+        //下载文件的名称
+        String fileName=downloadUrl.substring(downloadUrl.lastIndexOf("/"));
+        //下载文件存放的目录
+        String directory= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        //创建一个文件
+        file=new File(directory+fileName);
+        if(file.exists()){
+            //如果文件存在的话，得到文件的大小
+            downloadLength=file.length();
         }
-
-        long downloadLength= file.length();   //记录已经下载的文件长度
-
+        //得到下载内容的大小
         long contentLength=getContentLength(downloadUrl);
         if(contentLength==0){
-            Log.d("failed", "contentLength==0");
             return TYPE_FAILED;
         }else if(contentLength==downloadLength){
             //已下载字节和文件总字节相等，说明已经下载完成了
@@ -89,55 +86,37 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
          * 然后分批次的下载，每个小块下载完成之后，再合并到文件中；这样即使下载中断了，重新下载时，
          * 也可以通过文件的字节长度来判断下载的起始点，然后重启断点续传的过程，直到最后完成下载过程。
          */
-
         Request request=new Request.Builder()
                 .addHeader("RANGE","bytes="+downloadLength+"-")  //断点续传要用到的，指示下载的区间
                 .url(downloadUrl)
                 .build();
         try {
             Response response=client.newCall(request).execute();
-            if(response!=null && response.body()!= null){
-                is= response.body().byteStream();
-
-                if ( is == null) {
-                    Log.d("failed", "is == null");
-                    return TYPE_FAILED;
-                }
-                OutputStream os = null;
-                try {
-                    os = new BufferedOutputStream(new FileOutputStream(file, true));
-                    byte[] buf = new byte[1024 << 2];
-                    long total=0;
-                    int len;
-                    while ((len = is.read(buf)) != -1) {
-                        if(isCanceled){
-                            FileUtils.deleteFile(file);
-                            return TYPE_CANCELED;
-                        }else if(isPaused){
-                            return TYPE_PAUSED;
-                        }else {
-                            total+=len;
-                            os.write(buf,0,len);
-                            //计算已经下载的百分比
-                            int progress=(int)((total+downloadLength)*100/contentLength);
-                            //注意：在doInBackground()中是不可以进行UI操作的，如果需要更新UI,比如说反馈当前任务的执行进度，
-                            //可以调用publishProgress()方法完成。
-                            publishProgress(progress);
-                        }
+            if(response!=null){
+                is=response.body().byteStream();
+                savedFile=new RandomAccessFile(file,"rw");
+                savedFile.seek(downloadLength);//跳过已经下载的字节
+                byte[] b=new byte[1024];
+                int total=0;
+                int len;
+                while((len=is.read(b))!=-1){
+                    if(isCanceled){
+                        return TYPE_CANCELED;
+                    }else if(isPaused){
+                        return TYPE_PAUSED;
+                    }else {
+                        total+=len;
+                        savedFile.write(b,0,len);
+                        //计算已经下载的百分比
+                        int progress=(int)((total+downloadLength)*100/contentLength);
+                        //注意：在doInBackground()中是不可以进行UI操作的，如果需要更新UI,比如说反馈当前任务的执行进度，
+                        //可以调用publishProgress()方法完成。
+                        publishProgress(progress);
                     }
 
-                    FileUtils.close(response);
-                    return TYPE_SUCCESS;
-                } catch (IOException e) {
-
-                    FileUtils.deleteFile(file);
-                    e.printStackTrace();
-                    Log.d("failed", "IOException  inner");
-                    return TYPE_FAILED;
-                } finally {
-
-                    FileUtils.close(is,os);
                 }
+                response.close();
+                return TYPE_SUCCESS;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,6 +125,9 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                 if(is!=null){
                     is.close();
                 }
+                if(savedFile!=null){
+                    savedFile.close();
+                }
                 if(isCanceled&&file!=null){
                     file.delete();
                 }
@@ -153,8 +135,6 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                 e.printStackTrace();
             }
         }
-
-        Log.d("failed", "IOException  out");
         return TYPE_FAILED;
     }
 
@@ -242,43 +222,6 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
         }
         return  0;
     }
-
-
-    @NonNull
-    private static File getFile(String mDownloadUrl, String filePath, String fileName) {
-        //String directory= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
-        filePath = TextUtils.isEmpty(filePath)
-                ? Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name)
-                :filePath;
-        fileName = TextUtils.isEmpty(fileName)
-                ?new File(mDownloadUrl).getName()
-                :fileName;
-
-        File fileParent = new File(filePath);
-        if(!fileParent.exists()){
-            fileParent.mkdirs();
-        }
-        File file = new File(fileParent, fileName );
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file;
-    }
-
-  /*  private void setErrorMessage(int code, String msg) {
-        errorCode.code = code;
-        errorCode.msg = msg;
-    }
-
-    private static class ErrorCode{
-        private int code;
-        private String msg;
-
-    }*/
 
 
 }

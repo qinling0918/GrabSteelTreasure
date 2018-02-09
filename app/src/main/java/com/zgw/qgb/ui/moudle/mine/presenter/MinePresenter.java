@@ -26,8 +26,11 @@ public class MinePresenter extends BasePresenter<MineContract.IMineView> impleme
                 .toObservable()
                 .subscribe(new BaseObserver<MainBean>() {
                     @Override
-                    public void onNext(MainBean mainBean) {
+                    public void onSuccess(MainBean mainBean) {
+
                     }
+
+
                 });
     }
 }

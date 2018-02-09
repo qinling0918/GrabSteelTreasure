@@ -118,11 +118,9 @@ public class DownloadTask extends Handler {
                 @Override
 
                 public void onResponse(Call call, Response response) throws IOException {
-
                     if (response.code() != 200) {
 
                         close(response.body());
-
                         //resetStutus();
                         sendErrorMessage(response.code(), response.message());
                         //sendMessage();

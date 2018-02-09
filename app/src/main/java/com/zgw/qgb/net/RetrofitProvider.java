@@ -219,4 +219,14 @@ public class RetrofitProvider {
         OkHttpClient.Builder builder = ProgressManager.getInstance().with(new OkHttpClient.Builder());
         return builder.build();
     }
+
+   /* private OkHttpClient provideClient() {
+        if (null == getClientMap().get(baseUrl)) {
+            okHttpClient = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS).build();
+        }
+        return okHttpClient;
+    }*/
 }

@@ -1,4 +1,23 @@
 buildscript {
+
+/*    ext.versions = [
+            'compileSdk': 26,
+            'buildTools': '26.0.2',
+            'minSdk': 19,
+            'targetSdk': 25,
+
+            'supportLibrary': '26.1.0',
+            'kotlin_version': '1.2.10',
+            'butterKnife': '8.8.1',
+            'lombokVersion': '1.12.6',
+            'rxlifecycleVersion': '2.2.0',
+            'icepickVersion': '3.2.0',
+            'okhttp': '3.9.0',
+            'retrofit': '2.3.0',
+            'leakCanary': '1.5.1',
+            'espresso': '2.2.2',
+            'errorProne': '2.1.1',
+    ]*/
     ext {
         supportVersion = "26.1.0"
         //kotlin_version = '1.1.3-2'
@@ -10,11 +29,10 @@ buildscript {
         icepickVersion = '3.2.0'
         okhttpVersion = '3.9.0'
         glideVersion = '4.2.0'
-       /* junitVersion = '4.12'
-        espresseVersion = '2.2.2'*/
+        junitVersion = '4.12'
+        espresseVersion = '2.2.2'
 
     }
-
     repositories {
         google()
         maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}

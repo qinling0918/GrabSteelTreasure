@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.zgw.qgb.base.mvp.IView;
 
+import io.reactivex.ObservableTransformer;
 import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -59,7 +60,16 @@ public final class RxProgress {
            }
        };
     }*/
-   /* public static <U> ObservableTransformer<U, U> bindToLifecycle_observable(Context context, @StringRes int stringRes) {
+  public static <U> ObservableTransformer<U, U> bindToLifecycle_observable(IView view, @StringRes int stringRes) {
+      return upstream -> upstream
+              .subscribeOn(Schedulers.io())
+              .observeOn(AndroidSchedulers.mainThread())
+              .doOnSubscribe(disposable -> view.showProgress(stringRes))
+              .doOnNext(u -> view.hideProgress())
+              .doOnError(throwable -> view.hideProgress());
+  }
+
+    public static <U> ObservableTransformer<U, U> bindToLifecycle_observable(Context context, @StringRes int stringRes) {
         return bindToLifecycle_observable(context, context.getString(stringRes));
     }
 
@@ -79,5 +89,4 @@ public final class RxProgress {
                     .doOnError(throwable -> progressDialog.dismiss());
         };
     }
-*/
 }

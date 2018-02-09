@@ -1,19 +1,12 @@
 package com.zgw.qgb.ui.moudle.main;
 
-import android.util.Log;
+import android.os.Bundle;
 
-import com.zgw.qgb.R;
 import com.zgw.qgb.base.mvp.BasePresenter;
-import com.zgw.qgb.helper.rx.RxProgress;
-import com.zgw.qgb.helper.rx.Rxdownload;
-import com.zgw.qgb.model.MainBean;
-import com.zgw.qgb.net.RetrofitProvider;
-import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.ui.moudle.main.MainContract.IMainPresenter;
 import com.zgw.qgb.ui.moudle.main.MainContract.IMainView;
 
-import java.io.File;
-
+import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
 
 /**
@@ -22,14 +15,16 @@ import java.io.File;
  */
 
 public class MainPresenter extends BasePresenter<IMainView> implements IMainPresenter {
-     MainPresenter(IMainView view) {
+    private boolean downloading;
+
+    MainPresenter(IMainView view) {
         super(view);
     }
-
+    String url = new String("http://acj2.pc6.com/pc6_soure/2017-6/com.zgw.qgb_29.apk");
     @Override
     public void login() {
         /*http://192.168.1.18:8026/Notice/GetPushMessageList?page=1&MsgTypeId=22&pageSize=10&memberId=73740*/
-        RetrofitProvider.getService(MainService.class)
+      /*  RetrofitProvider.getService(MainService.class)
                 .getNotification(1,22,10,73740)
                 .compose(RxProgress.bindToLifecycle(getView(), R.string.message))
                 .compose(getView().bind2Lifecycle())
@@ -39,19 +34,48 @@ public class MainPresenter extends BasePresenter<IMainView> implements IMainPres
                     public void onSuccess(MainBean mainBean) {
                         getView().setText(mainBean.toString());
                     }
-                });
+                });*/
+     //if (! downloading){
+         downloading = true ;
+         //Rxdownload.downloadBigFile(url,3);
+                 //.compose(RxProgress.bindToLifecycle(getView(), R.string.message))
+                 //.compose(getView().bind2Lifecycle())
+                 /*.subscribe(new BaseObserver<File>() {
+                     @Override
+                     public void onSuccess(File file) {
+                         Log.d("Rxdownload", file.getAbsolutePath()+"   "+file.length());
+                     }
+                 });*/
+     //}
 
-        Rxdownload.download("http://acj2.pc6.com/pc6_soure/2017-6/com.zgw.qgb_29.apk")
-                .compose(RxProgress.bindToLifecycle(getView(), R.string.message))
+       /* ProgressManager.getInstance().addResponseListener(url, new ProgressListener() {
+            @Override
+            public void onProgress(ProgressInfo progressInfo) {
+                Log.d("Rxdownload", progressInfo.getPercent()+"'"+progressInfo.getId());
+            }
 
-                .subscribe(new BaseObserver<File>() {
-                    @Override
-                    public void onSuccess(File file) {
-                        Log.d("Rxdownload", file.getAbsolutePath());
-                    }
-                });
+            @Override
+            public void onError(long id, Exception e) {
 
-
+            }
+        });*/
     }
 
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        downloading =savedInstanceState.getBoolean(EXTRA, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(EXTRA,downloading);
+    }
+
+    @Override
+    public void detachView() {
+        url = null;
+        super.detachView();
+    }
 }

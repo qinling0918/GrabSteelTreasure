@@ -1,4 +1,4 @@
-package com.zgw.qgb.net.download;
+package com.zgw.qgb.net.download1;
 
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -9,7 +9,6 @@ import android.util.Log;
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.utils.FileUtils;
-import com.zgw.qgb.net.RetrofitProvider;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -27,11 +26,11 @@ import okhttp3.Response;
  */
 
 /**
- * String 在执行AsyncTask时需要传入的参数，可用于在后台任务中使用。
+ * DownloadInfo 在执行AsyncTask时需要传入的参数，可用于在后台任务中使用。
  * Integer 后台任务执行时，如果需要在界面上显示当前的进度，则使用这里指定的泛型作为进度单位。
  * Integer 当任务执行完毕后，如果需要对结果进行返回，则使用这里指定的泛型作为返回值类型。
  */
-public class DownloadTask extends AsyncTask<String,Integer,Integer> {
+public class DownloadTask extends AsyncTask<DownloadInfo,Integer,Integer> {
 
     public static final int TYPE_SUCCESS=0;
 
@@ -48,10 +47,12 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     private boolean isPaused=false;
 
     private int lastProgress;
-    //private ErrorCode errorCode = new ErrorCode();
+
+    Error errorMessage;
 
     public DownloadTask(DownloadListener listener) {
         this.listener = listener;
+        errorMessage = Error.CODE_NO_ERROR;
     }
 
     /**
@@ -60,13 +61,13 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
      * @return
      */
     @Override
-    protected Integer doInBackground(String... params) {
+    protected Integer doInBackground(DownloadInfo... params) {
         InputStream is=null;
-
-        String downloadUrl=params[0];
-        File file= FileUtils.getFile(downloadUrl, params[1], params[2]);
+        DownloadInfo downloadInfo = params[0];
+        String downloadUrl=downloadInfo.getUrl();
+        File file= downloadInfo.getFile();
         if(!FileUtils.createOrExistsFile(file)){
-            Log.d("failed", "filePath 不合格");
+            setErrorMessage(Error.CODE_NO_FILE_OR_DIR);
             return TYPE_FAILED;
         }
 
@@ -75,14 +76,16 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
         long contentLength=getContentLength(downloadUrl);
         if(contentLength==0){
             Log.d("failed", "contentLength==0");
+            setErrorMessage(Error.CODE_REMOTE_FILE_NOT_EXIST);
             return TYPE_FAILED;
         }else if(contentLength==downloadLength){
             //已下载字节和文件总字节相等，说明已经下载完成了
             return TYPE_SUCCESS;
         }
-        //OkHttpClient client=new OkHttpClient();
+        OkHttpClient client=new OkHttpClient();
+
         //提供progressManager  进度支持
-        OkHttpClient client= RetrofitProvider.provideOkHttp();
+        //OkHttpClient client= RetrofitProvider.provideOkHttp();
         /**
          * HTTP请求是有一个Header的，里面有个Range属性是定义下载区域的，它接收的值是一个区间范围，
          * 比如：Range:bytes=0-10000。这样我们就可以按照一定的规则，将一个大文件拆分为若干很小的部分，
@@ -101,6 +104,7 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
 
                 if ( is == null) {
                     Log.d("failed", "is == null");
+                    setErrorMessage(Error.CODE_SERVER_RESPONSE_IS_EMPTY);
                     return TYPE_FAILED;
                 }
                 OutputStream os = null;
@@ -133,6 +137,7 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                     FileUtils.deleteFile(file);
                     e.printStackTrace();
                     Log.d("failed", "IOException  inner");
+                    setErrorMessage(Error.CODE_FILE_WRITE_FAILED);
                     return TYPE_FAILED;
                 } finally {
 
@@ -155,8 +160,10 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
         }
 
         Log.d("failed", "IOException  out");
+        setErrorMessage(Error.CODE_OKHTTP_EXECUTE_IOEXCEPTION);
         return TYPE_FAILED;
     }
+
 
     /**
      * 当在后台任务中调用了publishProgress(Progress...)方法之后，onProgressUpdate()方法
@@ -184,7 +191,7 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                 listener.onSuccess();
                 break;
             case TYPE_FAILED:
-                listener.onFailed();
+                listener.onFailed(errorMessage.getCode(), errorMessage.getMsg());
                 break;
             case TYPE_PAUSED:
                 listener.onPaused();
@@ -267,6 +274,11 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
             }
         }
         return file;
+    }
+
+
+
+    private void setErrorMessage(Error errorMessage) {
     }
 
   /*  private void setErrorMessage(int code, String msg) {

@@ -1,4 +1,4 @@
-package com.zgw.qgb.net.download;
+package com.zgw.qgb.delete;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,7 +13,8 @@ import android.widget.Toast;
 
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
-import com.zgw.qgb.helper.utils.FileUtils;
+import com.zgw.qgb.net.download.DownloadListener;
+import com.zgw.qgb.net.download.DownloadTask;
 
 /**
  * 专门用来下载大文件的服务  支持暂停,取消,失败,成功,下载中回调监听.  另外还有下载时显示在通知栏
@@ -21,11 +22,9 @@ import com.zgw.qgb.helper.utils.FileUtils;
  *
  */
 public class DownloadService extends Service implements DownloadListener {
-    private DownloadTask downloadTask;
+    private com.zgw.qgb.net.download.DownloadTask downloadTask;
 
     private String downloadUrl;
-    private String filePath;
-    private String fileName;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -42,14 +41,19 @@ public class DownloadService extends Service implements DownloadListener {
          * @param url
          */
         public void  startDownload(String url){
-            startDownload(url,null,null);
+            if(downloadTask==null){
+                downloadUrl=url;
+                downloadTask=new com.zgw.qgb.net.download.DownloadTask(DownloadService.this);
+                //启动下载任务
+                downloadTask.execute(downloadUrl);
+                startForeground(1,getNotification("Downloading...",0));
+                Toast.makeText(DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        public void  startDownload(String mDownloadUrl, String mfilePath, String mfileName){
+        public void  startDownload(String mDownloadUrl, String filePath, String fileName){
             if(downloadTask==null){
                 downloadUrl= mDownloadUrl;
-                filePath= mfilePath;
-                fileName= mfileName;
                 downloadTask=new DownloadTask(DownloadService.this);
                 //启动下载任务
                 downloadTask.execute(downloadUrl ,filePath, fileName);
@@ -76,8 +80,12 @@ public class DownloadService extends Service implements DownloadListener {
             }else {
                 if(downloadUrl!=null){
                     //取消下载时需要将文件删除，并将通知关闭
-
-                    FileUtils.deleteFile(FileUtils.getFile(downloadUrl,filePath,fileName));
+                  /*  String fileName=downloadUrl.substring(downloadUrl.lastIndexOf("/"));
+                    String directory= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+                    File file=new File(directory+fileName);
+                    if(file.exists()){
+                        file.delete();
+                    }*/
                     getNotificationManager().cancel(1);
                     stopForeground(true);
                     Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();

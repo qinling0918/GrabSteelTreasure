@@ -1,4 +1,4 @@
-package com.zgw.qgb.helper.rx;
+package com.zgw.qgb.delete;
 
 import android.os.Environment;
 import android.support.annotation.IntRange;
@@ -52,11 +52,6 @@ public final class Rxdownload {
         @GET
         Single<ResponseBody> download(@Header("RANGE") String downParam, @Url String url);
 
-       /* //downParam下载参数，传下载区间使用
-        //url 下载链接
-        @HEAD
-        Single<Void> head(@Url String url);
-*/
     }
 
     public static Single<File> download(String mDownloadUrl) {
@@ -67,14 +62,12 @@ public final class Rxdownload {
         File file = getFile(mDownloadUrl, filePath, fileName);
         long start = file.length();
         String range = String.format(App.getLocale(), "bytes=%s-%s",start+"","");
-        Log.d("Rxdownload", range);
+
         return RetrofitProvider.getService(DownLoadService.class)
                 .download(range, mDownloadUrl)
                 .subscribeOn(Schedulers.io())//请求网络 在调度者的io线程
                 .doOnSubscribe(disposable -> checkNet())
                 .observeOn(Schedulers.io()) //指定线程保存文件
-
-                 /*..map(responseBody -> file)*/
                 .map(responseBody -> saveFile(responseBody,file));
     }
 
@@ -101,7 +94,6 @@ public final class Rxdownload {
                 e.printStackTrace();
             }
         }
-
         return file;
     }
 
@@ -120,74 +112,6 @@ public final class Rxdownload {
 
 
 
-/*
-    public static Single<File> download(String mDownloadUrl) {
-        return download(mDownloadUrl, null, null);
-    }
-
-    public static Single<File> download(String mDownloadUrl, String filePath, String fileName) {
-
-        return RetrofitProvider.getService(DownLoadService.class)
-                .download(mDownloadUrl)
-                .subscribeOn(Schedulers.io())//请求网络 在调度者的io线程
-                .doOnSubscribe(disposable -> checkNet())
-                .observeOn(Schedulers.io()) //指定线程保存文件
-                .map(responseBody -> saveFile(responseBody, mDownloadUrl, filePath, fileName));
-    }
-
-
-
-
-
-
-    private static File saveFile(ResponseBody responseBody, String mDownloadUrl, String destFileDir, String fileName) {
-        destFileDir = TextUtils.isEmpty(destFileDir)
-                ?Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name)
-                :destFileDir;
-        fileName = TextUtils.isEmpty(fileName)
-                ?new File(mDownloadUrl).getName()
-                :fileName;
-        InputStream is = responseBody.byteStream();
-
-        byte[] buf = new byte[2048];
-        int len;
-        FileOutputStream fos = null;
-        File file = null;
-        try {
-            File dir = new File(destFileDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            file = new File(dir, fileName);
-            fos = new FileOutputStream(file);
-            while ((len = is.read(buf)) != -1) {
-                fos.write(buf, 0, len);
-            }
-            fos.flush();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (is != null) is.close();
-                if (fos != null) fos.close();
-            } catch (IOException e) {
-                Log.e("saveFile", e.getMessage());
-            }
-        }
-
-        return file;
-
-
-    }
-
-*/
-
-
-
-
-
     public static void head(String mDownloadUrl, Callback callback) {
         Request request = new Request.Builder()
                 .url(mDownloadUrl)
@@ -195,17 +119,11 @@ public final class Rxdownload {
         RetrofitProvider.provideOkHttp().newCall(request).enqueue(callback);
     }
 
-    /**
-     * okhttp 的五次限制
-     * @param mDownloadUrl
-     * @param threadCount
-     * @return
-     */
-    public static File downloadBigFile(String mDownloadUrl, @NonNull @IntRange(from = 0,to = 5) final int threadCount ) {
+    public static Single<File> downloadBigFile(String mDownloadUrl, @NonNull @IntRange(from = 0,to = 5) final int threadCount ) {
         return downloadBigFile(mDownloadUrl, threadCount, null, null);
     }
 
-    public static File downloadBigFile(String mDownloadUrl, @NonNull final int threadCount, String filePath, String fileName) {
+    public static Single<File> downloadBigFile(String mDownloadUrl, @NonNull final int threadCount, String filePath, String fileName) {
         filePath = TextUtils.isEmpty(filePath)
                 ? Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name) + File.separator
                 : filePath;
@@ -215,6 +133,20 @@ public final class Rxdownload {
 
         String finalFilePath = filePath;
         String finalFileName = fileName;
+
+
+        return RetrofitProvider.getService(DownLoadService.class)
+                .download(mDownloadUrl)
+                .subscribeOn(Schedulers.io())//请求网络 在调度者的io线程
+                .doOnSubscribe(disposable -> checkNet())
+                .observeOn(Schedulers.io()) //指定线程保存文件
+                .map(responseBody -> fileSeparateDownload(responseBody, finalFilePath, finalFileName, threadCount, mDownloadUrl)) ;
+
+    }
+
+    private static File fileSeparateDownload(ResponseBody responseBody, String finalFilePath, String finalFileName, @NonNull int threadCount, String mDownloadUrl) {
+        long contentLength = responseBody.contentLength();
+        responseBody.close();
 
         RandomAccessFile tmpAccessFile = null;
         File mTmpFile = null;
@@ -227,15 +159,12 @@ public final class Rxdownload {
             try {
                 mTmpFile.createNewFile();
                 tmpAccessFile = new RandomAccessFile(mTmpFile, "rw");
-                RandomAccessFile finalTmpAccessFile = tmpAccessFile;
-                getRemoteFileAndSeparate(mDownloadUrl, threadCount, finalFilePath, finalFileName, finalTmpAccessFile);
+                fileSeparateDownload(contentLength, tmpAccessFile, threadCount, mDownloadUrl);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
         return mTmpFile;//下载完毕后，重命名目标文件名;
-
     }
 
     private static void getRemoteFileAndSeparate(String mDownloadUrl, @NonNull int threadCount, String finalFilePath, String finalFileName, RandomAccessFile finalTmpAccessFile) {

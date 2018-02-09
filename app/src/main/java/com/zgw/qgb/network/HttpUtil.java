@@ -64,12 +64,13 @@ public class HttpUtil {
 
     public void getContentLength(String url, Callback callback) throws IOException {
 
+
         // 创建一个Request
 
         Request request = new Request.Builder()
 
                 .url(url)
-
+                .method("HEAD", null)
                 .build();
 
         doAsync(request, callback);
@@ -177,7 +178,6 @@ public class HttpUtil {
      */
 
     private HttpUtil() {
-
         //创建okHttpClient对象
         mOkHttpClient= RetrofitProvider.provideOkHttp();
        /* OkHttpClient.Builder builder = new OkHttpClient.Builder()
