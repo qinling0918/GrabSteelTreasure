@@ -58,7 +58,11 @@
             android:enabled="true"
             android:exported="false"><!--//是否可以被另一个Application的组件启动-->
         </service>
-
+        <service
+            android:name=".net.download.DownloadService"
+            android:enabled="true"
+            android:exported="false"><!--//是否可以被另一个Application的组件启动-->
+        </service>
     </application>
 
 </manifest>

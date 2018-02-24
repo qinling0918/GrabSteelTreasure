@@ -1,5 +1,7 @@
 package com.zgw.qgb.net.download;
 
+import java.io.File;
+
 /**
  * Name:DownloadListener
  * Created by Tsinling on 2017/12/21 16:59.
@@ -16,21 +18,21 @@ public interface DownloadListener {
     /**
      * 通知下载成功
      */
-    void onSuccess();
+    void onSuccess(File file);
 
     /**
      * 通知下载失败
      */
-    void onFailed();
+    void onFailed(int errorCode, String errorMsg);
 
     /**
      * 通知下载暂停
      */
-    void onPaused();
+    void onPaused(File file);
 
     /**
      * 通知下载取消事件
      */
-    void onCanceled();
+    void onCanceled(File file);
 
 }

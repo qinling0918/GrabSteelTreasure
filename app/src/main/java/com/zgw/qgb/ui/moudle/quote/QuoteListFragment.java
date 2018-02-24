@@ -2,13 +2,16 @@ package com.zgw.qgb.ui.moudle.quote;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -19,13 +22,17 @@ import android.widget.TextView;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.helper.Bundler;
+import com.zgw.qgb.net.download.DownloadListener;
 import com.zgw.qgb.net.download.DownloadService;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteListPresenter;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.Context.BIND_AUTO_CREATE;
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
@@ -48,7 +55,53 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             downloadBinder = (DownloadService.DownloadBinder) service;
-            downloadBinder.startDownload(url1,"抢钢宝" ,"apk.apk");
+            Log.d(TAG, "onServiceConnected: "+ (downloadBinder==null));
+            //downloadBinder.showNotification(false);
+
+
+            downloadBinder.startDownload(url1);
+            downloadBinder.setOnDownloadListener(new DownloadListener() {
+                @Override
+                public void onProgress(int progress) {
+                    Log.d(TAG, "onSuccess: "+ progress);
+                    Intent intent =  new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
+                    PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
+                    downloadBinder.setPendingIntent(pi);
+                }
+
+                @Override
+                public void onSuccess(File file) {
+                    Log.d(TAG, "onSuccess: "+ file.getAbsolutePath());
+
+                    File parentFlie = new File(file.getParent());
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    //startActivity(intent);
+                    //PendingIntent是等待的Intent,这是跳转到一个Activity组件。当用户点击通知时，会跳转到MainActivity
+                    PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,FLAG_UPDATE_CURRENT );
+                    downloadBinder.setPendingIntent(pi);
+                }
+
+                @Override
+                public void onFailed(int errorCode, String errorMsg) {
+
+                }
+
+                @Override
+                public void onPaused(File file) {
+                    Log.d(TAG, "onSuccess: "+ file.getAbsolutePath());
+
+                    Intent intent =  new Intent(Settings.ACTION_ADD_ACCOUNT);
+                    PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
+                    downloadBinder.setPendingIntent(pi);
+                }
+
+                @Override
+                public void onCanceled(File file) {
+
+                }
+            });
         }
 
         @Override

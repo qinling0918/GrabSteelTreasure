@@ -4,12 +4,10 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.utils.FileUtils;
-import com.zgw.qgb.net.RetrofitProvider;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -22,24 +20,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.zgw.qgb.net.download.DownloadInfo.Status.CANCELED;
+import static com.zgw.qgb.net.download.DownloadInfo.Status.FAILED;
+import static com.zgw.qgb.net.download.DownloadInfo.Status.PAUSED;
+import static com.zgw.qgb.net.download.DownloadInfo.Status.SUCCESS;
+
 /**
  * Created by Administrator on 2017/2/23.
  */
 
 /**
- * String 在执行AsyncTask时需要传入的参数，可用于在后台任务中使用。
+ * DownloadInfo 在执行AsyncTask时需要传入的参数，可用于在后台任务中使用。
  * Integer 后台任务执行时，如果需要在界面上显示当前的进度，则使用这里指定的泛型作为进度单位。
  * Integer 当任务执行完毕后，如果需要对结果进行返回，则使用这里指定的泛型作为返回值类型。
  */
-public class DownloadTask extends AsyncTask<String,Integer,Integer> {
-
-    public static final int TYPE_SUCCESS=0;
-
-    public static final int TYPE_FAILED=1;
-
-    public static final int TYPE_PAUSED=2;
-
-    public static final int TYPE_CANCELED=3;
+public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadInfo> {
 
     private DownloadListener listener;
 
@@ -48,10 +43,12 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     private boolean isPaused=false;
 
     private int lastProgress;
-    //private ErrorCode errorCode = new ErrorCode();
+
+    //Error errorMessage;
 
     public DownloadTask(DownloadListener listener) {
         this.listener = listener;
+        //errorMessage = Error.CODE_NO_ERROR;
     }
 
     /**
@@ -60,29 +57,30 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
      * @return
      */
     @Override
-    protected Integer doInBackground(String... params) {
+    protected DownloadInfo doInBackground(DownloadInfo... params) {
         InputStream is=null;
+        DownloadInfo downloadInfo = params[0];
+        downloadInfo.setStatus(FAILED,-1,"未知错误");
 
-        String downloadUrl=params[0];
-        File file= FileUtils.getFile(downloadUrl, params[1], params[2]);
+        String downloadUrl=downloadInfo.getUrl();
+        File file= downloadInfo.getFile();
         if(!FileUtils.createOrExistsFile(file)){
-            Log.d("failed", "filePath 不合格");
-            return TYPE_FAILED;
+            return downloadInfo.setStatus(FAILED,-1,"无该文件路径");
         }
 
         long downloadLength= file.length();   //记录已经下载的文件长度
 
         long contentLength=getContentLength(downloadUrl);
         if(contentLength==0){
-            Log.d("failed", "contentLength==0");
-            return TYPE_FAILED;
+            return downloadInfo.setStatus(FAILED,-1,"远程文件(服务器端目标文件)不存在");
         }else if(contentLength==downloadLength){
             //已下载字节和文件总字节相等，说明已经下载完成了
-            return TYPE_SUCCESS;
+            return downloadInfo.setStatus(SUCCESS);
         }
-        //OkHttpClient client=new OkHttpClient();
+        OkHttpClient client=new OkHttpClient();
+
         //提供progressManager  进度支持
-        OkHttpClient client= RetrofitProvider.provideOkHttp();
+        //OkHttpClient client= RetrofitProvider.provideOkHttp();
         /**
          * HTTP请求是有一个Header的，里面有个Range属性是定义下载区域的，它接收的值是一个区间范围，
          * 比如：Range:bytes=0-10000。这样我们就可以按照一定的规则，将一个大文件拆分为若干很小的部分，
@@ -96,12 +94,11 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                 .build();
         try {
             Response response=client.newCall(request).execute();
-            if(response!=null && response.body()!= null){
+               if(response!=null && response.body()!= null){
                 is= response.body().byteStream();
 
                 if ( is == null) {
-                    Log.d("failed", "is == null");
-                    return TYPE_FAILED;
+                    return downloadInfo.setStatus(FAILED,-1,"服务器返回值为空");
                 }
                 OutputStream os = null;
                 try {
@@ -112,9 +109,9 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                     while ((len = is.read(buf)) != -1) {
                         if(isCanceled){
                             FileUtils.deleteFile(file);
-                            return TYPE_CANCELED;
+                            return downloadInfo.setStatus(CANCELED);
                         }else if(isPaused){
-                            return TYPE_PAUSED;
+                            return downloadInfo.setStatus(PAUSED);
                         }else {
                             total+=len;
                             os.write(buf,0,len);
@@ -122,18 +119,18 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
                             int progress=(int)((total+downloadLength)*100/contentLength);
                             //注意：在doInBackground()中是不可以进行UI操作的，如果需要更新UI,比如说反馈当前任务的执行进度，
                             //可以调用publishProgress()方法完成。
-                            publishProgress(progress);
+                            downloadInfo.setProgress(progress);
+                            publishProgress(downloadInfo);
                         }
                     }
 
                     FileUtils.close(response);
-                    return TYPE_SUCCESS;
+                    return downloadInfo.setStatus(SUCCESS);
                 } catch (IOException e) {
 
                     FileUtils.deleteFile(file);
                     e.printStackTrace();
-                    Log.d("failed", "IOException  inner");
-                    return TYPE_FAILED;
+                    return downloadInfo.setStatus(FAILED,-1,"文件写入失败");
                 } finally {
 
                     FileUtils.close(is,os);
@@ -154,9 +151,9 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
             }
         }
 
-        Log.d("failed", "IOException  out");
-        return TYPE_FAILED;
+        return downloadInfo.setStatus(FAILED,-1,"okhttp's execute() IOEXCEPTION");
     }
+
 
     /**
      * 当在后台任务中调用了publishProgress(Progress...)方法之后，onProgressUpdate()方法
@@ -164,8 +161,8 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
      * 对界面进行相应的更新。
      * @param values
      */
-    protected void onProgressUpdate(Integer...values){
-        int progress=values[0];
+    protected void onProgressUpdate(DownloadInfo...values){
+        int progress=values[0].getProgress();
         if(progress>lastProgress){
             listener.onProgress(progress);
             lastProgress=progress;
@@ -175,22 +172,23 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     /**
      * 当后台任务执行完毕并通过Return语句进行返回时，这个方法就很快被调用。返回的数据会作为参数
      * 传递到此方法中，可以利用返回的数据来进行一些UI操作。
-     * @param status
+     * @param info
      */
     @Override
-    protected void onPostExecute(Integer status) {
+    protected void onPostExecute(DownloadInfo info) {
+        DownloadInfo.Status status = info.getStatus();
         switch (status){
-            case TYPE_SUCCESS:
-                listener.onSuccess();
+            case SUCCESS:
+                listener.onSuccess(info.getFile());
                 break;
-            case TYPE_FAILED:
-                listener.onFailed();
+            case FAILED:
+                listener.onFailed(status.getCode(), status.getMsg());
                 break;
-            case TYPE_PAUSED:
-                listener.onPaused();
+            case PAUSED:
+                listener.onPaused(info.getFile());
                 break;
-            case TYPE_CANCELED:
-                listener.onCanceled();
+            case CANCELED:
+                listener.onCanceled(info.getFile());
                 break;
             default:
                 break;
@@ -268,17 +266,5 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
         }
         return file;
     }
-
-  /*  private void setErrorMessage(int code, String msg) {
-        errorCode.code = code;
-        errorCode.msg = msg;
-    }
-
-    private static class ErrorCode{
-        private int code;
-        private String msg;
-
-    }*/
-
 
 }

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.zgw.qgb.helper.utils.EmptyUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,22 +24,31 @@ public abstract class RecyAdapter<T> extends RecyclerView.Adapter implements Ada
 
     protected InnerClickListener innerClickListener;
 
-    public RecyAdapter(Context context) {
+  /*  public RecyAdapter(Context context) {
        this(context, new ArrayList<>());
     }
     public RecyAdapter(Context context, List<T> itemDatas) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);;
         this.itemDatas = itemDatas;
-    }
+    }*/
 
+
+    public RecyAdapter(List<T> itemDatas) {
+        this.itemDatas = itemDatas;
+    }
     @Override
     public int getItemCount() {
         return itemDatas.size();
     }
 
     @Override
-    public abstract RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        LayoutInflater inflater =  LayoutInflater.from(parent.getContext());
+        return onCreateViewHolder(inflater, parent, viewType);
+    };
+
+    public abstract RecyclerView.ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType);
 
     @SuppressWarnings("unchecked")
     @Override

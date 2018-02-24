@@ -76,35 +76,6 @@ public final class FileUtils {
             }
         }
 
-
-      /*  int length = closeables.length;
-
-        try {
-
-            for (int i = 0; i < length; i++) {
-
-                Closeable closeable = closeables[i];
-
-                if (null != closeable)
-
-                    closeables[i].close();
-
-            }
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        } finally {
-
-            for (int i = 0; i < length; i++) {
-
-                closeables[i] = null;
-
-            }
-
-        }*/
-
     }
 
 
