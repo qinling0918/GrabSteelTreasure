@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatDelegate;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.squareup.leakcanary.LeakCanary;
-import com.zgw.qgb.helper.ActivityMgr;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
 
@@ -45,7 +44,7 @@ public class App extends Application {
         DebugHelper.getInstance().syscIsDebug(this);
         LeakCanary.install(this);
         //AppHelper.updateAppLanguage(this); 未完成
-        ActivityMgr.getInstance().init(this);
+        //ActivityMgr.getInstance().init(this);//出现了内存泄漏   不推荐
         RudenessScreenHelper.getInstance().init(this,720)/*.activate()*/;
         //FabricHelper.getInstance().init(this);
         //Timber.plant(isDebug() ? new Timber.DebugTree() : new CrashlyticsTree());

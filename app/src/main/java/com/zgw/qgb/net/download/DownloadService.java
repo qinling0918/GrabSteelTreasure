@@ -27,6 +27,9 @@ public class DownloadService extends Service implements DownloadListener {
 
     private String downloadUrl;
     private File file;
+    /**
+     * 是否显示 Notification 默认显示
+     */
     private boolean show_notification = true;
     private PendingIntent mPendingIntent ;
     /**
@@ -70,9 +73,11 @@ public class DownloadService extends Service implements DownloadListener {
             startDownload(url,true);
         }
 
+
         public void  startDownload(String url ,boolean showNotification){
             startDownload(url,null,null, showNotification);
         }
+
         public void  startDownload(String mDownloadUrl, String mfilePath, String mfileName, boolean showNotification){
             if(downloadTask==null){
                 downloadUrl= mDownloadUrl;

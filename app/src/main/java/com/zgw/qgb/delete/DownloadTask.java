@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.zgw.qgb.net.RetrofitProvider;
-import com.zgw.qgb.net.download.DownloadListener;
 
 import java.io.File;
 import java.io.IOException;

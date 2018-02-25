@@ -13,7 +13,7 @@ import java.util.Stack;
 
 /**
  * Created by Tsinling on 2017/9/25 16:51.
- * description:
+ * description:  出现了内存泄漏
  */
 
 public class ActivityMgr {

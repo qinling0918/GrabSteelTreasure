@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.utils.FileUtils;
+import com.zgw.qgb.net.RetrofitProvider;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -25,11 +26,10 @@ import static com.zgw.qgb.net.download.DownloadInfo.Status.FAILED;
 import static com.zgw.qgb.net.download.DownloadInfo.Status.PAUSED;
 import static com.zgw.qgb.net.download.DownloadInfo.Status.SUCCESS;
 
-/**
- * Created by Administrator on 2017/2/23.
- */
 
 /**
+ * Created by Tsinling on 2017/12/21 17:09.
+ *
  * DownloadInfo 在执行AsyncTask时需要传入的参数，可用于在后台任务中使用。
  * Integer 后台任务执行时，如果需要在界面上显示当前的进度，则使用这里指定的泛型作为进度单位。
  * Integer 当任务执行完毕后，如果需要对结果进行返回，则使用这里指定的泛型作为返回值类型。
@@ -44,11 +44,9 @@ public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadIn
 
     private int lastProgress;
 
-    //Error errorMessage;
 
     public DownloadTask(DownloadListener listener) {
         this.listener = listener;
-        //errorMessage = Error.CODE_NO_ERROR;
     }
 
     /**
@@ -77,10 +75,11 @@ public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadIn
             //已下载字节和文件总字节相等，说明已经下载完成了
             return downloadInfo.setStatus(SUCCESS);
         }
-        OkHttpClient client=new OkHttpClient();
+
+        //OkHttpClient client=new OkHttpClient();
 
         //提供progressManager  进度支持
-        //OkHttpClient client= RetrofitProvider.provideOkHttp();
+        OkHttpClient client= RetrofitProvider.provideOkHttp();
         /**
          * HTTP请求是有一个Header的，里面有个Range属性是定义下载区域的，它接收的值是一个区间范围，
          * 比如：Range:bytes=0-10000。这样我们就可以按照一定的规则，将一个大文件拆分为若干很小的部分，

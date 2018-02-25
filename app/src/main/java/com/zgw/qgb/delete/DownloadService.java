@@ -13,8 +13,6 @@ import android.widget.Toast;
 
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
-import com.zgw.qgb.net.download.DownloadListener;
-import com.zgw.qgb.net.download.DownloadTask;
 
 /**
  * 专门用来下载大文件的服务  支持暂停,取消,失败,成功,下载中回调监听.  另外还有下载时显示在通知栏
@@ -22,7 +20,7 @@ import com.zgw.qgb.net.download.DownloadTask;
  *
  */
 public class DownloadService extends Service implements DownloadListener {
-    private com.zgw.qgb.net.download.DownloadTask downloadTask;
+    private DownloadTask downloadTask;
 
     private String downloadUrl;
 
@@ -43,7 +41,7 @@ public class DownloadService extends Service implements DownloadListener {
         public void  startDownload(String url){
             if(downloadTask==null){
                 downloadUrl=url;
-                downloadTask=new com.zgw.qgb.net.download.DownloadTask(DownloadService.this);
+                downloadTask=new DownloadTask(DownloadService.this);
                 //启动下载任务
                 downloadTask.execute(downloadUrl);
                 startForeground(1,getNotification("Downloading...",0));
