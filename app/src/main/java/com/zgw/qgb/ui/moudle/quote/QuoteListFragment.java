@@ -2,6 +2,7 @@ package com.zgw.qgb.ui.moudle.quote;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -68,8 +69,15 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
             @Override
             public void onSuccess(File file) {
                 FileUtils.installAPk(file);
+                setPendingIntent(file);
             }
         });
+    }
+
+    private void setPendingIntent(File file) {
+        Intent intent = FileUtils.getInstallApkIntent(file);
+        PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
+        downloadService.setPendingIntent(pi);
     }
 
     private String title;

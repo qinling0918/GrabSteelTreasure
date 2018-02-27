@@ -171,6 +171,12 @@ public final class FileUtils {
 
 
     public static void installAPk(File file) {
+        Intent intent = getInstallApkIntent(file);
+        App.getContext().startActivity(intent);
+    }
+
+    @NonNull
+    public static Intent getInstallApkIntent(File file) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         //如果没有设置SDCard写权限，或者没有sdcard,apk文件保存在内存中，需要授予权限才能安装
         Uri data;
@@ -185,6 +191,6 @@ public final class FileUtils {
         }
         intent.setDataAndType(data, "application/vnd.android.package-archive");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        App.getContext().startActivity(intent);
+        return intent;
     }
 }
