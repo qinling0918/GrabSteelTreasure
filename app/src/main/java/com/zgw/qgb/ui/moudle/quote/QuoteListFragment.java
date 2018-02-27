@@ -19,6 +19,7 @@ import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.helper.Bundler;
 import com.zgw.qgb.helper.ToastUtils;
 import com.zgw.qgb.helper.utils.FileUtils;
+import com.zgw.qgb.interf.DefaultDownloadListener;
 import com.zgw.qgb.net.download.DownloadService;
 import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
@@ -63,10 +64,10 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     };
 
     private void setListener() {
-        downloadService.setOnDownloadListener(new DownloadService.DefaultDownloadListener() {
+        downloadService.setOnDownloadListener(new DefaultDownloadListener() {
             @Override
             public void onSuccess(File file) {
-                FileUtils.installAPk(getContext(),file);
+                FileUtils.installAPk(file);
             }
         });
     }

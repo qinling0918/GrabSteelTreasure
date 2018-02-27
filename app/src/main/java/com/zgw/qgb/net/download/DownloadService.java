@@ -7,12 +7,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.FileProvider;
 
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
@@ -296,37 +293,5 @@ public class DownloadService extends Service implements DownloadListener {
     public void setOnDownloadListener(DownloadListener listener) {
         onDownloadListener = listener;
     }
-
-
-
-    public static class DefaultDownloadListener implements DownloadListener{
-        @Override
-        public void onProgress(int progress) {
-
-        }
-
-        @Override
-        public void onSuccess(File file) {
-        }
-
-        @Override
-        public void onFailed(int errorCode, String errorMsg) {
-
-        }
-
-        @Override
-        public void onPaused(File file) {
-
-        }
-
-        @Override
-        public void onCanceled(File file) {
-
-        }
-
-
-
-    }
-
 
 }
