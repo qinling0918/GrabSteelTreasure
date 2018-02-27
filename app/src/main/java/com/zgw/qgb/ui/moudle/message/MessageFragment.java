@@ -1,6 +1,6 @@
 package com.zgw.qgb.ui.moudle.message;
 
-import android.content.Context;
+import android.Manifest;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,14 +11,14 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.adapter.RecycleViewCursorAdapter;
 import com.zgw.qgb.helper.Bundler;
+import com.zgw.qgb.helper.ToastUtils;
+import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
 import com.zgw.qgb.ui.moudle.message.contract.MessageContract;
 import com.zgw.qgb.ui.moudle.message.presenter.MessagePresenter;
@@ -27,16 +27,13 @@ import butterknife.BindView;
 
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
-public class MessageFragment extends BaseMainFragment<MessagePresenter>
-        implements MessageContract.IMessageView,LoaderManager.LoaderCallbacks<Cursor>
-{
+public class MessageFragment
+        extends BaseMainFragment<MessagePresenter>
+        implements MessageContract.IMessageView, LoaderManager.LoaderCallbacks<Cursor> {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     private String title;
-
-    public MessageFragment() {
-    }
 
     public static MessageFragment newInstance(String title) {
         MessageFragment fragment = new MessageFragment();
@@ -52,7 +49,6 @@ public class MessageFragment extends BaseMainFragment<MessagePresenter>
             title = getArguments().getString(EXTRA);
         }
     }
-
 
 
     @Override
@@ -76,100 +72,42 @@ public class MessageFragment extends BaseMainFragment<MessagePresenter>
         setTitle(title);
 
         setAdapter();
+        RxPermissions rxPermissions = new RxPermissions(getActivity());
+        rxPermissions.request( Manifest.permission.READ_CONTACTS)
+                .subscribe(new BaseObserver<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        if (aBoolean){
+                            initLoader();
+                        }else{
+                            ToastUtils.showNormal("读取联系人的权限申请被拒绝");
+                        }
+                    }
+                });
 
+
+    }
+
+
+    private void initLoader() {
         getActivity().getSupportLoaderManager().initLoader(0, null, this);
-
     }
 
     private void setAdapter() {
 
 
-        mAdapter = new RecycleViewCursorAdapter(getContext(),null) {
-            /*@RestrictTo(LIBRARY_GROUP)
-            protected int[] mFrom;*/
-            Context mContext;
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                mContext = parent.getContext();
-                View v = LayoutInflater.from(mContext).inflate(android.R.layout.simple_list_item_2, parent, false);
-                return new ViewHolder(v);
-            }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, Cursor cursor) {
-
-                //Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                if (cursor == null) {
-                    return;
-                }
-                int contactsId = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-                // query the corresponding phone number via contact_id, noting the relation between the
-                // table {@link ContactsContract.Contacts} and the table {@link ContactsContract.CommonDataKind}
-                Cursor c = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " LIKE ?",
-                        new String[]{String.valueOf(contactsId)},
-                        null
-                );
-
-                String phoneNumber = "";
-                try {
-                    if (c.moveToFirst()) {
-                        int numberColumn = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        // a contact may have may phone number, so we need to fetch all. otherwise, you
-                        // can use{@link ContactsContract.CommonDataKinds.phone.TYPE.*} to limit the query
-                        //condition.
-                        do {
-                            phoneNumber += c.getString(numberColumn) + ",";
-                        } while (c.moveToNext());
-
-                    }
-                } finally {
-                    if (c != null) {
-                        c.close();
-                    }
-                }
-
-                ((ViewHolder) holder).text1.setText(phoneNumber);
-                ((ViewHolder) holder).text2.setText(name);
-            }
-
-            @Override
-            protected void onContentChanged() {
-
-            }
-
-          /*  private void findColumns(Cursor c, String[] from) {
-                if (c != null) {
-                    int i;
-                    int count = from.length;
-                    if (mFrom == null || mFrom.length != count) {
-                        mFrom = new int[count];
-                    }
-                    for (i = 0; i < count; i++) {
-                        mFrom[i] = c.getColumnIndexOrThrow(from[i]);
-                    }
-                } else {
-                    mFrom = null;
-                }
-            }*/
-        };
-
+        mAdapter = new MessageCursorAdapter(null);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapter);
     }
 
 
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         //mAdapter.changeCursor(null);
+        getActivity().getSupportLoaderManager().destroyLoader(0);
     }
 
     // These are the Contacts rows that we will retrieve.
@@ -230,13 +168,4 @@ public class MessageFragment extends BaseMainFragment<MessagePresenter>
 }
 
 
-class ViewHolder extends RecyclerView.ViewHolder {
-    TextView text1;
-    TextView text2;
-    public ViewHolder(View itemView) {
-        super(itemView);
-        text1 = itemView.findViewById(android.R.id.text1);
-        text2 = itemView.findViewById(android.R.id.text2);
-    }
-}
 

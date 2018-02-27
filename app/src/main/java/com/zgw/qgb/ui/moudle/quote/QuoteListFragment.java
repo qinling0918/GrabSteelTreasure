@@ -2,28 +2,25 @@ package com.zgw.qgb.ui.moudle.quote;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.helper.Bundler;
-import com.zgw.qgb.net.download.DownloadListener;
+import com.zgw.qgb.helper.ToastUtils;
+import com.zgw.qgb.helper.utils.FileUtils;
 import com.zgw.qgb.net.download.DownloadService;
+import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteListPresenter;
 
@@ -32,7 +29,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.Context.BIND_AUTO_CREATE;
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
@@ -50,72 +46,32 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     TextView tvWideNation;
     String url1 = "http://acj2.pc6.com/pc6_soure/2017-6/com.zgw.qgb_29.apk";
 
-    private DownloadService.DownloadBinder downloadBinder;
+    private DownloadService downloadService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder = (DownloadService.DownloadBinder) service;
-            Log.d(TAG, "onServiceConnected: "+ (downloadBinder==null));
-            //downloadBinder.showNotification(false);
-
-
-            downloadBinder.startDownload(url1);
-            downloadBinder.setOnDownloadListener(new DownloadListener() {
-                @Override
-                public void onProgress(int progress) {
-                    Log.d(TAG, "onSuccess: "+ progress);
-                    Intent intent =  new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
-                    PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
-                    downloadBinder.setPendingIntent(pi);
-                }
-
-                @Override
-                public void onSuccess(File file) {
-                    Log.d(TAG, "onSuccess: "+ file.getAbsolutePath());
-
-                    File parentFlie = new File(file.getParent());
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    //startActivity(intent);
-                    //PendingIntent是等待的Intent,这是跳转到一个Activity组件。当用户点击通知时，会跳转到MainActivity
-                    PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,FLAG_UPDATE_CURRENT );
-                    downloadBinder.setPendingIntent(pi);
-                }
-
-                @Override
-                public void onFailed(int errorCode, String errorMsg) {
-
-                }
-
-                @Override
-                public void onPaused(File file) {
-                    Log.d(TAG, "onSuccess: "+ file.getAbsolutePath());
-
-                    Intent intent =  new Intent(Settings.ACTION_ADD_ACCOUNT);
-                    PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
-                    downloadBinder.setPendingIntent(pi);
-                }
-
-                @Override
-                public void onCanceled(File file) {
-
-                }
-            });
+            DownloadService.DownloadBinder downloadBinder = (DownloadService.DownloadBinder) service;
+            downloadService = downloadBinder.getService();
+            checkPermissionAndStartDownload();
+            setListener();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            downloadBinder = null;
+            downloadService = null;
         }
     };
 
+    private void setListener() {
+        downloadService.setOnDownloadListener(new DownloadService.DefaultDownloadListener() {
+            @Override
+            public void onSuccess(File file) {
+                FileUtils.installAPk(getContext(),file);
+            }
+        });
+    }
 
     private String title;
-
-    public QuoteListFragment() {
-
-    }
 
     public static QuoteListFragment newInstance(String title) {
         QuoteListFragment fragment = new QuoteListFragment();
@@ -132,14 +88,24 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         }
 
         Intent intent = new Intent(getContext(), DownloadService.class);
-        getContext().startService(intent);//启动服务
+        //getContext().startService(intent);//启动服务
         getContext().bindService(intent, connection, BIND_AUTO_CREATE);//绑定服务
-        if (ContextCompat.checkSelfPermission( getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
 
+    }
 
+    private void checkPermissionAndStartDownload() {
+        RxPermissions rxPermissions = new RxPermissions(getActivity());
+        rxPermissions.request( Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new BaseObserver<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        if (aBoolean){
+                            downloadService.startDownload(url1);
+                        }else{
+                            ToastUtils.showNormal("文件写入的权限申请被拒绝");
+                        }
+                    }
+                });
     }
 
     @Override
@@ -160,14 +126,13 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     }
 
 
-    int num = 0;
 
     @SuppressLint("ResourceType")
     @OnClick({R.id.tv_title, R.id.tv_wide_nation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_title:
-                downloadBinder.cancelDownload();
+                downloadService.cancelDownload();
                 //https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1517645120430&di=c4851c8646d6f6d086ea6ec6f3edf71c&imgtype=0&src=http%3A%2F%2Fwww.jituwang.com%2Fuploads%2Fallimg%2F160203%2F257953-160203193R164.jpg
                 //String url1 = "https://www.baidu.com/link?url=soOQSZR7o_Jy2Tzxj6LIpD6xF0NEvw7tjMx_yi6gS-3az9wGOVqzXQ6hijP18_NR2neyWBMJtn18cMfqD3_LW3hIm6xDLf1wjGXZQMvaQRm&wd=&eqid=846b5b7e00040043000000035a754498";
                 //String url1 =url0;
@@ -188,7 +153,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 //ToastUtils.showLong(getString(R.string.message));
                 break;
             case R.id.tv_wide_nation:
-                downloadBinder.pauseDownload();
+                downloadService.pauseDownload();
                /* UserInfo userInfo = new UserInfo();
                 List<UserInfo.User> list = new ArrayList<UserInfo.User>();
                 for (int i = 0; i < 5; i++) {
@@ -280,6 +245,9 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     public void onDestroyView() {
         super.onDestroyView();
         getContext().unbindService(connection);//解绑服务
+
+
+
     }
 
 

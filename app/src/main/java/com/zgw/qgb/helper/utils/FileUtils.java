@@ -1,7 +1,12 @@
 package com.zgw.qgb.helper.utils;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -163,5 +168,24 @@ public final class FileUtils {
             }
         }
         return file;
+    }
+
+
+    public static void installAPk(Context context,File file) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        //如果没有设置SDCard写权限，或者没有sdcard,apk文件保存在内存中，需要授予权限才能安装
+        Uri data;
+        // 判断版本大于等于7.0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // "com.zgw.qgb"即是在清单文件中配置的authorities
+            data = FileProvider.getUriForFile(context, "com.zgw.qgb", file);
+            // 给目标应用一个临时授权
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            data = Uri.fromFile(file);
+        }
+        intent.setDataAndType(data, "application/vnd.android.package-archive");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }

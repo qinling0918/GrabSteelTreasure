@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
@@ -24,7 +25,9 @@
            android:name="io.fabric.ApiKey"
            android:value="${fabric_apikey}" />
        -->
-        <activity android:name=".ui.moudle.main.MainActivity">
+        <activity android:name=".ui.moudle.main.MainActivity"
+            android:launchMode="singleTask"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -59,11 +62,17 @@
             android:enabled="true"
             android:exported="false"><!--//是否可以被另一个Application的组件启动-->
         </service>
-        <service
-            android:name=".net.download.DownloadService"
-            android:enabled="true"
-            android:exported="false"><!--//是否可以被另一个Application的组件启动-->
-        </service>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.zgw.qgb"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <!--元数据-->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
     </application>
 
 </manifest>

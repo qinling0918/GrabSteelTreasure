@@ -94,8 +94,8 @@ public abstract class RecycleViewCursorAdapter<VH extends RecyclerView.ViewHolde
      */
     public static final int FLAG_REGISTER_CONTENT_OBSERVER = 0x02;
 
-    public RecycleViewCursorAdapter(Context context, Cursor c) {
-        init(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
+    public RecycleViewCursorAdapter(/*Context context,*/ Cursor c) {
+        init(/*context,*/ c, FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
 
@@ -103,20 +103,20 @@ public abstract class RecycleViewCursorAdapter<VH extends RecyclerView.ViewHolde
      * Recommended constructor.
      *
      * @param c The cursor from which to get the data.
-     * @param context The context
+     * //@param context The context
      * @param flags Flags used to determine the behavior of the adapter;
      *              Currently it accept {@link #FLAG_REGISTER_CONTENT_OBSERVER}.
      */
-    public RecycleViewCursorAdapter(Context context, Cursor c, int flags) {
-        init(context, c, flags);
+    public RecycleViewCursorAdapter(/*Context context, */Cursor c, int flags) {
+        init(/*context, */c, flags);
     }
 
-    void init(Context context, Cursor c, int flags) {
+    void init(/*Context context,*/ Cursor c, int flags) {
 
         boolean cursorPresent = c != null;
         mCursor = c;
         mDataValid = cursorPresent;
-        mContext = context;
+        //mContext = context;
         mRowIDColumn = cursorPresent ? c.getColumnIndexOrThrow("_id") : -1;
         if ((flags & FLAG_REGISTER_CONTENT_OBSERVER) == FLAG_REGISTER_CONTENT_OBSERVER) {
             mChangeObserver = new ChangeObserver();

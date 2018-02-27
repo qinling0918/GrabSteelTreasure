@@ -32,6 +32,8 @@ public abstract class BaseMainFragment<P extends IPresenter> extends BaseLazyFra
         mListener = null;
     }
 
+
+
     /**
      * 设置小红点
      * @param fromIndex  需要显示在bottomBar的哪一个位置,即当前页面的position

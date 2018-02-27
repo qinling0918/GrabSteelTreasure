@@ -84,6 +84,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         pagerAdapter = new FragmentsPagerAdapter(this, FragmentPagerAdapterModel.buildForMain(mContext));
         vpMainContainer.setAdapter(pagerAdapter);
         vpMainContainer.setCurrentItem(lastSelectedPosition, false);
+
+
     }
 
 
@@ -129,7 +131,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     public void onTabSelected(int position) {
         lastSelectedPosition = position;
-        vpMainContainer.setCurrentItem(lastSelectedPosition, false);
+        vpMainContainer.setCurrentItem(position, false);
+
     }
 
     @Override
