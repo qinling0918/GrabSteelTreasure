@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.zgw.qgb.base.BaseActivity;
 import com.zgw.qgb.base.mvp.IView;
 
 import io.reactivex.ObservableTransformer;
-import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -17,7 +17,7 @@ public final class RxProgress {
         throw new AssertionError("No instances.");
     }
 
-    public static <U> SingleTransformer<U, U> bindToLifecycle(IView view, @StringRes int stringRes) {
+   /* public static <U> SingleTransformer<U, U> bindToLifecycle(IView view, @StringRes int stringRes) {
         return upstream -> upstream
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -45,7 +45,7 @@ public final class RxProgress {
                     .doOnSuccess(u -> progressDialog.dismiss())
                     .doOnError(throwable -> progressDialog.dismiss());
         };
-    }
+    }*/
   /*  public static <U> SingleTransformer<U, U> bindToLifecycle(Context context, CharSequence message) {
        return new SingleTransformer<U, U>() {
            @Override
@@ -64,9 +64,11 @@ public final class RxProgress {
       return upstream -> upstream
               .subscribeOn(Schedulers.io())
               .observeOn(AndroidSchedulers.mainThread())
+              .onTerminateDetach()//解决内存泄漏
               .doOnSubscribe(disposable -> view.showProgress(stringRes))
               .doOnNext(u -> view.hideProgress())
-              .doOnError(throwable -> view.hideProgress());
+              .doOnError(throwable -> view.hideProgress())
+              .onTerminateDetach();
   }
 
     public static <U> ObservableTransformer<U, U> bindToLifecycle_observable(Context context, @StringRes int stringRes) {
@@ -88,5 +90,33 @@ public final class RxProgress {
                     //.doOnSuccess(u -> progressDialog.dismiss())
                     .doOnError(throwable -> progressDialog.dismiss());
         };
+    }
+
+    
+    public static <U> ObservableTransformer<U, U> bindToLifecycle(BaseActivity activity, @StringRes int stringRes) {
+
+        return bindToLifecycle(activity, activity.getString(stringRes), true);
+    }
+
+    public static <U> ObservableTransformer<U, U> bindToLifecycle(BaseActivity activity, @StringRes int stringRes, boolean cancelable) {
+
+        return bindToLifecycle(activity, activity.getString(stringRes), cancelable);
+    }
+    public static <U> ObservableTransformer<U, U> bindToLifecycle(BaseActivity activity, CharSequence message) {
+
+        return bindToLifecycle(activity, message, true);
+    }
+    public static <U> ObservableTransformer<U, U> bindToLifecycle(BaseActivity activity, CharSequence message, boolean cancelable) {
+        return upstream -> {
+            return upstream
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onTerminateDetach()//解决内存泄漏
+                    .doOnSubscribe(disposable -> activity.showProgress(message, cancelable))
+                    .doOnNext(u -> activity.hideProgress())
+                    .doOnError(throwable -> activity.hideProgress())
+                    .onTerminateDetach();
+        };
+
     }
 }

@@ -13,26 +13,26 @@ public interface DownloadListener {
      * 通知当前的下载进度
      * @param progress
      */
-    void onProgress(int progress);
+    void onProgress(String url, int progress,long contentLength, long currentBytes);
 
     /**
      * 通知下载成功
      */
-    void onSuccess(File file);
+    void onSuccess(String url, File file);
 
     /**
      * 通知下载失败
      */
-    void onFailed(int errorCode, String errorMsg);
+    void onFailed(String url, int errorCode, String errorMsg);
 
     /**
      * 通知下载暂停
      */
-    void onPaused(File file);
+    void onPaused(String url, File file);
 
     /**
      * 通知下载取消事件
      */
-    void onCanceled(File file);
+    void onCanceled(String url, File file);
 
 }

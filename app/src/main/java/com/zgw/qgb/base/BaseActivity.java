@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -215,14 +216,19 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
 
 
     @Override
-    public void showProgress(int resId) {
+    public void showProgress(@StringRes int resId) {
         showProgress(resId, true);
     }
-    private void showProgress(int resId, boolean cancelable) {
+
+    public void showProgress(@StringRes int resId, boolean cancelable) {
         String msg = getString(R.string.in_progress);
         if (resId != 0) {
             msg = getString(resId);
         }
+        showProgress(msg, cancelable);
+    }
+
+    public void showProgress(CharSequence msg, boolean cancelable) {
         if (!isProgressShowing && !isFinishing()) {
             ProgressDialogFragment fragment = (ProgressDialogFragment) AppHelper.getFragmentByTag(getSupportFragmentManager(),
                     ProgressDialogFragment.TAG);
@@ -233,6 +239,7 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
             }
         }
     }
+
     @Override
     public void hideProgress() {
         ProgressDialogFragment fragment = (ProgressDialogFragment) AppHelper.getFragmentByTag(getSupportFragmentManager(),

@@ -31,8 +31,8 @@ buildscript {
         glideVersion = '4.2.0'
         junitVersion = '4.12'
         espresseVersion = '2.2.2'
-
     }
+
     repositories {
         google()
         maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
@@ -54,10 +54,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://maven.google.com' }
-        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven {url 'https://maven.google.com' }
+        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         maven {url "https://jitpack.io" }
-        maven {url "https://clojars.org/repo/"}
+        maven {url "https://clojars.org/repo/"}//icepick
         jcenter()
     }
 }

@@ -13,6 +13,27 @@ public class DownloadInfo {
     private String url;
     private Status status;
     private Integer progress;
+    private long contentLength;
+
+    public long getCurrentBytes() {
+        return currentBytes;
+    }
+
+    public void setCurrentBytes(long currentBytes) {
+        this.currentBytes = currentBytes;
+    }
+
+    private long currentBytes; //当前已上传或下载的总长度
+
+    public long getContentLength() {
+        return contentLength;
+    }
+
+    public void setContentLength(long contentLength) {
+        this.contentLength = contentLength;
+    }
+
+
 
     public Integer getProgress() {
         return progress;

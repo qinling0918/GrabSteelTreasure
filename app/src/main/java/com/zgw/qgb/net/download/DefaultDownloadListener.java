@@ -1,6 +1,4 @@
-package com.zgw.qgb.interf;
-
-import com.zgw.qgb.net.download.DownloadListener;
+package com.zgw.qgb.net.download;
 
 import java.io.File;
 

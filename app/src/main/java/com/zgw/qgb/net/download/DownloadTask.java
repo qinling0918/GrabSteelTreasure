@@ -69,6 +69,8 @@ public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadIn
         long downloadLength= file.length();   //记录已经下载的文件长度
 
         long contentLength=getContentLength(downloadUrl);
+        downloadInfo.setContentLength(contentLength);
+
         if(contentLength==0){
             return downloadInfo.setStatus(FAILED,-1,"远程文件(服务器端目标文件)不存在");
         }else if(contentLength==downloadLength){
@@ -119,6 +121,7 @@ public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadIn
                             //注意：在doInBackground()中是不可以进行UI操作的，如果需要更新UI,比如说反馈当前任务的执行进度，
                             //可以调用publishProgress()方法完成。
                             downloadInfo.setProgress(progress);
+                            downloadInfo.setCurrentBytes(file.length());
                             publishProgress(downloadInfo);
                         }
                     }
@@ -161,9 +164,12 @@ public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadIn
      * @param values
      */
     protected void onProgressUpdate(DownloadInfo...values){
-        int progress=values[0].getProgress();
+        int progress = values[0].getProgress();
+        String url = values[0].getUrl();
+        long contentLength = values[0].getContentLength();
+        long currentBytes = values[0].getCurrentBytes();
         if(progress>lastProgress){
-            listener.onProgress(progress);
+            listener.onProgress(url, progress, contentLength, currentBytes);
             lastProgress=progress;
         }
     }
@@ -176,18 +182,19 @@ public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadIn
     @Override
     protected void onPostExecute(DownloadInfo info) {
         DownloadInfo.Status status = info.getStatus();
+        String url  = info.getUrl();
         switch (status){
             case SUCCESS:
-                listener.onSuccess(info.getFile());
+                listener.onSuccess(url, info.getFile());
                 break;
             case FAILED:
-                listener.onFailed(status.getCode(), status.getMsg());
+                listener.onFailed(url, status.getCode(), status.getMsg());
                 break;
             case PAUSED:
-                listener.onPaused(info.getFile());
+                listener.onPaused(url, info.getFile());
                 break;
             case CANCELED:
-                listener.onCanceled(info.getFile());
+                listener.onCanceled(url, info.getFile());
                 break;
             default:
                 break;

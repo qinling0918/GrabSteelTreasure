@@ -42,9 +42,12 @@ public class DownloadTask extends AsyncTask<String,Integer,Integer> {
     private int lastProgress;
 
     public DownloadTask(DownloadListener listener) {
-        this.listener = listener;
+        setDownloadListener(listener);
     }
 
+    public void setDownloadListener(DownloadListener downloadListener){
+        this.listener = downloadListener;
+    }
     /**
      * 这个方法中的所有代码都会在子线程中运行，我们应该在这里处理所有的耗时任务。
      * @param params

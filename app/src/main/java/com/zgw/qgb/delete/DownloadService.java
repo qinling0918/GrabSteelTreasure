@@ -41,22 +41,22 @@ public class DownloadService extends Service implements DownloadListener {
         public void  startDownload(String url){
             if(downloadTask==null){
                 downloadUrl=url;
-                downloadTask=new DownloadTask(DownloadService.this);
+                downloadTask=new DownloadTask(com.zgw.qgb.delete.DownloadService.this);
                 //启动下载任务
                 downloadTask.execute(downloadUrl);
                 startForeground(1,getNotification("Downloading...",0));
-                Toast.makeText(DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(com.zgw.qgb.delete.DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
             }
         }
 
         public void  startDownload(String mDownloadUrl, String filePath, String fileName){
             if(downloadTask==null){
                 downloadUrl= mDownloadUrl;
-                downloadTask=new DownloadTask(DownloadService.this);
+                downloadTask=new DownloadTask(com.zgw.qgb.delete.DownloadService.this);
                 //启动下载任务
                 downloadTask.execute(downloadUrl ,filePath, fileName);
                 startForeground(1,getNotification("Downloading...",0));
-                Toast.makeText(DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(com.zgw.qgb.delete.DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -86,7 +86,7 @@ public class DownloadService extends Service implements DownloadListener {
                     }*/
                     getNotificationManager().cancel(1);
                     stopForeground(true);
-                    Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(com.zgw.qgb.delete.DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -161,7 +161,7 @@ public class DownloadService extends Service implements DownloadListener {
         //下载成功时将前台服务通知关闭，并创建一个下载成功的通知
         stopForeground(true);
         getNotificationManager().notify(1,getNotification("Download Success",-1));
-        Toast.makeText(DownloadService.this,"Download Success",Toast.LENGTH_SHORT).show();
+        Toast.makeText(com.zgw.qgb.delete.DownloadService.this,"Download Success",Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -173,7 +173,7 @@ public class DownloadService extends Service implements DownloadListener {
         //下载失败时，将前台服务通知关闭，并创建一个下载失败的通知
         stopForeground(true);
         getNotificationManager().notify(1,getNotification("Download Failed",-1));
-        Toast.makeText(DownloadService.this,"Download Failed",Toast.LENGTH_SHORT).show();
+        Toast.makeText(com.zgw.qgb.delete.DownloadService.this,"Download Failed",Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -182,7 +182,7 @@ public class DownloadService extends Service implements DownloadListener {
     @Override
     public void onPaused() {
         downloadTask=null;
-        Toast.makeText(DownloadService.this,"Download Paused",Toast.LENGTH_SHORT).show();
+        Toast.makeText(com.zgw.qgb.delete.DownloadService.this,"Download Paused",Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -193,7 +193,7 @@ public class DownloadService extends Service implements DownloadListener {
         downloadTask=null;
         //取消下载，将前台服务通知关闭，并创建一个下载失败的通知
         stopForeground(true);
-        Toast.makeText(DownloadService.this,"Download Canceled",Toast.LENGTH_SHORT).show();
+        Toast.makeText(com.zgw.qgb.delete.DownloadService.this,"Download Canceled",Toast.LENGTH_SHORT).show();
     }
 
 

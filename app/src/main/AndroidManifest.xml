@@ -62,7 +62,11 @@
             android:enabled="true"
             android:exported="false"><!--//是否可以被另一个Application的组件启动-->
         </service>
-
+        <service
+            android:name=".net.download.DownloadsService"
+            android:enabled="true"
+            android:exported="false"><!--//是否可以被另一个Application的组件启动-->
+        </service>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.zgw.qgb"

@@ -23,6 +23,7 @@ import java.io.File;
  *
  */
 public class DownloadService extends Service implements DownloadListener {
+    private static final String NOTIFICATION_GROUP = "com.zgw.qgb.notifications";
     private DownloadTask downloadTask;
     private String downloadUrl;
     private File file;
@@ -32,8 +33,12 @@ public class DownloadService extends Service implements DownloadListener {
     private boolean show_notification = true;
     private PendingIntent mPendingIntent ;
 
+    @Override
+    public void onDestroy() {
+        setOnDownloadListener(null);
+        super.onDestroy();
+    }
 
-    
     @Override
     public IBinder onBind(Intent intent) {
         return new DownloadBinder();
@@ -164,6 +169,11 @@ public class DownloadService extends Service implements DownloadListener {
             builder.setContentText(progress+"%");
             builder.setProgress(100,progress,false);
         }
+
+        builder.setStyle(new NotificationCompat.BigTextStyle()
+                .setSummaryText(title))
+                .setGroup(NOTIFICATION_GROUP) //设置类组key，说明此条通知归属于哪一个归类
+                .setGroupSummary(true); //这句话必须和上面那句一起调用，否则不起作用
         return builder.build();
     }
 
@@ -186,9 +196,9 @@ public class DownloadService extends Service implements DownloadListener {
      * @param progress
      */
     @Override
-    public void onProgress(int progress) {
+    public void onProgress(String url, int progress,long contentLength, long currentBytes) {
         if (null != onDownloadListener) {
-            onDownloadListener.onProgress(progress);
+            onDownloadListener.onProgress(url,progress, contentLength, currentBytes);
         }
 
         //NotificationManager的notify()可以让通知显示出来。
@@ -210,11 +220,11 @@ public class DownloadService extends Service implements DownloadListener {
      * 创建了一个新的通知用于告诉用户下载成功啦
      */
     @Override
-    public void onSuccess(File file) {
+    public void onSuccess(String url, File file) {
         downloadTask=null;
 
         if (null != onDownloadListener) {
-            onDownloadListener.onSuccess(file);
+            onDownloadListener.onSuccess(url,file);
         }
 
         //下载成功时将前台服务通知关闭，并创建一个下载成功的通知
@@ -230,11 +240,11 @@ public class DownloadService extends Service implements DownloadListener {
      *用户下载失败
      */
     @Override
-    public void onFailed(int errorCode, String errorMsg) {
+    public void onFailed(String url,int errorCode, String errorMsg) {
         downloadTask=null;
 
         if (null != onDownloadListener) {
-            onDownloadListener.onFailed(errorCode, errorMsg);
+            onDownloadListener.onFailed(url,errorCode, errorMsg);
         }
 
         //下载失败时，将前台服务通知关闭，并创建一个下载失败的通知
@@ -250,11 +260,11 @@ public class DownloadService extends Service implements DownloadListener {
      * 在downloadListener 的onpause 里面设置pendingintent 不会有效果
      */
     @Override
-    public void onPaused(File file) {
+    public void onPaused(String url,File file) {
         downloadTask=null;
 
         if (null != onDownloadListener) {
-            onDownloadListener.onPaused(file);
+            onDownloadListener.onPaused(url,file);
         }
         //Toast.makeText(DownloadService.this,"Download Paused",Toast.LENGTH_SHORT).show();
     }
@@ -263,12 +273,12 @@ public class DownloadService extends Service implements DownloadListener {
      * 用户取消
      */
     @Override
-    public void onCanceled(File file) {
+    public void onCanceled(String url,File file) {
         downloadTask=null;
         FileUtils.deleteFile(file);
 
         if (null != onDownloadListener) {
-            onDownloadListener.onCanceled(file);
+            onDownloadListener.onCanceled(url,file);
         }
 
         if (show_notification){

@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +22,7 @@ import com.zgw.qgb.helper.Bundler;
 import com.zgw.qgb.helper.ToastUtils;
 import com.zgw.qgb.helper.utils.FileUtils;
 import com.zgw.qgb.interf.DefaultDownloadListener;
-import com.zgw.qgb.net.download.DownloadService;
+import com.zgw.qgb.net.download.DownloadsService;
 import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteListPresenter;
@@ -47,12 +48,14 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     @BindView(R.id.tv_wide_nation)
     TextView tvWideNation;
     String url1 = "http://acj2.pc6.com/pc6_soure/2017-6/com.zgw.qgb_29.apk";
+    String url2 = "https://github.com/easemob/easeui_ios/archive/dev.zip";
+    String url3 = "http://pic.58pic.com/58pic/15/14/14/18e58PICMwt_1024.jpg";
 
-    private DownloadService downloadService;
+    private DownloadsService downloadService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            DownloadService.DownloadBinder downloadBinder = (DownloadService.DownloadBinder) service;
+            DownloadsService.DownloadBinder downloadBinder = (DownloadsService.DownloadBinder) service;
             downloadService = downloadBinder.getService();
             checkPermissionAndStartDownload();
             setListener();
@@ -67,11 +70,39 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     private void setListener() {
         downloadService.setOnDownloadListener(new DefaultDownloadListener() {
             @Override
-            public void onSuccess(File file) {
-                FileUtils.installAPk(file);
-                setPendingIntent(file);
+            public void onProgress(String url, int progress, long contentLength, long currentBytes) {
+                super.onProgress(url, progress, contentLength, currentBytes);
+               if (url.equals(url1)){
+                   Log.d(TAG, "url1 + onProgress: "+progress);
+               }else{
+                   Log.d(TAG, "url2 + onProgress: "+progress);
+               }
+
+            }
+
+            @Override
+            public void onSuccess(String url, File file) {
+               /* FileUtils.installAPk(file);
+                setPendingIntent(file);*/
+
+                Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
+                downloadService.setPendingIntent(pi);
             }
         });
+
+        String[] urlArr = new String[]{url1,url2};
+        for (String url1: urlArr) {
+            downloadService.setOnDownloadListener(url1,new DefaultDownloadListener() {
+                @Override
+                public void onProgress(String url, int progress, long contentLength, long currentBytes) {
+                    super.onProgress(url, progress, contentLength, currentBytes);
+                    Log.d(TAG, url + "   onProgress: "+progress);
+                }
+            });
+        }
+
     }
 
     private void setPendingIntent(File file) {
@@ -96,7 +127,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
             title = getArguments().getString(EXTRA);
         }
 
-        Intent intent = new Intent(getContext(), DownloadService.class);
+        Intent intent = new Intent(getContext(), DownloadsService.class);
         //getContext().startService(intent);//启动服务
         getContext().bindService(intent, connection, BIND_AUTO_CREATE);//绑定服务
 
@@ -109,7 +140,9 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                     @Override
                     public void onSuccess(Boolean aBoolean) {
                         if (aBoolean){
-                            downloadService.startDownload(url1);
+                         
+                            downloadService.startDownload(url1,url2);
+                            //downloadService.startDownloadWithPath(path1,"a.apk",url1,url2);
                         }else{
                             ToastUtils.showNormal("文件写入的权限申请被拒绝");
                         }
@@ -252,8 +285,8 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         getContext().unbindService(connection);//解绑服务
+        super.onDestroyView();
 
 
 

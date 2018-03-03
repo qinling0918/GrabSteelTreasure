@@ -2,7 +2,6 @@ package com.zgw.qgb.ui.widgets.dialog;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.zgw.qgb.helper.AnimHelper;
 import com.zgw.qgb.helper.Bundler;
 
@@ -29,7 +27,7 @@ public class ProgressDialogFragment extends DialogFragment {
     }
 
     @NonNull
-    public static ProgressDialogFragment newInstance(@NonNull String msg, boolean isCancelable) {
+    public static ProgressDialogFragment newInstance(@NonNull CharSequence msg, boolean isCancelable) {
         ProgressDialogFragment fragment = new ProgressDialogFragment();
         fragment.setArguments(Bundler.start()
                 .put("msg", msg)

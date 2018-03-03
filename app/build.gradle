@@ -148,4 +148,9 @@ dependencies {
     //compile "org.parceler:parceler-api:1.0.4"
     //apt "org.parceler:parceler:1.0.4"
 
+
+    compile 'skin.support:skin-support:2.2.3'                   // skin-support 基础控件支持
+    compile 'skin.support:skin-support-design:2.2.3'            // skin-support-design material design 控件支持[可选]
+    compile 'skin.support:skin-support-cardview:2.2.3'          // skin-support-cardview CardView 控件支持[可选]
+    compile 'skin.support:skin-support-constraint-layout:2.2.3' // skin-support-constraint-layout ConstraintLayout 控件支
 }
