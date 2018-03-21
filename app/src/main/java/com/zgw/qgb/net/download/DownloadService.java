@@ -111,15 +111,7 @@ public class DownloadService extends Service implements DownloadListener {
             downloadTask.cancelDownload();
         }else {
             if(downloadUrl!=null){
-                //取消下载时需要将文件删除，并将通知关闭
-                FileUtils.deleteFile(file);
-
-                if (show_notification){
-                    getNotificationManager().cancel(getNotificationId());
-                    stopForeground(true);
-                    //Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
-                }
-
+                onCanceled(downloadUrl,file);
             }
         }
     }
@@ -274,7 +266,10 @@ public class DownloadService extends Service implements DownloadListener {
      */
     @Override
     public void onCanceled(String url,File file) {
-        downloadTask=null;
+        if (downloadTask!=null){
+            downloadTask=null;
+        }
+
         FileUtils.deleteFile(file);
 
         if (null != onDownloadListener) {
@@ -282,8 +277,9 @@ public class DownloadService extends Service implements DownloadListener {
         }
 
         if (show_notification){
-            //取消下载，将前台服务通知关闭，并创建一个下载失败的通知
+            getNotificationManager().cancel(getNotificationId());
             stopForeground(true);
+            //Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
         }
         //Toast.makeText(DownloadService.this,"Download Canceled",Toast.LENGTH_SHORT).show();
     }

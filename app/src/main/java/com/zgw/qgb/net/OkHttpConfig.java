@@ -11,11 +11,8 @@ import okhttp3.OkHttpClient;
  */
 
 public abstract class OkHttpConfig {
-    /**
-     * 为网络请求添加进度管理器
-     * @param builder
-     */
-    public abstract void configHttps(OkHttpClient.Builder builder);
+
+    public abstract void  configHttps(OkHttpClient.Builder builder);
 
     public Gson configGson() {
         return new GsonBuilder()
@@ -26,13 +23,9 @@ public abstract class OkHttpConfig {
 
     public static final OkHttpConfig DEFAULT_CONFIG = new OkHttpConfig() {
         @Override
-        public void configHttps(OkHttpClient.Builder builder) {}
-    };
-
-    public static final OkHttpConfig DOWNLOAD_CONFIG = new OkHttpConfig() {
-        @Override
-        public void configHttps(OkHttpClient.Builder builder) {
-
+        public void  configHttps(OkHttpClient.Builder builder) {
         }
     };
+
+
 }

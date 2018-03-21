@@ -3,185 +3,53 @@ package com.zgw.qgb.net.download;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Binder;
-import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import com.zgw.qgb.App;
 import com.zgw.qgb.R;
-import com.zgw.qgb.helper.utils.FileUtils;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 专门用来下载大文件的服务  支持暂停,取消,失败,成功,下载中回调监听.  另外还有下载时显示在通知栏
  * 此处与ProgressManager连接,可以在其他位置根据url 来监听进度(onProgress与onError)
  */
-public class NotificationDownloadsService extends Service implements DownloadListener {
+public class NotificationDownloadsService extends DownloadsService  {
     private static final String NOTIFICATION_GROUP = "com.zgw.qgb.notifications";
-    private Map<String, DownloadTask> downloadTaskMap = new HashMap<>();
-    private Map<String, File> fileMap = new HashMap<>();
-    //private Map<String, PendingIntent> pendingIntentMap = new HashMap<>();
-    private String[] downloadUrlArr;
 
-    //private DownloadTask downloadTask;
-    //private String downloadUrl;
-    //private File file;
     /**
-     * 是否显示 Notification 默认显示
+     * 是否显示 多个Notification 默认不显示,多个下载任务只显示一个notification
      */
-    private boolean show_notification = true;
+    private boolean showGroupNotification = true;
     private PendingIntent mPendingIntent ;
 
+    @Override
+    public void startDownload(String mfilePath, String mfileName, String downloadUrl) {
+        super.startDownload(mfilePath, mfileName, downloadUrl);
+        showstartDownloadNotification(downloadUrl);
+    }
+
+    private void showstartDownloadNotification(String url) {
+        if (showGroupNotification) {
+            if (downloadTaskMap.size() == 1) {
+                startForeground(getNotificationId(url), getNotification("正在下载" + downloadTaskMap.size(), -1));
+            } else {
+                getNotificationManager().notify(getNotificationId(url), getNotification(downloadTaskMap.size()+"个任务正在下载", -1));
+            }
+        }else{
+                startForeground(getNotificationId(url), getNotification("下载中" + downloadTaskMap.size(), -1));
+
+        }
+    }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return new DownloadBinder();
+    protected int getNotificationId(String url) {
+        return showGroupNotification
+                ? super.getNotificationId(NOTIFICATION_GROUP)
+                : super.getNotificationId(url);
     }
-
-    /**
-     * 为了要让DownloadService可以和活动进行通信，我们创建了一个DownloadBinder对象
-     */
-    public class DownloadBinder extends Binder {
-        public NotificationDownloadsService getService() {
-            // Return this instance of DownloadService so clients can call public methods
-            return NotificationDownloadsService.this;
-        }
-    }
-
-    /**
-     * 设置PendingIntent
-     *
-     * @param pendingIntent
-     */
-    public void setPendingIntent(PendingIntent pendingIntent) {
-        //pendingIntentMap.put(url, pendingIntent);
-        mPendingIntent = pendingIntent;
-
-    }
-
-
-    /**
-     * 开始下载
-     *
-     * @param url
-     */
-    public void startDownload(String... url) {
-        startDownload(true, url);
-    }
-
-
-    public void startDownload(boolean showNotification, String... url) {
-        startDownload(null, null, showNotification,url);
-    }
-
-    public void startDownload(String mfilePath, String mfileName, boolean showNotification, String... downloadUrl) {
-        downloadUrlArr = downloadUrl;
-        show_notification = showNotification;
-        for (String url : downloadUrl) {
-            startDownload(mfilePath, mfileName, url);
-        }
-
-        showstartDownloadNotification();
-
-    }
-
-    private void showstartDownloadNotification() {
-
-        if (show_notification) {
-            if (downloadTaskMap.size() == 1) {
-                startForeground(1, getNotification("正在下载" + downloadTaskMap.size(), -1));
-            } else {
-                getNotificationManager().notify(1, getNotification("正在下载" + downloadTaskMap.size(), -1));
-            }
-        }
-    }
-
-    private void startDownload(String mfilePath, String mfileName, String url) {
-        if (!downloadTaskMap.containsKey(url)) {
-            DownloadTask downloadTask = new DownloadTask(NotificationDownloadsService.this);
-            File file = FileUtils.getFile(url, mfilePath, mfileName);
-            downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new DownloadInfo(file, url));
-            downloadTaskMap.put(url, downloadTask);
-            fileMap.put(url, file);
-        }
-    }
-
-    /**
-     * 暂停下载
-     */
-    public void pauseDownload(String... url) {
-        for (String downloadUrl : url) {
-            pauseDownload(downloadUrl);
-        }
-    }
-
-
-
-
-    public void pauseDownload(String url) {
-        if(downloadTaskMap.containsKey(url)){
-            DownloadTask downloadTask = downloadTaskMap.get(url);
-            if(downloadTask != null){
-                downloadTask.pauseDownload();
-            }
-        }
-    }
-    /**
-     * 取消下载
-     */
-    public void cancelDownloads(String... downloadUrl) {
-        for (String url : downloadUrl) {
-            cancelDownload(url);
-        }
-
-    }
-
-    public void cancelDownload(String url) {
-        if(downloadTaskMap.containsKey(url)){
-            DownloadTask downloadTask = downloadTaskMap.get(url);
-            if(downloadTask != null){
-                downloadTask.cancelDownload();
-            }
-        }else {
-            deleteFileAfterCancel(url);
-        }
-
-    }
-
-    private void deleteFileAfterCancel(String url) {
-        if (url != null) {
-            //取消下载时需要将文件删除，并将通知关闭
-            FileUtils.deleteFile(fileMap.get(url));
-            if (show_notification) {
-                getNotificationManager().cancel(getNotificationId(url));
-                stopForeground(true);
-                //Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void downloadTaskCancel(String url) {
-        DownloadTask downloadTask = downloadTaskMap.get(url);
-        if(downloadTask != null){
-            downloadTask.cancelDownload();
-        }
-
-        if(downloadTaskMap.size() > 0){
-            getNotificationManager().notify(1, getNotification("正在下载" + downloadTaskMap.size(), -1));
-        } else {
-            stopForeground(true);
-            getNotificationManager().notify(1, getNotification("全部取消下载", -1));
-        }
-    }
-
 
     /**
      * 获取NotificationManager的实例，对通知进行管理
@@ -232,71 +100,74 @@ public class NotificationDownloadsService extends Service implements DownloadLis
         return builder.build();
     }
 
-
-    /**
-     * 使用 下载链接的url 的哈希值作为 notification 的id
-     *
-     * @return
-     */
-    private int getNotificationId(String url) {
-        //return url.hashCode();
-        return 1;
-    }
-
-
-
-    private void pauseDownloadNotification() {
-        if (show_notification) {
+/*if (show_notification){
+        getNotificationManager().cancel(getNotificationId());
+        stopForeground(true);
+        //Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
+    }*/
+    private void showNotification(String url,String downloadingstr, String statusStr) {
             if (downloadTaskMap.size() > 0) {
-                getNotificationManager().notify(1, getNotification("正在下载" + downloadTaskMap.size(), -1));
+                getNotificationManager().notify(getNotificationId(url), getNotification(downloadingstr + downloadTaskMap.size(), -1));
             } else {
                 stopForeground(true);
-                getNotificationManager().notify(1, getNotification("全部暂停下载", -1));
+                getNotificationManager().notify(getNotificationId(url), getNotification(statusStr, -1));
             }
-        }
+
+    }
+
+ 
+
+
+    private void pauseDownloadNotification(String url) {
+            if (downloadTaskMap.size() > 0) {
+                getNotificationManager().notify(getNotificationId(url), getNotification("正在下载" + downloadTaskMap.size(), -1));
+            } else {
+                stopForeground(true);
+                getNotificationManager().notify(getNotificationId(url), getNotification("全部暂停下载", -1));
+            }
     }
     private void cancelDownloadNotification() {
-        if (show_notification) {
             if(downloadTaskMap.size() > 0){
                 getNotificationManager().notify(1, getNotification("正在下载" + downloadTaskMap.size(), -1));
             } else {
                 stopForeground(true);
                 getNotificationManager().notify(1, getNotification("全部取消下载", -1));
             }
-        }
     }
     private void successDownloadNotification() {
-        if (show_notification) {
             if(downloadTaskMap.size() > 0){
                 getNotificationManager().notify(1, getNotification("正在下载" + downloadTaskMap.size(), -1));
             } else {
                 stopForeground(true);
                 getNotificationManager().notify(1, getNotification("下载成功", -1));
             }
-        }
     }
     private void failedDownloadNotification() {
-        if (show_notification) {
             if(downloadTaskMap.size() > 0){
                 getNotificationManager().notify(1, getNotification("有任务失败,下载中" + downloadTaskMap.size(), -1));
             } else {
                 stopForeground(true);
                 getNotificationManager().notify(1, getNotification("下载成功", -1));
             }
+    }
+
+    public boolean isDownloading(String url){
+        if(downloadTaskMap.containsKey(url)){
+            return true;
         }
+
+        return  false;
     }
 
 
 
-
-
     /***************           下载各种状态             *********************************/
-
-    /**
+/*
+    *//**
      * 构建了一个用于显示下载进度的通知
      *
      * @param progress
-     */
+     *//*
     @Override
     public void onProgress(String url, int progress,long contentLength, long currentBytes) {
         if (null != onDownloadListener) {
@@ -306,15 +177,22 @@ public class NotificationDownloadsService extends Service implements DownloadLis
         //NotificationManager的notify()可以让通知显示出来。
         //notify(),接收两个参数，第一个参数是id:每个通知所指定的id都是不同的。第二个参数是Notification对象。
 
-      /*  if (show_notification) {
+      *//*  if (show_notification) {
             getNotificationManager().notify(1, getNotification("Downloading...", progress));
-        }*/
+        }*//*
 
+
+    }*/
+
+    @Override
+    public void onProgress(String url, int progress, long contentLength, long currentBytes) {
+        super.onProgress(url, progress, contentLength, currentBytes);
+        if (showGroupNotification){
+            getNotificationManager().notify(getNotificationId(url), getNotification("Downloading...", progress));
+        }
 
     }
-
-
-    /**
+/**
      * 观察小米下载,是在不同状态都有一个通知,多个下载任务进行时,同在下载中则显示一个
      * 有结束的则又开了一个通知,当全部结束又都整合到一个通知上,只是下载数量的变化
      */
@@ -323,44 +201,35 @@ public class NotificationDownloadsService extends Service implements DownloadLis
      */
     @Override
     public void onSuccess(String url, File file) {
-        removeTask(url);
+        super.onSuccess(url, file);
+        //successDownloadNotification();
+        showNotification(url,"成功下载","下载完成");
+        /*if (showGroupNotification){
+            showNotification(url);
+        }else{
+            stopForeground(true);
+            getNotificationManager().notify(getNotificationId(url),getNotification("Download Success",-1));
+        }*/
 
-        if (null != onDownloadListener) {
-            onDownloadListener.onSuccess(url, file);
-        }
 
-        //下载成功时将前台服务通知关闭，并创建一个下载成功的通知
-        successDownloadNotification();
 
-        //Toast.makeText(DownloadService.this,"Download Success",Toast.LENGTH_SHORT).show();
     }
 
-    private void removeTask(String url) {
-        if (downloadTaskMap.containsKey(url)) {
-            DownloadTask downloadTask = downloadTaskMap.get(url);
-
-            if(downloadTask != null){
-                downloadTask = null;
-            }
-            downloadTaskMap.remove(url);
-
-
-        }
-    }
 
     /**
      * 用户下载失败
      */
     @Override
     public void onFailed(String url, int errorCode, String errorMsg) {
-        removeTask(url);
-
-        if (null != onDownloadListener) {
-            onDownloadListener.onFailed(url, errorCode, errorMsg);
-        }
+        super.onFailed(url, errorCode,errorMsg);
 
         //下载失败时，将前台服务通知关闭，并创建一个下载失败的通知
-        failedDownloadNotification();
+        showNotification(url,"有任务失败,下载中" ,"任务完成");
+
+
+ /*       stopForeground(true);
+        getNotificationManager().notify(getNotificationId(url),getNotification("Download Failed",-1));*/
+        //failedDownloadNotification();
         //Toast.makeText(DownloadService.this,"Download Failed",Toast.LENGTH_SHORT).show();
     }
 
@@ -370,14 +239,9 @@ public class NotificationDownloadsService extends Service implements DownloadLis
      */
     @Override
     public void onPaused(String url, File file) {
-        removeTask(url);
-
-        if (null != onDownloadListener) {
-            onDownloadListener.onPaused(url, file);
-        }
-
-        pauseDownloadNotification();
-        //Toast.makeText(DownloadService.this,"Download Paused",Toast.LENGTH_SHORT).show();
+        super.onPaused(url, file);
+        //pauseDownloadNotification();
+        //showNotification(url,"下载中" ,"全部暂停下载");
     }
 
     /**
@@ -385,36 +249,14 @@ public class NotificationDownloadsService extends Service implements DownloadLis
      */
     @Override
     public void onCanceled(String url, File file) {
-        removeTask(url);
+        super.onCanceled(url, file);
+        //cancelDownloadNotification();
+        showNotification(url,"下载中" ,"全部取消下载");
+/*
 
-        FileUtils.deleteFile(file);
-
-        if (null != onDownloadListener) {
-            onDownloadListener.onCanceled(url, file);
-        }
-
-        cancelDownloadNotification();
-
-        /*if (show_notification) {
-            //取消下载，将前台服务通知关闭，并创建一个下载失败的通知
-            stopForeground(true);
-        }*/
-        //Toast.makeText(DownloadService.this,"Download Canceled",Toast.LENGTH_SHORT).show();
+        getNotificationManager().cancel(getNotificationId(url));
+        stopForeground(true);*/
     }
 
-
-    /**
-     * 更新进度的回调接口
-     */
-    private DownloadListener onDownloadListener;
-
-    /**
-     * 注册回调接口的方法，供外部调用
-     *
-     * @param listener
-     */
-    public void setOnDownloadListener(DownloadListener listener) {
-        onDownloadListener = listener;
-    }
 
 }

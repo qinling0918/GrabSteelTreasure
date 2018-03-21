@@ -3,7 +3,6 @@ package com.zgw.qgb.base;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -58,29 +57,30 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
         super.onCreate(savedInstanceState);
         mContext = this;
 
-        if (layout() != 0) {
-            setContentView(layout());
-            ButterKnife.bind(this);
-        }
-
         mPresenter = createPresenter();
         checkNotNull(mPresenter,"presenter can't be null");
-        initData();
 
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             Icepick.restoreInstanceState(this, savedInstanceState);
             mPresenter.onRestoreInstanceState(savedInstanceState);
         }
 
-        if (null!=toolbar){
-            setupToolbarAndStatusBar(toolbar);
-        }
+
 
     }
 
 
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        if (layoutResID != 0) {
+            ButterKnife.bind(this);
+        }
+        if (null!=toolbar){
+            setupToolbarAndStatusBar(toolbar);
+        }
+    }
 
-    protected abstract void initData();
 
     @Override
     protected void onRestart() {
@@ -101,8 +101,6 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
 
     protected abstract P createPresenter();
 
-    @LayoutRes
-    protected abstract int layout();
 
     protected  boolean canBack(){
         return true;

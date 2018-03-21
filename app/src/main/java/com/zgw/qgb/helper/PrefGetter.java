@@ -7,9 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
 
-import com.google.gson.Gson;
-import com.zgw.qgb.model.UserInfo;
-
 /**
  * Created by tsinling on 2018-2
  */
@@ -68,7 +65,7 @@ public class PrefGetter {
         PrefHelper.set(NOTIFICATION_SOUND_PATH, uri.toString());
     }
 
-    @Nullable
+   /* @Nullable
     public static UserInfo getUserInfo() {
         Gson gson = new Gson();
         String userJson = PrefHelper.getString(USER_INFO);
@@ -79,12 +76,12 @@ public class PrefGetter {
     }
 
     public static void setUserInfo(@NonNull UserInfo userInfo) {
-        /*if (null == userInfo )
-            return;*/
+        *//*if (null == userInfo )
+            return;*//*
 
         Gson gson = new Gson();
         //转换成json数据，再保存
         String strJson = gson.toJson(userInfo);
         PrefHelper.set(USER_INFO, strJson);
-    }
+    }*/
 }

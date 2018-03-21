@@ -8,8 +8,8 @@ package com.zgw.qgb;
 public class Constant {
     private Constant() {}
 
-    public final static String BaseUrl = "http://qgbtest.zgw.com/";
-    public final static String BaseUrl_debug = "http://qgbtest.zgw.com/";
+    public final static String BaseUrl = "https://wccyservicet.zgw.com/";
+    public final static String BaseUrl_debug = "https://wccyservicet.zgw.com/";
     public final static String BaseUrl_local = "http://192.168.1.18:8026/";
 
 }

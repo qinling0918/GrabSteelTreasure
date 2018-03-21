@@ -52,23 +52,23 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     }
 
     @Override
-    protected int layout() {
-        return R.layout.activity_main;
-    }
-
-    @Override
     public void setText(String str) {
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         mPresenter.login();
+
+
+
         setupViewPager();
         setupBottomNavigationBar();
+
+
     }
 
-    @Override
     protected void initData() {
         countArr = new int[tabStrArr.length];
         tabIconArr = ResourceUtils.getDrawableId(R.array.bottom_tab_icon_id);
@@ -85,11 +85,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         vpMainContainer.setAdapter(pagerAdapter);
         vpMainContainer.setCurrentItem(lastSelectedPosition, false);
 
-
     }
 
 
     private void setupBottomNavigationBar() {
+        initData();
+
         bottomNavigationBar.clearAll();
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
@@ -159,4 +160,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         countArr[fromIndex] = count;
         setupBottomNavigationBar();
     }
+
+
 }
