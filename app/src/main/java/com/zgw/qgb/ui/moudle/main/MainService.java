@@ -1,8 +1,10 @@
 package com.zgw.qgb.ui.moudle.main;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
@@ -25,6 +27,16 @@ public interface MainService {
             @Field("Phone") String phone,
             @Field("ValidateType") int validateType,
             @Field("Source") int source);
+
+    @Headers({"Content-Type: application/json", "Accept: application/json"})//需要添加头
+    @POST("api/User/Register")
+    Observable<BaseBean> Register(@Body Object requestBody);//注册
+
+
+    @POST("api/User/Login")
+    Observable<BaseBean> Login(//登录
+                                @Body Object requestBody
+    );
 /*    @Streaming
     @GET
     Observable<ResponseBody> download(@Url String url);*/

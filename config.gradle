@@ -1,0 +1,106 @@
+ext.versions = [
+
+
+        'compileSdk'  : 27,
+        'buildTools'  : '27.0.3',
+        'minSdk'      : 19,
+        'targetSdk'   : 27,
+
+        'gradlePlugin': "3.1.2",
+        'support'     : '27.1.0',
+        'butterKnife' : '8.8.1',
+        'rxlifecycle' : '2.2.0',
+        'icepick'     : '3.2.0',
+        'okhttp'      : '3.9.0',
+        'retrofit'    : '2.3.0',
+        'leakCanary'  : '1.5.4',
+        'kotlin'      : '1.2.30',
+        'glide'       : '4.5.0',
+]
+ext.deps = [
+        'support'      : [
+                'annotations'     : "com.android.support:support-annotations:${versions.support}",
+                'v4'              : "com.android.support:support-v4:${versions.support}",
+                'appCompat'       : "com.android.support:appcompat-v7:${versions.support}",
+                'design'          : "com.android.support:design:${versions.support}",
+                'recyclerview'    : "com.android.support:recyclerview-v7:${versions.support}",
+                'cardview'        : "com.android.support:cardview-v7:${versions.support}",
+                'vectorDrawable'  : "com.android.support:support-vector-drawable:${versions.support}",
+                'constraint': "com.android.support.constraint:constraint-layout:1.0.2",
+                'multidex'        : "com.android.support:multidex:1.0.2",
+        ],
+
+        'kotlin'       : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}",
+
+        'okhttp'       : [
+                'core'  : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+                'logger': "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+        ],
+
+        'glide'        : [
+                'core'  : "com.github.bumptech.glide:glide:${versions.glide}",
+                'okhttp': "com.github.bumptech.glide:okhttp3-integration:${versions.glide}",
+        ],
+
+        'retrofit'     : [
+                'core'     : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+                'converter': "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+                'rxjava2'   : "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}",
+
+        ],
+        'butterKnife'  : [
+                'runtime' : "com.jakewharton:butterknife:${versions.butterKnife}",
+                'compiler': "com.jakewharton:butterknife-compiler:${versions.butterKnife}",
+        ],
+
+        'leakCanary'   : [
+                'real': "com.squareup.leakcanary:leakcanary-android:${versions.leakCanary}",
+                'noOp': "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leakCanary}",
+        ],
+
+        'rx2'          : [
+                'core'                  : 'io.reactivex.rxjava2:rxjava:2.1.3',
+                'android'               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
+                'rxlifecycle_android'   : "com.trello.rxlifecycle2:rxlifecycle-android:${versions.rxlifecycle}",
+                'rxlifecycle_components': "com.trello.rxlifecycle2:rxlifecycle-components:${versions.rxlifecycle}",
+                'rxpermissions'         : 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar',
+                //'rxbinding': 'com.jakewharton.rxbinding:rxbinding:1.0.1',
+        ],
+
+        'timber'       : 'com.jakewharton.timber:timber:4.5.1',
+        'icepick'      : "frankiesardo:icepick:${versions.icepick}",
+        'statusbarutil': 'com.jaeger.statusbarutil:library:1.4.0',
+        'gson'         : 'com.google.code.gson:gson:2.8.2',
+        'stream'       : 'com.annimon:stream:1.1.7',
+        'SmartRefreshLayout'  : 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3',
+        'bottomNavigationBar' : 'com.ashokvarma.android:bottom-navigation-bar:2.0.3',
+        'materialDialogs' : "com.afollestad.material-dialogs:core:0.9.4.7",
+        'toasty'       : 'com.github.GrenderG:Toasty:1.1.3',
+
+
+        'arouter'      : 'com.alibaba:arouter-api:1.3.1',
+        'junit'        : 'junit:junit:4.12',
+        'espresso'     : 'com.android.support.test.espresso:espresso-core:3.0.1',
+        'runner'       : 'com.android.support.test:runner:1.0.2',
+
+
+
+        'kapt'         : [
+                'glide_compiler'      : "com.github.bumptech.glide:compiler:${versions.glide}",
+                'icepick_processor'   : "frankiesardo:icepick-processor:${versions.icepick}",
+                'butterknife_compiler': "com.jakewharton:butterknife-compiler:${versions.butterKnife}",
+                'arouter_compiler'    : "com.alibaba:arouter-compiler:1.1.4"
+        ],
+]
+
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.mavenCentral()
+    handler.maven { url "https://jitpack.io" }
+    handler.maven { url "https://clojars.org/repo/" }//icepick
+    handler.maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    //handler.maven { url 'https://maven.fabric.io/public' }
+}
+
+ext.addRepos = this.&addRepos

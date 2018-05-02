@@ -1,25 +1,7 @@
 buildscript {
 
-/*    ext.versions = [
-            'compileSdk': 26,
-            'buildTools': '26.0.2',
-            'minSdk': 19,
-            'targetSdk': 25,
-
-            'supportLibrary': '26.1.0',
-            'kotlin_version': '1.2.10',
-            'butterKnife': '8.8.1',
-            'lombokVersion': '1.12.6',
-            'rxlifecycleVersion': '2.2.0',
-            'icepickVersion': '3.2.0',
-            'okhttp': '3.9.0',
-            'retrofit': '2.3.0',
-            'leakCanary': '1.5.1',
-            'espresso': '2.2.2',
-            'errorProne': '2.1.1',
-    ]*/
-    ext {
-        supportVersion = "27.1.1"
+   /* ext {
+        supportVersion = "27.1.0"
         //kotlin_version = '1.1.3-2'
         kotlin_version = '1.2.30'
         butterKnifeVersion = '8.8.1'
@@ -31,37 +13,41 @@ buildscript {
         glideVersion = '4.2.0'
         junitVersion = '4.12'
         espresseVersion = '2.2.2'
-    }
+    }*/
+    apply from: 'config.gradle'
+    addRepos(repositories)
 
-    repositories {
-        google()
-        maven {url 'https://maven.google.com' }
-        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-        maven {url "https://jitpack.io" }
-        maven {url "https://clojars.org/repo/"}//icepick
-        //maven { url 'https://maven.fabric.io/public' }
-        jcenter()
-    }
 
     dependencies {
 
+        classpath "com.android.tools.build:gradle:${versions.gradlePlugin}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath 'com.novoda:bintray-release:0.8.0'
+        classpath "com.jakewharton:butterknife-gradle-plugin:${versions.butterKnife}"
 
-        classpath 'com.android.tools.build:gradle:3.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.jakewharton:butterknife-gradle-plugin:$butterKnifeVersion"
         //classpath 'io.fabric.tools:gradle:1.22.2'
     }
 }
 
 allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        maven {url 'https://maven.google.com' }
-        maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-        maven {url "https://jitpack.io" }
-        maven {url "https://clojars.org/repo/"}//icepick
-        jcenter()
+
+    addRepos(repositories)
+    // Android dependency 'com.android.support:design' has different version for the compile (25.3.1) and runtime (25.4.0) classpath.
+    // You should manually set the same version via DependencyResolution
+    subprojects {
+        project.configurations.all {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == 'com.android.support'
+                        && !details.requested.name.contains('multidex')) {
+                    details.useVersion  "$versions.support"
+                }
+            }
+        }
+    }
+
+    // 组件缓存更新时间设置（默认每次build都更新）
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'minutes'
     }
 }
 
