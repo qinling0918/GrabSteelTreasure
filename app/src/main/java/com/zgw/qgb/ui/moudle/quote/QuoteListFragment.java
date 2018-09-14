@@ -16,6 +16,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.tinker.lib.tinker.Tinker;
+import com.tencent.tinker.lib.tinker.TinkerInstaller;
+import com.tencent.tinker.loader.app.ApplicationLike;
+import com.tencent.tinker.loader.shareutil.ShareConstants;
+import com.tencent.tinker.loader.shareutil.ShareTinkerInternals;
+import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.helper.Bundler;
@@ -36,6 +42,11 @@ import static android.content.Context.BIND_AUTO_CREATE;
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
 
+// https://github.com/cvmars/TinkerDemo/blob/master/app/src/main/java/com/youxiake/tinkerdemo/SampleApplicationLike.java
+//https://github.com/Tencent/tinker/wiki/Tinker-%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97
+//https://github.com/Tencent/tinker
+//https://github.com/Tencent/tinker/blob/master/tinker-sample-android/app/build.gradle
+//https://blog.csdn.net/lxynlyxy/article/details/79087148
 /**
  * Comment://报价列表
  * Created by Tsinling on 2017/5/24 17:34.
@@ -154,6 +165,8 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setTitle(title);
+
+        tvWideNation.append("qwertyu");
     }
 
     @Override
@@ -174,7 +187,11 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_title:
-                downloadService.cancelDownload();
+               // downloadService.cancelDownload();
+
+                ShareTinkerInternals.killAllOtherProcess(getContext());
+                android.os.Process.killProcess(android.os.Process.myPid());
+
                 //https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1517645120430&di=c4851c8646d6f6d086ea6ec6f3edf71c&imgtype=0&src=http%3A%2F%2Fwww.jituwang.com%2Fuploads%2Fallimg%2F160203%2F257953-160203193R164.jpg
                 //String url1 = "https://www.baidu.com/link?url=soOQSZR7o_Jy2Tzxj6LIpD6xF0NEvw7tjMx_yi6gS-3az9wGOVqzXQ6hijP18_NR2neyWBMJtn18cMfqD3_LW3hIm6xDLf1wjGXZQMvaQRm&wd=&eqid=846b5b7e00040043000000035a754498";
                 //String url1 =url0;
@@ -195,7 +212,14 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 //ToastUtils.showLong(getString(R.string.message));
                 break;
             case R.id.tv_wide_nation:
-                downloadService.pauseDownload();
+                final String path = getContext().getFilesDir().getAbsolutePath();
+               /* TinkerInstaller.install(new ApplicationLike(App.getInstance(), ShareConstants.TINKER_ENABLE_ALL,false,) {
+                });*/
+                Tinker.with(getContext());
+                //请求打补丁
+                TinkerInstaller.onReceiveUpgradePatch(getContext(), path+"/patch_signed_7zip.apk");
+
+               // downloadService.pauseDownload();
                /* UserInfo userInfo = new UserInfo();
                 List<UserInfo.User> list = new ArrayList<UserInfo.User>();
                 for (int i = 0; i < 5; i++) {

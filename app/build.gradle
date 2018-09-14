@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 //apply plugin: 'io.fabric'
+// apply from:  rootProject.file('tinkerpatch.gradle')
+apply from: 'tinkerpatch.gradle'
 android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -16,12 +18,25 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-       /* javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [moduleName: project.getName()]
+        /* javaCompileOptions {
+             annotationProcessorOptions {
+                 arguments = [moduleName: project.getName()]
+             }
+         }*/
+
+        // 可以将这些存放到gradle.properties 里面。
+    /*    signingConfigs {
+            release {
+                try {
+                    storeFile file('E:/keystore/test.jks')
+                    storePassword '123456'
+                    keyAlias 'desktop'
+                    keyPassword '123456'
+                } catch (ex) {
+                    throw new InvalidUserDataException(ex.toString())
+                }
             }
         }*/
-
     }
     buildTypes {
 
@@ -100,8 +115,8 @@ dependencies {
     implementation deps.glide.okhttp
     kapt deps.kapt.glide_compiler
 
-    implementation deps.materialDialogs, {exclude group: 'com.android.support' }
-    implementation deps.toasty, {exclude group: 'com.android.support'}
+    implementation deps.materialDialogs, { exclude group: 'com.android.support' }
+    implementation deps.toasty, { exclude group: 'com.android.support' }
     implementation deps.SmartRefreshLayout
     implementation deps.bottomNavigationBar
 
@@ -127,7 +142,11 @@ dependencies {
     kapt deps.kapt.arouter_compiler
 
     implementation deps.butterKnife.runtime
-    kapt deps.butterKnife.compiler
+    kapt deps.kapt.butterknife_compiler
+
+    implementation deps.tinker.core
+    compileOnly deps.tinker.anno
+    annotationProcessor deps.kapt.tinker_processor
 
     debugImplementation deps.leakCanary.real
     releaseImplementation deps.leakCanary.noOp
@@ -135,9 +154,6 @@ dependencies {
     androidTestImplementation deps.junit
     androidTestImplementation deps.espresso
     androidTestImplementation deps.runner
-
-
-
 
     //implementation 'com.alibaba:arouter-annotation:1.0.4'
     /* implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
@@ -158,11 +174,10 @@ dependencies {
     //compile "org.parceler:parceler-api:1.0.4"
     //apt "org.parceler:parceler:1.0.4"
 
-
     //compile 'skin.support:skin-support:2.2.3'                   // skin-support 基础控件支持
     //compile 'skin.support:skin-support-design:2.2.3'            // skin-support-design material design 控件支持[可选]
     //compile 'skin.support:skin-support-cardview:2.2.3'          // skin-support-cardview CardView 控件支持[可选]
-   /// compile 'skin.support:skin-support-constraint-layout:2.2.3' // skin-support-constraint-layout ConstraintLayout 控件支
+    /// compile 'skin.support:skin-support-constraint-layout:2.2.3' // skin-support-constraint-layout ConstraintLayout 控件支
 
 
- }
+}

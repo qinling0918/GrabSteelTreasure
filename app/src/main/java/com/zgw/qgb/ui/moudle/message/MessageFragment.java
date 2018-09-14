@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -72,7 +73,7 @@ public class MessageFragment
         setTitle(title);
 
         setAdapter();
-        RxPermissions rxPermissions = new RxPermissions(getActivity());
+        RxPermissions rxPermissions = new RxPermissions(getmActivity());
         rxPermissions.request( Manifest.permission.READ_CONTACTS)
                 .subscribe(new BaseObserver<Boolean>() {
                     @Override
@@ -90,7 +91,7 @@ public class MessageFragment
 
 
     private void initLoader() {
-        getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        getmActivity().getSupportLoaderManager().initLoader(0, null, this);
     }
 
     private void setAdapter() {
@@ -107,7 +108,7 @@ public class MessageFragment
     public void onDestroy() {
         super.onDestroy();
         //mAdapter.changeCursor(null);
-        getActivity().getSupportLoaderManager().destroyLoader(0);
+        getmActivity().getSupportLoaderManager().destroyLoader(0);
     }
 
     // These are the Contacts rows that we will retrieve.
@@ -155,7 +156,7 @@ public class MessageFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (loader.getId() == 0) {
+        if (loader!=null && loader.getId() == 0) {
             mAdapter.swapCursor(data);
         }
 

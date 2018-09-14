@@ -5,13 +5,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.squareup.leakcanary.LeakCanary;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
+import com.zgw.qgb.helper.utils.ScreenUtils;
 
 import java.util.Locale;
+import java.util.Timer;
+
+import timber.log.Timber;
 
 
 /**
@@ -24,6 +31,7 @@ public class App extends Application {
         super.onCreate();
         //支持vector drawable
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        //Glide.with(this).applyDefaultRequestOptions(new RequestOptions()).
         instance = this;
         init();
     }
@@ -48,7 +56,10 @@ public class App extends Application {
         RudenessScreenHelper.getInstance().init(this,720)/*.activate()*/;
         //FabricHelper.getInstance().init(this);
         //Timber.plant(isDebug() ? new Timber.DebugTree() : new CrashlyticsTree());
-
+        Log.d("density1"  ,";"+ScreenUtils.getDisplayMetrics(this).toString());
+        Log.d("density2"  ,":"+ScreenUtils.getDisplayMetrics(this).densityDpi);
+        Log.d("density3"  ,";"+ScreenUtils.getDisplayMetrics(this).scaledDensity);
+        Log.d("density4"  ,":"+ScreenUtils.getDisplayMetrics(this).heightPixels);
         initARouter();
     }
 

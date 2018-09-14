@@ -64,9 +64,6 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
             Icepick.restoreInstanceState(this, savedInstanceState);
             mPresenter.onRestoreInstanceState(savedInstanceState);
         }
-
-
-
     }
 
 

@@ -109,11 +109,6 @@ public class PrefHelper {
             return new Editor(sp,spName,APPLY);
         }
 
-        public static Editor start(SharedPreferences sp, String spName) {
-            return new Editor(sp,spName,APPLY);
-        }
-
-
         public Editor put(String key, @Nullable String value) {
             start();
             end(sp_editor.putString(key,value));

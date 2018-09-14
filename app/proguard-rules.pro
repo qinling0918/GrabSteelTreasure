@@ -32,7 +32,8 @@
 
 
 -dontwarn javax.annotation.**
--dontwarn javax.inject.**
+-dontwarn javax.**
+#-dontwarn javax.inject.**
 
 # OkHttp3
 -dontwarn okhttp3.logging.**

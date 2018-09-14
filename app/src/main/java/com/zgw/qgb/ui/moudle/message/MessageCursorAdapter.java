@@ -23,8 +23,7 @@ public class MessageCursorAdapter extends RecycleViewCursorAdapter<MessageCursor
     public MessageCursorAdapter(Cursor c) {
         super(c);
     }
-
-    Context mContext;
+    private Context mContext;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

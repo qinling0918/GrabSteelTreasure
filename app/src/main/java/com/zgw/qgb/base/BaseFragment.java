@@ -1,10 +1,12 @@
 package com.zgw.qgb.base;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -36,6 +38,10 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
     protected IView callback;
     protected P mPresenter;
     private Unbinder unbinder;
+    private Context mContext;
+
+
+    private Activity mActivity;
 
     @Nullable
     @BindView(R.id.toolbar)
@@ -47,9 +53,16 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
         if (context instanceof IView) {
             callback = (IView) context;
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
     }
 
     @Override
@@ -62,14 +75,24 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
             Icepick.restoreInstanceState(this, savedInstanceState);
             mPresenter.onRestoreInstanceState(savedInstanceState);
         }
+    }
 
+    @NonNull
+    @Override
+    public Context getContext() {
+        // return super.getContext()== null ?mContext :getContext();
+        return mContext;
+    }
 
+    public FragmentActivity getmActivity() {
+        return getActivity() == null ? (FragmentActivity) mActivity : getActivity();
     }
 
     /**
      * 用来初始化数据,
      */
-    protected void initData() {}
+    protected void initData() {
+    }
 
     @SuppressLint("RestrictedApi")
     @Nullable
@@ -163,7 +186,7 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
     }
 
     public void setTitle(CharSequence title) {
-        if (tv_title != null){
+        if (tv_title != null) {
             tv_title.setText(title);
         }
 

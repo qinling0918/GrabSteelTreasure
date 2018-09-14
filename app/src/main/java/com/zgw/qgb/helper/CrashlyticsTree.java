@@ -1,11 +1,15 @@
 package com.zgw.qgb.helper;
 
+import android.support.annotation.Nullable;
+import android.util.Log;
+
+import timber.log.Timber;
+
 /**
  * Created by Tsinling on 2017/9/26 14:37.
  * description:
  */
 
-/*
 public class CrashlyticsTree extends Timber.Tree {
     private static final String CRASHLYTICS_KEY_PRIORITY = "priority";
     private static final String CRASHLYTICS_KEY_TAG = "tag";
@@ -17,7 +21,7 @@ public class CrashlyticsTree extends Timber.Tree {
             return;
         }
 
-        Crashlytics.setInt(CRASHLYTICS_KEY_PRIORITY, priority);
+     /*   Crashlytics.setInt(CRASHLYTICS_KEY_PRIORITY, priority);
         Crashlytics.setString(CRASHLYTICS_KEY_TAG, tag);
         Crashlytics.setString(CRASHLYTICS_KEY_MESSAGE, message);
 
@@ -25,6 +29,6 @@ public class CrashlyticsTree extends Timber.Tree {
             Crashlytics.logException(new Exception(message));
         } else {
             Crashlytics.logException(t);
-        }
+        }*/
     }
-}*/
+}
