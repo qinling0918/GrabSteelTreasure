@@ -12,8 +12,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
+import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.helper.utils.EmptyUtils;
 import com.zgw.qgb.helper.utils.FileUtils;
 
@@ -192,7 +192,7 @@ public class DownloadsService extends Service implements DownloadListener {
      * @return
      */
     private NotificationManager getNotificationManager() {
-        return (NotificationManager) App.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        return (NotificationManager) Utils.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     /**
@@ -209,7 +209,7 @@ public class DownloadsService extends Service implements DownloadListener {
          * 解决方案是：用support库中提供的兼容API。support-v4库中提供了一个NotificationCompat类，使用它可以保证我们的
          * 程序在所有的Android系统版本中都能正常工作。
          */
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(App.getContext(), NOTIFICATION_GROUP);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(Utils.getContext(), NOTIFICATION_GROUP);
         //设置通知的小图标
         builder.setSmallIcon(R.mipmap.ic_launcher);
         //设置通知的大图标，当下拉系统状态栏时，就可以看到设置的大图标

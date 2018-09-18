@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 
 import java.lang.ref.WeakReference;
@@ -212,7 +211,7 @@ public final class ToastUtils {
 	}
 
 	private static Context getContext() {
-		return App.getContext();
+		return Utils.getContext();
 	}
 
 	private static void show(@StringRes final int resId, final int duration, final Object... args) {

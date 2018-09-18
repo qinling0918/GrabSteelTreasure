@@ -1,9 +1,9 @@
 package com.zgw.qgb.net;
 
 import com.google.gson.Gson;
-import com.zgw.qgb.App;
 import com.zgw.qgb.Constant;
 import com.zgw.qgb.helper.InputHelper;
+import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.helper.utils.EmptyUtils;
 import com.zgw.qgb.net.converters.StringConverterFactory;
 import com.zgw.qgb.net.progressmanager.ProgressManager;
@@ -21,7 +21,7 @@ import static com.zgw.qgb.net.OkHttpConfig.DEFAULT_CONFIG;
  */
 
 public class RetrofitProvider {
-    public static String baseUrl = App.getInstance().isDebug()
+    public static String baseUrl = Utils.getInstance().isDebug()
             ? Constant.BaseUrl_debug
             : Constant.BaseUrl;
     private static OkHttpClient okHttpClient;
@@ -34,7 +34,7 @@ public class RetrofitProvider {
     public static OkHttpClient provideOkHttp() {
         if (okHttpClient == null ) {
             OkHttpClient.Builder client = ProgressManager.getInstance().with(new OkHttpClient.Builder());
-            if (App.getInstance().isDebug()) {
+            if (Utils.getInstance().isDebug()) {
                 HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                 client.addInterceptor(loggingInterceptor);

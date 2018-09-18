@@ -5,8 +5,8 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
+import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.helper.utils.FileUtils;
 import com.zgw.qgb.net.RetrofitProvider;
 
@@ -252,7 +252,7 @@ public class DownloadTask extends AsyncTask<DownloadInfo,DownloadInfo,DownloadIn
     private static File getFile(String mDownloadUrl, String filePath, String fileName) {
         //String directory= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         filePath = TextUtils.isEmpty(filePath)
-                ? Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name)
+                ? Environment.getExternalStorageDirectory() + File.separator + Utils.getContext().getString(R.string.app_name)
                 :filePath;
         fileName = TextUtils.isEmpty(fileName)
                 ?new File(mDownloadUrl).getName()

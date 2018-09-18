@@ -4,7 +4,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.annotation.ArrayRes;
 
-import com.zgw.qgb.App;
+import com.zgw.qgb.helper.Utils;
 
 /**
  * Name:ReaourceUtils
@@ -18,7 +18,7 @@ public final class ResourceUtils {
     }
 
     public static Resources getResources() {
-        return App.getContext().getResources();
+        return Utils.getContext().getResources();
     }
 
     public static int[] getDrawableId(@ArrayRes int id) {

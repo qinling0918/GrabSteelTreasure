@@ -4,8 +4,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
+import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.net.progressmanager.ProgressListener;
 import com.zgw.qgb.net.progressmanager.ProgressManager;
 import com.zgw.qgb.net.progressmanager.body.ProgressInfo;
@@ -30,9 +30,9 @@ public class NotificationProgressListener implements ProgressListener {
     public NotificationProgressListener(String url) {
         this.url = url ;
         String fileName = new File(url).getName();
-        notificationManager = (NotificationManager) App.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) Utils.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationBuilder = new NotificationCompat.Builder(App.getContext(),url)
+        notificationBuilder = new NotificationCompat.Builder(Utils.getContext(),url)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(fileName)
                 .setAutoCancel(true);
@@ -76,7 +76,7 @@ public class NotificationProgressListener implements ProgressListener {
 
         content = max == 0 ? content
                 : totalLength == 0 ? content
-                : String.format(App.getLocale(),App.getContext().getString(R.string.leftTime),formatSeconds(timeLeft));
+                : String.format(Utils.getLocale(),Utils.getContext().getString(R.string.leftTime),formatSeconds(timeLeft));
         notificationBuilder.setContentText(content);
 
         notificationBuilder.setContentInfo(contentInfo);

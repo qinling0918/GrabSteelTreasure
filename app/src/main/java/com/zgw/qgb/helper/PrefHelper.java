@@ -6,8 +6,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.zgw.qgb.App;
-
 import java.util.Map;
 
 /**
@@ -60,7 +58,7 @@ public class PrefHelper {
     }
 
     private static SharedPreferences getSharedPreferences() {
-        return PreferenceManager.getDefaultSharedPreferences(App.getInstance());
+        return PreferenceManager.getDefaultSharedPreferences(Utils.getContext());
     }
 
     @Nullable

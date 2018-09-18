@@ -9,8 +9,8 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
+import com.zgw.qgb.helper.Utils;
 
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
@@ -148,7 +148,7 @@ public final class FileUtils {
     public static File getFile(String mDownloadUrl, String filePath, String fileName) {
         //String directory= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         filePath = TextUtils.isEmpty(filePath)
-                ? Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name)
+                ? Environment.getExternalStorageDirectory() + File.separator + Utils.getContext().getString(R.string.app_name)
                 :filePath;
         fileName = TextUtils.isEmpty(fileName)
                 ?new File(mDownloadUrl).getName()
@@ -172,7 +172,7 @@ public final class FileUtils {
 
     public static void installAPk(File file) {
         Intent intent = getInstallApkIntent(file);
-        App.getContext().startActivity(intent);
+        Utils.getContext().startActivity(intent);
     }
 
     @NonNull
@@ -183,7 +183,7 @@ public final class FileUtils {
         // 判断版本大于等于7.0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // "com.zgw.qgb"即是在清单文件中配置的authorities
-            data = FileProvider.getUriForFile(App.getContext(), "com.zgw.qgb", file);
+            data = FileProvider.getUriForFile(Utils.getContext(), "com.zgw.qgb", file);
             // 给目标应用一个临时授权
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {

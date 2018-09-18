@@ -49,7 +49,7 @@ import android.text.style.UnderlineSpan;
 import android.text.style.UpdateAppearance;
 import android.util.Log;
 
-import com.zgw.qgb.App;
+import com.zgw.qgb.helper.Utils;
 
 import java.io.InputStream;
 import java.lang.annotation.Retention;
@@ -1159,7 +1159,7 @@ public final class SpanUtils {
 
         private CustomImageSpan(final Bitmap b, final int verticalAlignment) {
             super(verticalAlignment);
-            mDrawable = new BitmapDrawable(App.getInstance().getResources(), b);
+            mDrawable = new BitmapDrawable(Utils.getContext().getResources(), b);
             mDrawable.setBounds(
                     0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()
             );
@@ -1192,9 +1192,9 @@ public final class SpanUtils {
                 Bitmap bitmap;
                 try {
                     InputStream is =
-                            App.getInstance().getContentResolver().openInputStream(mContentUri);
+                            Utils.getContext().getContentResolver().openInputStream(mContentUri);
                     bitmap = BitmapFactory.decodeStream(is);
-                    drawable = new BitmapDrawable(App.getInstance().getResources(), bitmap);
+                    drawable = new BitmapDrawable(Utils.getContext().getResources(), bitmap);
                     drawable.setBounds(
                             0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()
                     );
@@ -1206,7 +1206,7 @@ public final class SpanUtils {
                 }
             } else {
                 try {
-                    drawable = ContextCompat.getDrawable(App.getInstance(), mResourceId);
+                    drawable = ContextCompat.getDrawable(Utils.getContext(), mResourceId);
                     drawable.setBounds(
                             0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()
                     );

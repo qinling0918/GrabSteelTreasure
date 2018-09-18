@@ -2,8 +2,6 @@ package com.zgw.qgb.helper;
 
 import android.content.Context;
 
-import com.zgw.qgb.App;
-
 /**
  * Name:FabricHelper
  * Created by Tsinling on 2017/10/21 9:26.
@@ -20,7 +18,7 @@ public class FabricHelper {
         return SingletonHolder.mInstance;
     }
     public void init(Context context){
-        boolean debug = App.getInstance().isDebug();
+        boolean debug = Utils.getInstance().isDebug();
 
        /* Fabric fabric = new Fabric.Builder(context)
                 .kits(new Crashlytics.Builder()

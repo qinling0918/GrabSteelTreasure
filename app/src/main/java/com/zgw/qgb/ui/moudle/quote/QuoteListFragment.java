@@ -18,10 +18,7 @@ import android.widget.TextView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.tinker.lib.tinker.Tinker;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
-import com.tencent.tinker.loader.app.ApplicationLike;
-import com.tencent.tinker.loader.shareutil.ShareConstants;
 import com.tencent.tinker.loader.shareutil.ShareTinkerInternals;
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.helper.Bundler;
@@ -61,7 +58,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     String url1 = "http://acj2.pc6.com/pc6_soure/2017-6/com.zgw.qgb_29.apk";
     String url2 = "https://github.com/easemob/easeui_ios/archive/dev.zip";
     String url3 = "http://pic.58pic.com/58pic/15/14/14/18e58PICMwt_1024.jpg";
-
+     String path ;
     private DownloadsService downloadService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -141,7 +138,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         Intent intent = new Intent(getContext(), DownloadsService.class);
         //getContext().startService(intent);//启动服务
         getContext().bindService(intent, connection, BIND_AUTO_CREATE);//绑定服务
-
+        path = getContext().getFilesDir().getAbsolutePath();
     }
 
     private void checkPermissionAndStartDownload() {
@@ -166,7 +163,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         super.onViewCreated(view, savedInstanceState);
         setTitle(title);
 
-        tvWideNation.append("qwertyu");
+        tvWideNation.append("12");
     }
 
     @Override
@@ -212,7 +209,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 //ToastUtils.showLong(getString(R.string.message));
                 break;
             case R.id.tv_wide_nation:
-                final String path = getContext().getFilesDir().getAbsolutePath();
+
                /* TinkerInstaller.install(new ApplicationLike(App.getInstance(), ShareConstants.TINKER_ENABLE_ALL,false,) {
                 });*/
                 Tinker.with(getContext());

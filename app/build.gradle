@@ -4,7 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 //apply plugin: 'io.fabric'
 // apply from:  rootProject.file('tinkerpatch.gradle')
-apply from: 'tinkerpatch.gradle'
+
+
 android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
@@ -38,6 +39,7 @@ android {
             }
         }*/
     }
+
     buildTypes {
 
         release {
@@ -145,8 +147,8 @@ dependencies {
     kapt deps.kapt.butterknife_compiler
 
     implementation deps.tinker.core
-    compileOnly deps.tinker.anno
-    annotationProcessor deps.kapt.tinker_processor
+    //compileOnly deps.tinker.anno
+    //annotationProcessor deps.kapt.tinker_processor
 
     debugImplementation deps.leakCanary.real
     releaseImplementation deps.leakCanary.noOp
@@ -178,6 +180,6 @@ dependencies {
     //compile 'skin.support:skin-support-design:2.2.3'            // skin-support-design material design 控件支持[可选]
     //compile 'skin.support:skin-support-cardview:2.2.3'          // skin-support-cardview CardView 控件支持[可选]
     /// compile 'skin.support:skin-support-constraint-layout:2.2.3' // skin-support-constraint-layout ConstraintLayout 控件支
-
-
 }
+// 该文件需要获取 versionName的值，故需要保证在defaultConfig {} 函数完成后 调用
+apply from: 'tinkerpatch.gradle'

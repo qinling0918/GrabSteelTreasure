@@ -1,10 +1,14 @@
 //=======================Tinker 配置=======================================
 android {
     dexOptions {
+        // 开启支持大工程模式
         jumboMode = true
     }
 }
-
+/**
+ * 获取版本名 用于提供tinkerId
+ * @return
+ */
 def gitSha() {
     return android.defaultConfig.versionName
 }
@@ -17,22 +21,26 @@ ext {
     tinkerEnabled = true
 
     // old apk地址  基准apk包的路径，必须输入，否则会报错。
+    // 要于bakApk路径下的名称一致。
     tinkerOldApkPath = "${bakPath}/app-debug.apk"
-    //old apk 混淆文件地址
+    //old apk 混淆文件地址  ，在打包差量包时要对应上。
     tinkerApplyMappingPath = "${bakPath}/app-release-16-13-mapping.txt"
     //old apk R 文件地址
     // E:\AndroidProjects\Tinker2\app\build\bakApk\app-debug-58-58-R.txt
     tinkerApplyResourcePath = "${bakPath}/app-debug-30-11-R.txt"
-/***
- * 1.通过flavor编译，这个时候我们可以看到bakApk路径是一个按照flavor名称区分的目录；
- 2.将编译目录路径填写到sample中tinkerBuildFlavorDirectory，其他的几个字段不需要填写，这里会自动根据路径拼接;
- 3.运行tinkerPatchAllFlavorDebug或者tinkerPatchAllFlavorRelease即可得到所有flavor的补丁包。
- */
+    /***
+     * 1.通过flavor编译，这个时候我们可以看到bakApk路径是一个按照flavor名称区分的目录；
+     2.将编译目录路径填写到sample中tinkerBuildFlavorDirectory，其他的几个字段不需要填写，这里会自动根据路径拼接;
+     3.运行tinkerPatchAllFlavorDebug或者tinkerPatchAllFlavorRelease即可得到所有flavor的补丁包。
+     */
     // 多渠道打包相关 only use for build all flavor, if not, just ignore this field
     //  tinkerBuildFlavorDirectory = "${bakPath}/app-1018-17-32-47"
 }
 
-
+/**
+ * 若是在配置文件gradle.properties 中能找到OLD_APK对应的值，便使用该值。
+ * @return
+ */
 def getOldApkPath() {
     return hasProperty("OLD_APK") ? OLD_APK : ext.tinkerOldApkPath
 }
@@ -71,7 +79,7 @@ if (buildWithTinker()) {
          */
         oldApk = getOldApkPath()
         /**
-         * newApk	null	选填，用于编译补丁apk路径。如果路径合法，即不再编译新的安装包，使用oldApk与newApk直接编译。
+         * newApk	选填，用于编译补丁apk路径。如果路径合法，即不再编译新的安装包，使用oldApk与newApk直接编译。
          */
         //newApk = getNewApkPath()
         /**
@@ -268,7 +276,13 @@ if (buildWithTinker()) {
          * if you don't use zipArtifact or path, we just use 7za to try
          *
          * 7zip路径配置项，执行前提是useSign为true
-         */
+         *
+         * 有时会找不到 com.tencent.mm:SevenZip:1.1.10 路径，则在工程目录下的build.gradle文件中添加仓库依赖。
+         * buildscript {
+         *  repositories {
+         *      google()
+                jcenter()
+                maven {url 'https://dl.bintray.com/jetbrains/anko'}}}*/
         sevenZip {
             /**
              * optional，default '7za'
@@ -374,23 +388,23 @@ if (buildWithTinker()) {
             }
         }
     }
-    /***
-     * 输出文件详解
-     在tinkerPatch输出目录build/outputs/tinkerPatch中，我们关心的文件有：
 
-     文件名	描述
-     patch_unsigned.apk	没有签名的补丁包
-     patch_signed.apk	签名后的补丁包
-     patch_signed_7zip.apk	签名后并使用7zip压缩的补丁包，也是我们通常使用的补丁包。但正式发布的时候，最好不要以.apk结尾，防止被运营商挟持。
-     log.txt	在编译补丁包过程的控制台日志
-     dex_log.txt	在编译补丁包过程关于dex的日志
-     so_log.txt	在编译补丁包过程关于lib的日志
-     tinker_result	最终在补丁包的内容，包括diff的dex、lib以及assets下面的meta文件
-     resources_out.zip	最终在手机上合成的全量资源apk，你可以在这里查看是否有文件遗漏
-     tempPatchedDexes	在Dalvik与Art平台，最终在手机上合成的完整Dex，我们可以在这里查看dex合成的产物。
-     */
 }
+/***
+ * 输出文件详解
+ 在tinkerPatch输出目录build/outputs/tinkerPatch中，我们关心的文件有：
 
+ 文件名	描述
+ patch_unsigned.apk	没有签名的补丁包
+ patch_signed.apk	签名后的补丁包
+ patch_signed_7zip.apk	签名后并使用7zip压缩的补丁包，也是我们通常使用的补丁包。但正式发布的时候，最好不要以.apk结尾，防止被运营商挟持。
+ log.txt	在编译补丁包过程的控制台日志
+ dex_log.txt	在编译补丁包过程关于dex的日志
+ so_log.txt	在编译补丁包过程关于lib的日志
+ tinker_result	最终在补丁包的内容，包括diff的dex、lib以及assets下面的meta文件
+ resources_out.zip	最终在手机上合成的全量资源apk，你可以在这里查看是否有文件遗漏
+ tempPatchedDexes	在Dalvik与Art平台，最终在手机上合成的完整Dex，我们可以在这里查看dex合成的产物。
+ */
 //    aaptOptions{
 //        cruncherEnabled false
 //    }

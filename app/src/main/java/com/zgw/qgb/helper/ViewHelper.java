@@ -2,7 +2,6 @@ package com.zgw.qgb.helper;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -30,7 +29,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 
 import java.util.Arrays;
@@ -173,7 +171,7 @@ public class ViewHelper {
 
 
      public static Resources getResources() {
-          return App.getContext().getResources();
+          return Utils.getContext().getResources();
       }
     public static int[] getDrawableId(@ArrayRes int id) {
         TypedArray ar = getResources().obtainTypedArray(id);

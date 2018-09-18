@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
+import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.helper.utils.FileUtils;
 import com.zgw.qgb.helper.utils.NetUtils;
 import com.zgw.qgb.net.RetrofitProvider;
@@ -66,7 +66,7 @@ public final class Rxdownload {
     public static Single<File> download(String mDownloadUrl, String filePath, String fileName) {
         File file = getFile(mDownloadUrl, filePath, fileName);
         long start = file.length();
-        String range = String.format(App.getLocale(), "bytes=%s-%s",start+"","");
+        String range = String.format(Utils.getLocale(), "bytes=%s-%s",start+"","");
         Log.d("Rxdownload", range);
         return RetrofitProvider.getService(DownLoadService.class)
                 .download(range, mDownloadUrl)
@@ -83,7 +83,7 @@ public final class Rxdownload {
     @NonNull
     private static File getFile(String mDownloadUrl, String filePath, String fileName) {
         filePath = TextUtils.isEmpty(filePath)
-                ? Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name)
+                ? Environment.getExternalStorageDirectory() + File.separator + Utils.getContext().getString(R.string.app_name)
                 :filePath;
         fileName = TextUtils.isEmpty(fileName)
                 ?new File(mDownloadUrl).getName()
@@ -107,8 +107,8 @@ public final class Rxdownload {
 
 
     private static void checkNet() {
-        if (!NetUtils.isConnected(App.getContext())) {
-            Toast.makeText(App.getContext(), App.getContext().getText(R.string.please_check_network), Toast.LENGTH_SHORT).show();
+        if (!NetUtils.isConnected(Utils.getContext())) {
+            Toast.makeText(Utils.getContext(), Utils.getContext().getText(R.string.please_check_network), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -207,7 +207,7 @@ public final class Rxdownload {
 
     public static File downloadBigFile(String mDownloadUrl, @NonNull final int threadCount, String filePath, String fileName) {
         filePath = TextUtils.isEmpty(filePath)
-                ? Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name) + File.separator
+                ? Environment.getExternalStorageDirectory() + File.separator + Utils.getContext().getString(R.string.app_name) + File.separator
                 : filePath;
         fileName = TextUtils.isEmpty(fileName)
                 ? new File(mDownloadUrl).getName()

@@ -19,7 +19,6 @@ import android.view.Surface;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.zgw.qgb.App;
 import com.zgw.qgb.R;
 
 import java.util.Locale;
@@ -147,7 +146,7 @@ public class AppHelper {
      * @return {@code true}: 是<br>{@code false}: 否
      */
     public static boolean isScreenLock() {
-        KeyguardManager km = (KeyguardManager) App.getContext().getSystemService(Context.KEYGUARD_SERVICE);
+        KeyguardManager km = (KeyguardManager) Utils.getContext().getSystemService(Context.KEYGUARD_SERVICE);
         return km.inKeyguardRestrictedInputMode();
     }
 
@@ -158,7 +157,7 @@ public class AppHelper {
      * @param duration 时长
      */
     public static void setSleepDuration(final int duration) {
-        Settings.System.putInt(App.getContext().getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, duration);
+        Settings.System.putInt(Utils.getContext().getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, duration);
     }
 
     /**
@@ -168,7 +167,7 @@ public class AppHelper {
      */
     public static int getSleepDuration() {
         try {
-            return Settings.System.getInt(App.getContext().getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT);
+            return Settings.System.getInt(Utils.getContext().getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
             return -123;
@@ -193,7 +192,7 @@ public class AppHelper {
      * @return {@code true}: 是<br>{@code false}: 否
      */
     public static boolean isLandscape() {
-        return getResources(App.getContext()).getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        return getResources(Utils.getContext()).getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     /**
@@ -202,7 +201,7 @@ public class AppHelper {
      * @return {@code true}: 是<br>{@code false}: 否
      */
     public static boolean isPortrait() {
-        return getResources(App.getContext()).getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        return getResources(Utils.getContext()).getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 
     /**

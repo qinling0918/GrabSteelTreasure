@@ -1,6 +1,5 @@
 package com.zgw.qgb;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
@@ -8,25 +7,32 @@ import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.squareup.leakcanary.LeakCanary;
+import com.tencent.tinker.lib.tinker.TinkerInstaller;
+import com.tencent.tinker.loader.TinkerSoLoader;
+import com.tencent.tinker.loader.app.ApplicationLike;
+import com.tencent.tinker.loader.app.TinkerApplication;
+import com.tencent.tinker.loader.shareutil.ShareConstants;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
 import com.zgw.qgb.helper.utils.ScreenUtils;
 
+import java.lang.reflect.Field;
 import java.util.Locale;
-import java.util.Timer;
 
-import timber.log.Timber;
 
 
 /**
  */
 
-public class App extends Application {
+public class App extends TinkerApplication {
     private static App instance;
 
+    public App() {
+        //tinkerFlags, which types is supported
+        //dex only, library only, all support
+        super(ShareConstants.TINKER_ENABLE_ALL,"com.zgw.qgb.AppLike");
+    }
     @Override public void onCreate() {
         super.onCreate();
         //支持vector drawable
@@ -59,9 +65,13 @@ public class App extends Application {
         Log.d("density1"  ,";"+ScreenUtils.getDisplayMetrics(this).toString());
         Log.d("density2"  ,":"+ScreenUtils.getDisplayMetrics(this).densityDpi);
         Log.d("density3"  ,";"+ScreenUtils.getDisplayMetrics(this).scaledDensity);
-        Log.d("density4"  ,":"+ScreenUtils.getDisplayMetrics(this).heightPixels);
+        Log.d("density4"  ,";"+ScreenUtils.getDisplayMetrics(this).scaledDensity);
+        Log.d("density5"  ,";"+ScreenUtils.getDisplayMetrics(this).scaledDensity);
         initARouter();
-    }
+
+
+
+}
 
     private void initARouter() {
         if (isDebug()) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效

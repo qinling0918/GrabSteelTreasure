@@ -1,6 +1,6 @@
 package com.zgw.qgb.net.interceptors;
 
-import com.zgw.qgb.App;
+import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.helper.utils.NetUtils;
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ public class CacheInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        boolean connected = NetUtils.isConnected(App.getContext());
+        boolean connected = NetUtils.isConnected(Utils.getContext());
         if (!connected) {
             request = request.newBuilder()
                     .cacheControl(CacheControl.FORCE_CACHE)
