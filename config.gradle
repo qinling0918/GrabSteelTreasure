@@ -1,10 +1,10 @@
 ext.versions = [
 
         // 可以将这些值存放到 gradle.properties 里面。
-        'compileSdk'  : 27,
+        'compileSdk'  : 28,
         'buildTools'  : '27.0.3',
         'minSdk'      : 19,
-        'targetSdk'   : 27,
+        'targetSdk'   : 28,
 
         'gradlePlugin': "3.1.2",
         'support'     : '27.1.0',

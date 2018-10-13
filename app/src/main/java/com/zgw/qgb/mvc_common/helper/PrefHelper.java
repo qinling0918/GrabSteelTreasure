@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
@@ -12,8 +11,6 @@ import android.support.v4.util.SimpleArrayMap;
 import com.zgw.qgb.mvc_common.Utils;
 import com.zgw.qgb.mvc_common.utils.EmptyUtils;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -21,15 +18,12 @@ import java.util.Set;
 
 public class PrefHelper {
     private static SimpleArrayMap<String, PrefHelper> SP_MAP = new SimpleArrayMap<>();
-    private String spName;
-    //public static
     private SharedPreferences sp;
 
     private PrefHelper() {}
 
 
     private PrefHelper(String spName) {
-        this.spName = spName;
         this.sp = getContext().getSharedPreferences(getSharedPreferencesName(spName),
                 Context.MODE_PRIVATE);
 
@@ -45,7 +39,7 @@ public class PrefHelper {
     public static PrefHelper getInstance(String spName) {
         spName = InputHelper.emptyOrDefault(spName,"preferences");
 
-        PrefHelper  prefHelper = SP_MAP.get(spName);
+        PrefHelper prefHelper = SP_MAP.get(spName);
         if (EmptyUtils.isEmpty(prefHelper)) {
             prefHelper = new PrefHelper(spName);
             SP_MAP.put(spName, prefHelper);
@@ -58,11 +52,9 @@ public class PrefHelper {
     }
 
     public Editor edit() {
-        return Editor.edit(sp,spName);
+        return Editor.edit(sp);
     }
-    public Editor edit(@Editor.Mode int mode) {
-        return Editor.edit(sp,spName, mode);
-    }
+
 
     private Application getContext() {
         return Utils.getApp();
@@ -81,102 +73,63 @@ public class PrefHelper {
 
     public static class Editor {
 
-        @IntDef({COMMIT, APPLY})
-        @Retention(RetentionPolicy.SOURCE)
-        public @interface Mode {}
-            public static final int COMMIT = 0x00;
-            public static final int APPLY= 0x04;
-
         private final SharedPreferences.Editor sp_editor;
-        private final SharedPreferences sp;
-        private final String spName;
-        private final int mode ;
 
-        private Editor(SharedPreferences sp, String spName,@Mode int mode) {
-            this.sp = sp;
-            this.spName = spName;
-            this.mode = mode;
 
+        private Editor(SharedPreferences sp) {
             sp_editor = sp.edit();
 
         }
 
-        public static Editor edit(SharedPreferences sp, String spName, @Mode int mode) {
-            return new Editor(sp,spName,mode);
-        }
-
-        public static Editor edit(SharedPreferences sp, String spName) {
-            return new Editor(sp,spName,APPLY);
+        public static Editor edit(SharedPreferences sp) {
+            return new Editor(sp);
         }
 
         public Editor put(String key, @Nullable String value) {
-            start();
-            end(sp_editor.putString(key,value));
+            sp_editor.putString(key,value);
             return this;
         }
 
         public Editor put(String key, @Nullable Set<String> values) {
-            start();
-            end(sp_editor.putStringSet(key,values));
+            sp_editor.putStringSet(key,values);
             return this;
         }
 
         public Editor put(String key, int value) {
-            start();
-            end(sp_editor.putInt(key,value));
+            sp_editor.putInt(key,value);
             return this;
         }
 
         public Editor put(String key, long value) {
-            start();
-            end(sp_editor.putLong(key,value));
+            sp_editor.putLong(key,value);
             return this;
         }
 
         public Editor put(String key, float value) {
-            start();
-            end(sp_editor.putFloat(key,value));
+            sp_editor.putFloat(key,value);
             return this;
         }
 
         public Editor put(String key, boolean value) {
-            start();
-            end(sp_editor.putBoolean(key,value));
+            sp_editor.putBoolean(key,value);
             return this;
         }
 
         public Editor remove(String key) {
-            start();
-            end(sp_editor.remove(key));
+            sp_editor.remove(key);
             return this;
         }
 
         public Editor clear() {
-            start();
-            end(sp_editor.clear());
+            sp_editor.clear();
             return this;
         }
-
-     /*   public PrefHelper commit() {
-            sp_editor.commit();
-            return SP_MAP.get(spName);
+        public boolean commit() {
+            return sp_editor.commit();
         }
 
-        public PrefHelper apply() {
-            sp_editor.apply();
-            return SP_MAP.get(spName);
-        }*/
-     private void start () {
-        edit(sp,spName,mode);;
-     }
-
-        private PrefHelper end(SharedPreferences.Editor sp_editor) {
-            if (mode == APPLY) {
-                sp_editor.apply();
-            }else{
-                sp_editor.commit();
-            }
-            return SP_MAP.get(spName);
+        public void apply() {
+             sp_editor.apply();
 
         }
     }

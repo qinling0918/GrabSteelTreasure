@@ -1,11 +1,7 @@
-package com.zgw.qgb.mvc_common.utils;
+package com.zgw.qgb.mvc_common.helper;
 
 import android.accounts.Account;
 import android.support.annotation.Nullable;
-
-import com.zgw.qgb.mvc_common.helper.PrefHelper;
-
-import static com.zgw.qgb.mvc_common.helper.PrefHelper.Editor.APPLY;
 
 
 /**
@@ -14,21 +10,24 @@ import static com.zgw.qgb.mvc_common.helper.PrefHelper.Editor.APPLY;
  */
 public class PrefUtils {
 
-    private static String accountSt = "";
+    //private static String accountSt = "";
     private static final String TOKEN = "token";
     private static final String[] USER_INFO = new String[]{"name","type"};
     private static final String IS_LOGIN = "is_login";
 
 
-    public static void init(String account) {
-        accountSt = account ;
-    }
-    private static PrefHelper getSp() {
-        return PrefHelper.getInstance(accountSt);
-    }
 
+   /* public static void init(String account) {
+        accountSt = account ;
+    }*/
+   public static PrefHelper getSp() {
+        return PrefHelper.getInstance("");
+    }
+    public static PrefHelper getSp(String spName) {
+        return PrefHelper.getInstance(spName);
+    }
     public static void setToken(@Nullable String token) {
-        getSp().edit(APPLY).put(TOKEN, token);
+        getSp().edit().put(TOKEN, token).apply();
     }
 
     public static String getToken() {
@@ -36,12 +35,19 @@ public class PrefUtils {
     }
 
     public static void setUserInfo(@Nullable Account token) {
-        getSp().edit(APPLY)
+        getSp().edit()
                 .put(USER_INFO[0], token.name)
                 .put(USER_INFO[1],token.type)
-                .put(USER_INFO[0], token.name+token.type);
+                .put(USER_INFO[0], token.name+token.type)
+                .commit();
     }
-
+    /*public static void setbean(String frame) {
+        getSp().edit()
+                .put(, frame.substring(0,8))
+                .put(USER_INFO[1],token.type)
+                .put(USER_INFO[0], token.name+token.type)
+                .commit();
+    }*/
     public static String[] getUserInfo() {
         int len = USER_INFO.length;
         String[] userInfo = new String[len];
