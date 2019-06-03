@@ -23,7 +23,8 @@ public class DownloadInfo {
         this.currentBytes = currentBytes;
     }
 
-    private long currentBytes; //当前已上传或下载的总长度
+    //当前已上传或下载的总长度
+    private long currentBytes;
 
     public long getContentLength() {
         return contentLength;

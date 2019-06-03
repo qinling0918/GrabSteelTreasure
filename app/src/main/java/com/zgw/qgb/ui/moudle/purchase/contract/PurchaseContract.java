@@ -1,5 +1,7 @@
 package com.zgw.qgb.ui.moudle.purchase.contract;
 
+import android.support.v4.app.LoaderManager;
+
 import com.zgw.qgb.base.mvp.IPresenter;
 import com.zgw.qgb.base.mvp.IView;
 
@@ -9,7 +11,7 @@ import com.zgw.qgb.base.mvp.IView;
  */
 
 public interface PurchaseContract {
-    interface IPurchaseView extends IView{
+    interface IPurchaseView extends IView/*,LoaderManager.LoaderCallbacks*/{
     }
 
     interface IPurchasePresenter extends IPresenter<IPurchaseView> {

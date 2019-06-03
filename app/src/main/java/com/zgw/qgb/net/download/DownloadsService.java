@@ -109,8 +109,6 @@ public class DownloadsService extends Service implements DownloadListener {
             downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new DownloadInfo(file, url));
             downloadTaskMap.put(url, downloadTask);
             fileMap.put(url, file);
-
-
             showstartDownloadNotification(url);
 
 
@@ -179,8 +177,10 @@ public class DownloadsService extends Service implements DownloadListener {
     private void deleteFileAfterCancel(String url) {
         if (url != null && fileMap.containsKey(url)) {
             File file = fileMap.get(url);
-            if (null != file)
+            if (null != file){
                 FileUtils.deleteFile(file);
+            }
+
 
         }
     }

@@ -1,7 +1,10 @@
 package com.zgw.qgb.base.adapter;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 
 /**
@@ -9,7 +12,7 @@ import android.view.View;
  *
  * Created by naivor on 16-4-12.
  */
-public abstract class ListHolder<T> implements HolderOperator<T>{
+public class ListHolder<T> implements HolderOperator<T>{
     protected  final String TAG=this.getClass().getSimpleName();
 
     protected Context context;

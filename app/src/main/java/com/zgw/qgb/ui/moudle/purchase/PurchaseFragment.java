@@ -1,24 +1,40 @@
 package com.zgw.qgb.ui.moudle.purchase;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.adapter.BindableAdapter;
+import com.zgw.qgb.base.adapter.ListAdapter;
+import com.zgw.qgb.base.adapter.ListHolder;
 import com.zgw.qgb.helper.Bundler;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
 import com.zgw.qgb.ui.moudle.purchase.contract.PurchaseContract;
 import com.zgw.qgb.ui.moudle.purchase.presenter.PurchasePresenter;
+
+import java.util.List;
 
 import butterknife.BindView;
 
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
 
-public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implements PurchaseContract.IPurchaseView {
+public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implements PurchaseContract.IPurchaseView, LoaderManager.LoaderCallbacks<List<ApplicationInfo>> {
 
     @BindView(R.id.lv)
     ListView lv;
@@ -26,7 +42,8 @@ public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implem
     Spinner debugNetworkEndpoint;
 
     private String title;
-    private BindableAdapter<String> adapter;
+    private AppsListAdapter adapter;
+    private static final int LOADER_ID = 0;
 
     public PurchaseFragment() {
 
@@ -45,6 +62,7 @@ public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implem
         if (getArguments() != null) {
             title = getArguments().getString(EXTRA);
         }
+
     }
 
     @Override
@@ -52,6 +70,19 @@ public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implem
         super.onViewCreated(view, savedInstanceState);
         setTitle(title);
         setBadgeCount(2, 2);
+        initAdapter();
+
+    }
+
+    private void initAdapter() {
+        adapter = new AppsListAdapter(getContext());
+        lv.setAdapter(adapter);
+        if (getLoaderManager().getLoader(LOADER_ID) == null) {
+            Log.i("TAG", "Initializing the new Loader...");
+        } else {
+            Log.i("TAG", "Reconnecting with existing Loader (id '1')...");
+        }
+        getLoaderManager().initLoader(LOADER_ID, null, this);
 
     }
 
@@ -74,9 +105,47 @@ public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implem
     protected void initData() {
         super.initData();
 
+    }
 
+    public static class AppsAsyncTaskLoader extends AsyncTaskLoader<List<ApplicationInfo>> {
+        public AppsAsyncTaskLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        public List<ApplicationInfo> loadInBackground() {
+            return getContext().getPackageManager().getInstalledApplications(0);
+        }
+
+        @Override
+        protected void onStartLoading() {
+
+            forceLoad();//强制加载数据
+        }
+
+        @Override
+        protected void onStopLoading() {
+            super.onStopLoading();
+            cancelLoad();
+        }
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return new AppsAsyncTaskLoader(getContext());
     }
 
 
+    @Override
+    public void onLoadFinished(Loader<List<ApplicationInfo>> loader, List<ApplicationInfo> data) {
+        Log.i("TAG", "onLoadFinished()");
+        adapter.setItems(data);
+    }
 
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        Log.i("TAG", "onLoaderReset()");
+        adapter.setItems(null);
+    }
 }

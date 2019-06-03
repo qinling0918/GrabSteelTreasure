@@ -24,20 +24,22 @@
            <meta-data
            android:name="io.fabric.ApiKey"
            android:value="${fabric_apikey}" />
-       -->
-        <activity android:name=".ui.moudle.main.MainActivity"
-            android:launchMode="singleTask"
-            >
+        -->
+        <activity
+            android:name=".ui.moudle.main.MainActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".base.SchemeFilterActivity">
-
-            <intent-filter android:autoVerify="true" tools:targetApi="m">
+            <intent-filter
+                android:autoVerify="true"
+                tools:targetApi="m">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- App scheme -->
@@ -53,30 +55,34 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".ui.moudle.quote.CityActivity"/>
+        <activity android:name=".ui.moudle.quote.CityActivity" />
 
         <service
             android:name=".net.download.DownloadService"
             android:enabled="true"
-            android:exported="false"><!--//是否可以被另一个Application的组件启动-->
+            android:exported="false"> <!-- //是否可以被另一个Application的组件启动 -->
         </service>
         <service
             android:name=".net.download.DownloadsService"
             android:enabled="true"
-            android:exported="false"><!--//是否可以被另一个Application的组件启动-->
+            android:exported="false"> <!-- //是否可以被另一个Application的组件启动 -->
         </service>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.zgw.qgb"
-            android:grantUriPermissions="true"
-            android:exported="false">
-            <!--元数据-->
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <!-- 元数据 -->
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
+
+        <activity
+            android:name=".ui.moudle.mine.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

@@ -15,13 +15,14 @@ public interface DownloadListener {
 
     /**
      * 通知下载成功
+     * @param filePath
      */
-    void onSuccess();
+    void onSuccess(String filePath);
 
     /**
      * 通知下载失败
      */
-    void onFailed(int errorCode, String errorMsg);
+    void onFailed( String errorMsg);
 
     /**
      * 通知下载暂停
@@ -32,5 +33,6 @@ public interface DownloadListener {
      * 通知下载取消事件
      */
     void onCanceled();
+
 
 }

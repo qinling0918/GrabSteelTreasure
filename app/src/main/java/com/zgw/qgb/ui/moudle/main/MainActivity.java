@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         setupBottomNavigationBar();
 
 
+
     }
 
     protected void initData() {

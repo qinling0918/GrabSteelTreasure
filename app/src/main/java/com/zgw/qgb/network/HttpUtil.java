@@ -1,8 +1,11 @@
 package com.zgw.qgb.network;
 
+import android.util.Log;
+
 import com.zgw.qgb.net.RetrofitProvider;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -68,15 +71,31 @@ public class HttpUtil {
         // 创建一个Request
 
         Request request = new Request.Builder()
-
                 .url(url)
                 .method("HEAD", null)
                 .build();
-
         doAsync(request, callback);
 
     }
+    private static long getContentLength(String downloadUrl) {
+        Request request = new Request.Builder()
+                .url(downloadUrl)
+                .method("HEAD", null).build();
+        OkHttpClient client=new OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).build();
+        try {
+            Response response=client.newCall(request).execute();
 
+            if(response!=null&&response.isSuccessful()){
+                long contentLength = Long.valueOf(response.header("Content-Length"));
+                response.close();
+                return contentLength;
+            }
+        } catch (IOException e) {
+            Log.e("contentLength","newCall.execute()",e);
+            e.printStackTrace();
+        }
+        return  0;
+    }
 
 
     /**
@@ -110,7 +129,8 @@ public class HttpUtil {
     private void doAsync(Request request, Callback callback) throws IOException {
 
         //创建请求会话
-
+        mOkHttpClient.dispatcher().setMaxRequests(256);
+       // mOkHttpClient.dispatcher().setMaxRequestsPerHost(10);
         Call call = mOkHttpClient.newCall(request);
 
         //同步执行会话请求
@@ -179,8 +199,8 @@ public class HttpUtil {
 
     private HttpUtil() {
         //创建okHttpClient对象
-        mOkHttpClient= RetrofitProvider.provideOkHttp();
-       /* OkHttpClient.Builder builder = new OkHttpClient.Builder()
+      //  mOkHttpClient= RetrofitProvider.provideOkHttp();
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
 
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
 
@@ -188,7 +208,7 @@ public class HttpUtil {
 
                 .readTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
 
-        mOkHttpClient = builder.build();*/
+        mOkHttpClient = builder.build();
 
     }
 

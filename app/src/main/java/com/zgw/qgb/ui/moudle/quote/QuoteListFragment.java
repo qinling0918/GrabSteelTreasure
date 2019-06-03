@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.tinker.lib.tinker.Tinker;
@@ -21,21 +24,28 @@ import com.tencent.tinker.lib.tinker.TinkerInstaller;
 import com.tencent.tinker.loader.shareutil.ShareTinkerInternals;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
+import com.zgw.qgb.download.DownloadListener;
 import com.zgw.qgb.helper.Bundler;
 import com.zgw.qgb.helper.ToastUtils;
 import com.zgw.qgb.helper.utils.FileUtils;
 import com.zgw.qgb.interf.DefaultDownloadListener;
 import com.zgw.qgb.net.download.DownloadsService;
 import com.zgw.qgb.net.extension.BaseObserver;
+import com.zgw.qgb.network.download.DownloadManager;
+import com.zgw.qgb.network.download.listener.DownloadsListener;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteListPresenter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.content.Context.BIND_AUTO_CREATE;
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
 
@@ -44,29 +54,36 @@ import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 //https://github.com/Tencent/tinker
 //https://github.com/Tencent/tinker/blob/master/tinker-sample-android/app/build.gradle
 //https://blog.csdn.net/lxynlyxy/article/details/79087148
+
 /**
  * Comment://报价列表
  * Created by Tsinling on 2017/5/24 17:34.
  */
 
-public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implements QuoteListContract.IQuoteListView {
+public class
+QuoteListFragment extends BaseFragment<QuoteListPresenter> implements QuoteListContract.IQuoteListView {
 
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.tv_wide_nation)
     TextView tvWideNation;
     String url1 = "http://acj2.pc6.com/pc6_soure/2017-6/com.zgw.qgb_29.apk";
-    String url2 = "https://github.com/easemob/easeui_ios/archive/dev.zip";
-    String url3 = "http://pic.58pic.com/58pic/15/14/14/18e58PICMwt_1024.jpg";
-     String path ;
+
+    String url3 = "http://192.168.11.214:80/eomfront/FrontSys/reqHttpFileDown.do?SERVER_NAME=appserver&REQUEST_PARM=617070446F776E6C6F61643F4649445F4E4F3D31353636&UID=11210951576497&MAC=12345";
+    // String url2 = "https://github.com/easemob/easeui_ios/archive/dev.zip";
+     String url2 = "http://52gyxz.bhdoh.cn/521/rj_yuanhj1/xiangguazhuan.apk";
+    // String url2 = "https://github.com/google/cameraview/archive/master.zip";
+    // String url1 = "https://dldir1.qq.com/weixin/android/weixin673android1360.apk";
+    //String url2 = "http://pic.58pic.com/58pic/15/14/14/18e58PICMwt_1024.jpg";
+    String path;
     private DownloadsService downloadService;
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             DownloadsService.DownloadBinder downloadBinder = (DownloadsService.DownloadBinder) service;
             downloadService = downloadBinder.getService();
-            checkPermissionAndStartDownload();
-            setListener();
+            //  checkPermissionAndStartDownload();
+            // setListener();
         }
 
         @Override
@@ -74,17 +91,18 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
             downloadService = null;
         }
     };
+    private DownloadManager manager;
 
     private void setListener() {
         downloadService.setOnDownloadListener(new DefaultDownloadListener() {
             @Override
             public void onProgress(String url, int progress, long contentLength, long currentBytes) {
                 super.onProgress(url, progress, contentLength, currentBytes);
-               if (url.equals(url1)){
-                   Log.d(TAG, "url1 + onProgress: "+progress);
-               }else{
-                   Log.d(TAG, "url2 + onProgress: "+progress);
-               }
+                if (url.equals(url1)) {
+                    Log.d(TAG, "url1 + onProgress: " + progress + "current: " + currentBytes);
+                } else {
+                    Log.d(TAG, "url2 + onProgress: " + progress);
+                }
 
             }
 
@@ -95,18 +113,18 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
 
                 Intent intent = new Intent(Settings.ACTION_HOME_SETTINGS);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
+                PendingIntent pi = PendingIntent.getActivity(getContext(), 0, intent, 0);
                 downloadService.setPendingIntent(pi);
             }
         });
 
-        String[] urlArr = new String[]{url1,url2};
-        for (String url1: urlArr) {
-            downloadService.setOnDownloadListener(url1,new DefaultDownloadListener() {
+        String[] urlArr = new String[]{url1, url2};
+        for (String url1 : urlArr) {
+            downloadService.setOnDownloadListener(url1, new DefaultDownloadListener() {
                 @Override
                 public void onProgress(String url, int progress, long contentLength, long currentBytes) {
                     super.onProgress(url, progress, contentLength, currentBytes);
-                    Log.d(TAG, url + "   onProgress: "+progress);
+                    Log.d(TAG, url + "   onProgress: " + progress);
                 }
             });
         }
@@ -115,7 +133,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
 
     private void setPendingIntent(File file) {
         Intent intent = FileUtils.getInstallApkIntent(file);
-        PendingIntent pi= PendingIntent.getActivity(getContext(),0,intent,0);
+        PendingIntent pi = PendingIntent.getActivity(getContext(), 0, intent, 0);
         downloadService.setPendingIntent(pi);
     }
 
@@ -143,15 +161,15 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
 
     private void checkPermissionAndStartDownload() {
         RxPermissions rxPermissions = new RxPermissions(getActivity());
-        rxPermissions.request( Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new BaseObserver<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        if (aBoolean){
-                         
-                            downloadService.startDownload(url1,url2);
+                        if (aBoolean) {
+
+                            downloadService.startDownload(url1);
                             //downloadService.startDownloadWithPath(path1,"a.apk",url1,url2);
-                        }else{
+                        } else {
                             ToastUtils.showNormal("文件写入的权限申请被拒绝");
                         }
                     }
@@ -163,8 +181,224 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         super.onViewCreated(view, savedInstanceState);
         setTitle(title);
 
+       /* String downloadPath = Environment.getExternalStorageDirectory() +
+                File.separator +"com.sgcc.pda.mdrh/download/";
+String url = "http://192.168.11.125:80/eomfront/FrontSys/reqHttpFileDown.do?SERVER_NAME=upfileserver&REQUEST_PARM=646F776E46696C653F4649445F4E4F3D313638&UID=1130145542135&MAC=12345";
+        com.zgw.qgb.network.DownloadManager.getInstance()
+                .add(url, downloadPath, "A.apk", new DownloadListener() {
+                    @Override
+                    public void onProgress(float progress) {
+                        tvTitle.setText("url1 progress： " + progress );
+                    }
+
+                    @Override
+                    public void onSuccess(String filePath) {
+                        tvTitle.setText("url1 onSuccess： " + filePath );
+                    }
+
+                    @Override
+                    public void onFailed(int errorCode, String errorMsg) {
+                        tvTitle.setText("url1 onFailed： " + errorMsg );
+                    }
+
+                    @Override
+                    public void onPaused() {
+                        tvTitle.setText("url1 progress： onPaused"  );
+                    }
+
+                    @Override
+                    public void onCanceled() {
+                        tvTitle.setText("url1 progress： onCanceled"  );
+                    }
+                }).download();
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        int a = APP_STATES_NO_INSTALL;
+      /*  Log.d(TAG, "onCreate: "+a);
+        if (a==APP_STATES_NO_INSTALL){
+            Log.d(TAG, "onCreate: APP_STATES_NO_INSTALL"+a);
+        }else{
+            if (a==APP_STATES_NO){
+                Log.d(TAG, "onCreate: "+a);
+            }
+        }*/
         tvWideNation.append("12");
+      // manager = DownloadManager.getInstance();
+        /*String downloadPath = Environment.getExternalStorageDirectory() +
+                File.separator +"com.sgcc.pda.mdrh/download/";*/
+        String downloadPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).getAbsolutePath();
+
+
+        com.zgw.qgb.download.DownloadManager.getInstance().add(
+                url1,
+                downloadPath,
+                "url.apk",
+                23626749,
+                1024*1024,
+                new DownloadListener() {
+            @Override
+            public void onProgress(int progress) {
+                tvWideNation.setText(progress+"");
+            }
+
+            @Override
+            public void onSuccess(String filePath) {
+                tvWideNation.setText(filePath);
+            }
+
+            @Override
+            public void onFailed(String errorMsg) {
+                tvWideNation.setText(errorMsg);
+            }
+
+            @Override
+            public void onPaused() {
+                tvWideNation.setText("onPaused");
+            }
+
+            @Override
+            public void onCanceled() {
+
+            }
+        }).download();
+
+
+     /*  manager.add(url1, downloadPath, "a.apk", new DownloadsListener() {
+           @Override
+           public void onProgress(String url, int progress, long contentLength, long currentBytes) {
+              if (tvWideNation!=null){
+                  tvWideNation.setText(progress+"");
+              }
+
+           }
+
+           @Override
+           public void onSuccess(String url, String filePath) {
+               if (tvWideNation!=null){
+                   tvWideNation.append(filePath);
+               }
+
+           }
+
+           @Override
+           public void onFailed(String url, String errorMsg) {
+               if (tvWideNation!=null){
+                   tvWideNation.append(errorMsg);
+               }
+           }
+       }).*//*.add(url2).*//*setOneBlockLength(1024*1024).download();*/
+       // test(downloadPath);
+      /*  manager.setOnDownloadListener(new com.zgw.qgb.network.download.listener.DownloadsListener() {
+            @Override
+            public void onProgress(String url, int progress, long contentLength, long currentBytes) {
+                if (url.equals(url1)) {
+                    tvTitle.setText("url1 progress： " + progress + "current: " + currentBytes);
+                } else {
+                    tvWideNation.setText("url2 progress： " + progress + "current: " + currentBytes);
+                }
+
+            }
+
+            @Override
+            public void onSuccess(String url, String filePath) {
+                if (url.equals(url1)) {
+                        tvTitle.append(filePath);
+
+                } else {
+                        tvWideNation.append(filePath);
+                }
+            }
+
+            @Override
+            public void onFailed(String url, String errorMsg) {
+                if (url.equals(url1)) {
+                  //  tvTitle.append(errorMsg);
+                    tvTitle.append(errorMsg);
+                } else {
+                    tvWideNation.append(errorMsg);
+                }
+            }*/
+
+           /* @Override
+            public void onPaused(String url) {
+                if (url.equals(url1)){
+                    tvTitle.append("1 onPaused");
+                }else{
+                    tvWideNation.append("2 onPaused" );
+                }
+            }
+
+            @Override
+            public void onCanceled(String url) {
+                if (url.equals(url1)){
+                    tvTitle.append("1 onCanceled");
+                }else{
+                    tvWideNation.append("2 onCanceled" );
+                }
+            }
+        });*/
+       // manager.setOneBlockLength(1024*1024);
+       //  manager.setBlockCounts(10);
+      //  manager.downloadAll();
+//
     }
+
+    private void test(String downloadPath) {
+
+
+            // 指针已经指向 记录块长度的区域的起始位置
+            // int blockFileSizeAreaStartIndex = getTempFileHeaderLength() ;
+            // tempRas.seek(blockFileSizeAreaStartIndex);
+
+            File file = new File("/sdcard/Download/url1.apk.temp");
+            FileUtils.createOrExistsFile(file);
+        RandomAccessFile tempRas = null;
+        try {
+            tempRas = new RandomAccessFile(file,"rwd");
+            for (int i = 0; i < 0xa; i++) {
+
+                String hex = readMessage(tempRas, 6);
+                Log.e("readBlockCurrentSize", "hex " + hex + " point: "+ (tempRas.getFilePointer()-hex.length()*2));
+              //  long blockCurrentSize = Long.parseLong(hex, 16);
+
+
+            }
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+    }
+
+
+
+    private String readMessage(RandomAccessFile tempRas, int length) throws IOException {
+        //  byte[] bytes = new byte[length];
+        byte[] bytes = new byte[length];
+        // read后，指针会默认往后移， 移动的长度与所读数据长度相同
+        int len = tempRas.read(bytes);
+        // return len == -1 ? "" : NumberConvert.bytesToHexString(bytes);
+        return len == -1 ? "" :new String(bytes);
+    }
+    public final static int APP_STATES_NO_INSTALL = 0;//应用未安装
+    public final static int APP_STATES_NO = 0;//应用未安装
 
     @Override
     protected int fragmentLayout() {
@@ -178,16 +412,18 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
     }
 
 
-
     @SuppressLint("ResourceType")
     @OnClick({R.id.tv_title, R.id.tv_wide_nation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_title:
-               // downloadService.cancelDownload();
+                com.zgw.qgb.download.DownloadManager.getInstance().pauseDownload(url1);
+                // manager.();
 
-                ShareTinkerInternals.killAllOtherProcess(getContext());
-                android.os.Process.killProcess(android.os.Process.myPid());
+                // downloadService.cancelDownload();
+
+                //  ShareTinkerInternals.killAllOtherProcess(getContext());
+                //  android.os.Process.killProcess(android.os.Process.myPid());
 
                 //https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1517645120430&di=c4851c8646d6f6d086ea6ec6f3edf71c&imgtype=0&src=http%3A%2F%2Fwww.jituwang.com%2Fuploads%2Fallimg%2F160203%2F257953-160203193R164.jpg
                 //String url1 = "https://www.baidu.com/link?url=soOQSZR7o_Jy2Tzxj6LIpD6xF0NEvw7tjMx_yi6gS-3az9wGOVqzXQ6hijP18_NR2neyWBMJtn18cMfqD3_LW3hIm6xDLf1wjGXZQMvaQRm&wd=&eqid=846b5b7e00040043000000035a754498";
@@ -209,14 +445,16 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 //ToastUtils.showLong(getString(R.string.message));
                 break;
             case R.id.tv_wide_nation:
-
+                Toast.makeText(getContext(),"download",Toast.LENGTH_SHORT).show();
+                com.zgw.qgb.download.DownloadManager.getInstance().download(url1);
+              //  manager.download(url1);
                /* TinkerInstaller.install(new ApplicationLike(App.getInstance(), ShareConstants.TINKER_ENABLE_ALL,false,) {
                 });*/
-                Tinker.with(getContext());
+                // Tinker.with(getContext());
                 //请求打补丁
-                TinkerInstaller.onReceiveUpgradePatch(getContext(), path+"/patch_signed_7zip.apk");
+                //TinkerInstaller.onReceiveUpgradePatch(getContext(), path+"/patch_signed_7zip.apk");
 
-               // downloadService.pauseDownload();
+                // downloadService.pauseDownload();
                /* UserInfo userInfo = new UserInfo();
                 List<UserInfo.User> list = new ArrayList<UserInfo.User>();
                 for (int i = 0; i < 5; i++) {
@@ -239,6 +477,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
                 break;
         }
     }
+
     public void getSum(Point... pa) {
         //二维数组中的行数
         int rows = 4;
@@ -264,7 +503,7 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
             }
         }
 
-        Log.d(TAG, "getSum: "+build + sum);
+        Log.d(TAG, "getSum: " + build + sum);
        /* Point pa, pb, pc, pd;
         //任意4个数的和
         float sum = 0;
@@ -303,12 +542,17 @@ public class QuoteListFragment extends BaseFragment<QuoteListPresenter> implemen
         return p;
     }
 
+    @Override
+    public void onStop() {
+     //   manager.unregisterOnDownloadListeners();
+        super.onStop();
+    }
 
     @Override
     public void onDestroyView() {
         getContext().unbindService(connection);//解绑服务
-        super.onDestroyView();
 
+        super.onDestroyView();
 
 
     }

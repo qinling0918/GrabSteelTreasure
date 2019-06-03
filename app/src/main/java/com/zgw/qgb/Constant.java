@@ -6,6 +6,9 @@ package com.zgw.qgb;
  */
 
 public class Constant {
+    public static void main(){
+
+    }
     private Constant() {}
 
     public final static String BaseUrl = "https://wccyservicet.zgw.com/";

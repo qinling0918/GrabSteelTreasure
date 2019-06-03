@@ -2,6 +2,7 @@ package com.zgw.qgb.ui.moudle.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 
 import com.zgw.qgb.R;
@@ -34,6 +35,8 @@ public class MineFragment extends BaseMainFragment<MinePresenter> implements Min
         if (getArguments() != null) {
             title = getArguments().getString(EXTRA);
         }
+
+
     }
 
     @Override

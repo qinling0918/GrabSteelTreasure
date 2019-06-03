@@ -17,10 +17,11 @@ import static com.zgw.qgb.net.OkHttpConfig.DEFAULT_CONFIG;
 
 /**
  * Created by Tsinling on 2017/10/18 9:39.
- * description:
+ * description: Retrofit 提供方
  */
 
 public class RetrofitProvider {
+
     public static String baseUrl = Utils.getInstance().isDebug()
             ? Constant.BaseUrl_debug
             : Constant.BaseUrl;

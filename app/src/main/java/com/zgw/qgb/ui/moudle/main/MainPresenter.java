@@ -2,6 +2,7 @@ package com.zgw.qgb.ui.moudle.main;
 
 import android.os.Bundle;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.zgw.qgb.base.mvp.BasePresenter;
 import com.zgw.qgb.ui.moudle.main.MainContract.IMainPresenter;
 import com.zgw.qgb.ui.moudle.main.MainContract.IMainView;
@@ -59,6 +60,8 @@ public class MainPresenter extends BasePresenter<IMainView> implements IMainPres
 
             }
         });*/
+
+
     }
 
     @Override

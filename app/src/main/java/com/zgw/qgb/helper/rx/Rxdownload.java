@@ -275,7 +275,8 @@ public final class Rxdownload {
         }
 
         Observable.merge(observableList)
-                .subscribeOn(Schedulers.io())//请求网络 在调度者的io线程
+                //请求网络 在调度者的io线程
+                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnNext(responseBodyAndPoint -> writeStream2RandomAccessFile(responseBodyAndPoint, finalTmpAccessFile))
         .subscribe() ;
@@ -292,8 +293,6 @@ public final class Rxdownload {
         while ((length = is.read(buffer)) > 0) {//读取流
             tmpAccessFile.write(buffer, 0, length);
         }
-
-
         return tmpAccessFile;
     }
 

@@ -20,30 +20,23 @@ import okhttp3.Call;
 import okhttp3.Response;
 
 
-
 /**
-
  * 多线程下载任务
-
+ * <p>
  * Created by Cheny on 2017/05/03.
-
  */
 
 //http://blog.csdn.net/seu_calvin/article/details/52415337
 
 public class DownloadTask extends Handler {
 
+    private static final String TAG = DownloadTask.class.getSimpleName();
 
     private static final int NET_FAILURE = 0;  //网络请求失败
     private static final int IOEXCEPTION = 1;  //下载过程中,文件读写出现异常
-
-
-    private final int THREAD_COUNT = 4;//下载线程数量
-
+    private final int THREAD_COUNT = 25;//下载线程数量
     private FilePoint mPoint;
-
     private long mFileLength;//文件大小
-
 
 
     private boolean isDownloading = false;//是否正在下载
@@ -67,7 +60,6 @@ public class DownloadTask extends Handler {
     private boolean cancel;//是否取消下载
 
 
-
     private final int MSG_PROGRESS = 1;//进度
 
     private final int MSG_FINISH = 2;//完成下载
@@ -81,12 +73,11 @@ public class DownloadTask extends Handler {
     private DownloadListener mListner;//下载回调监听
 
 
-
-    DownloadTask(FilePoint point, DownloadListener l) {
+    DownloadTask(FilePoint point, DownloadListener mListner) {
 
         this.mPoint = point;
 
-        this.mListner = l;
+        this.mListner = mListner;
 
         this.mProgress = new long[THREAD_COUNT];
 
@@ -97,45 +88,42 @@ public class DownloadTask extends Handler {
     }
 
 
-
     /**
-
      * 开始下载
-
      */
 
     public synchronized void start() {
 
-       /* try {*/
+        /* try {*/
 
-            if (isDownloading) return;
+        if (isDownloading) return;
 
-            isDownloading = true;
+        isDownloading = true;
 
         try {
             mHttpUtil.getContentLength(mPoint.getUrl(), new okhttp3.Callback() {
 
                 @Override
-
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.code() != 200) {
-
                         close(response.body());
+                        String responseMsg = response.message();
                         //resetStutus();
-                        sendErrorMessage(response.code(), response.message());
+                        sendErrorMessage(response.code(), null == responseMsg
+                                ? "服务器相应数据出错，请重试。" : responseMsg);
                         //sendMessage();
                         return;
 
                     }
-
+                    long contentLength = Long.valueOf(response.header("Content-Length"));
                     // 获取资源大小
-                    Log.d("onResponse", "onResponse: "+ response.body().contentType()+  "  "+response.body().contentLength());
-                    mFileLength = response.body().contentLength();
+                    Log.d("onResponse", "onResponse: " + response.body().contentType() + "  " + response.body().contentLength());
+                    mFileLength = contentLength;
 
                     close(response.body());
 
                     // 在本地创建一个与资源同样大小的文件来占位
-                    if (mFileLength > 0){
+                    if (mFileLength > 0) {
                         mTmpFile = new File(mPoint.getFilePath(), mPoint.getFileName() + ".tmp");
 
                         if (!mTmpFile.getParentFile().exists()) mTmpFile.getParentFile().mkdirs();
@@ -144,13 +132,11 @@ public class DownloadTask extends Handler {
 
                         tmpAccessFile.setLength(mFileLength);
 
-                    /*将下载任务分配给每个线程*/
+                        /*将下载任务分配给每个线程*/
 
                         long blockSize = mFileLength / THREAD_COUNT;// 计算每个线程理论上下载的数量.
 
-
-
-                    /*为每个线程配置并分配任务*/
+                        /*为每个线程配置并分配任务*/
 
                         for (int threadId = 0; threadId < THREAD_COUNT; threadId++) {
 
@@ -161,25 +147,20 @@ public class DownloadTask extends Handler {
                             if (threadId == (THREAD_COUNT - 1)) { // 如果是最后一个线程,将剩下的文件全部交给这个线程完成
 
                                 endIndex = mFileLength - 1;
-
                             }
 
                             download(startIndex, endIndex, threadId);// 开启线程下载
 
                         }
-                    }else{
+                    } else {
                         sendErrorMessage(-1, " 返回文件长度小于0");
                     }
-
-
                 }
-
-
 
                 @Override
 
                 public void onFailure(Call call, IOException e) {
-
+                    Log.e(TAG, "onFailure", e);
                     //resetStutus(NET_FAILURE, e.getMessage());
                     //resetStutus();
                     sendErrorMessage(NET_FAILURE, e.getMessage());
@@ -192,7 +173,6 @@ public class DownloadTask extends Handler {
 
             sendErrorMessage(IOEXCEPTION, e.getMessage());
         }
-
 
 
     }
@@ -209,17 +189,12 @@ public class DownloadTask extends Handler {
 
 
     /**
-
      * 下载
-
+     *
      * @param startIndex 下载起始位置
-
-     * @param endIndex  下载结束位置
-
-     * @param threadId 线程id
-
+     * @param endIndex   下载结束位置
+     * @param threadId   线程id
      * @throws IOException
-
      */
 
     public void download(final long startIndex, final long endIndex, final int threadId) throws IOException {
@@ -261,37 +236,42 @@ public class DownloadTask extends Handler {
             public void onResponse(Call call, Response response) throws IOException {
 
                 if (response.code() != 206) {// 206：请求部分资源成功码，表示服务器支持断点续传
-
                     //resetStutus();
-                    sendErrorMessage(response.code(), response.message());
+                    String responseMsg = response.message();
+                    sendErrorMessage(response.code(), responseMsg == null ? "服务器不支持断点续传" : responseMsg);
                     return;
 
                 }
+              /*  if (response.code() != 200) {// 206：请求部分资源成功码，表示服务器支持断点续传
+                    //resetStutus();
+                    String responseMsg = response.message();
+                    sendErrorMessage(response.code(), responseMsg == null ? "服务器不支持断点续传" : responseMsg);
+                    return;
 
-                InputStream is = response.body().byteStream();// 获取流
+                }*/
+                // 获取流
+                InputStream is = response.body().byteStream();
+                // 获取前面已创建的文件.
+                RandomAccessFile tmpAccessFile = new RandomAccessFile(mTmpFile, "rw");
+                // 文件写入的开始位置.
+                tmpAccessFile.seek(finalStartIndex);
 
-                RandomAccessFile tmpAccessFile = new RandomAccessFile(mTmpFile, "rw");// 获取前面已创建的文件.
-
-                tmpAccessFile.seek(finalStartIndex);// 文件写入的开始位置.
-
-                  /*  将网络流中的文件写入本地*/
-
+                /*  将网络流中的文件写入本地*/
                 byte[] buffer = new byte[1024 << 2];
 
                 int length = -1;
-
-                int total = 0;// 记录本次下载文件的大小
+                // 记录本次下载文件的大小
+                int total = 0;
 
                 long progress = 0;
-
-                while ((length = is.read(buffer)) > 0) {//读取流
+                //读取流
+                while ((length = is.read(buffer)) > 0) {
 
                     if (cancel) {
-
-                        close(cacheAccessFile, is, response.body());//关闭资源
-
-                        cleanFile(cacheFile);//删除对应缓存文件
-
+                        //关闭资源
+                        close(cacheAccessFile, is, response.body());
+                        //删除对应缓存文件
+                        cleanFile(cacheFile);
                         sendMessage(MSG_CANCEL);
 
                         return;
@@ -299,33 +279,23 @@ public class DownloadTask extends Handler {
                     }
 
                     if (pause) {
-
                         //关闭资源
-
                         close(cacheAccessFile, is, response.body());
-
                         //发送暂停消息
-
                         sendMessage(MSG_PAUSE);
-
                         return;
 
                     }
 
                     tmpAccessFile.write(buffer, 0, length);
-
                     total += length;
-
                     progress = finalStartIndex + total;
-
-
 
                     //将该线程最新完成下载的位置记录并保存到缓存数据文件中
 
                     //建议转成Base64码，防止数据被修改，导致下载文件出错（若真有这样的情况，这样的朋友可真是无聊透顶啊）
 
                     cacheAccessFile.seek(0);
-
                     cacheAccessFile.write((progress + "").getBytes("UTF-8"));
 
                     //发送进度消息
@@ -351,7 +321,6 @@ public class DownloadTask extends Handler {
             }
 
 
-
             @Override
 
             public void onFailure(Call call, IOException e) {
@@ -364,7 +333,7 @@ public class DownloadTask extends Handler {
                 close(cacheAccessFile);
                 // 删除临时文件
                 cleanFile(cacheFile);
-                sendErrorMessage(NET_FAILURE,e.getMessage());
+                sendErrorMessage(NET_FAILURE, e.getMessage());
 
             }
 
@@ -373,13 +342,9 @@ public class DownloadTask extends Handler {
     }
 
     /**
-
      * 轮回消息回调
-
      *
-
      * @param msg
-
      */
 
     @Override
@@ -427,12 +392,9 @@ public class DownloadTask extends Handler {
                 childFinishCount++;
 
                 if (childFinishCount % THREAD_COUNT != 0) return;
-
                 mTmpFile.renameTo(new File(mPoint.getFilePath(), mPoint.getFileName()));//下载完毕后，重命名目标文件名
-
                 resetStutus();
-
-                mListner.onSuccess();
+                mListner.onSuccess(mPoint.getFilePath() + mPoint.getFileName());
 
                 break;
 
@@ -451,26 +413,21 @@ public class DownloadTask extends Handler {
                 break;
 
             case MSG_FAILED://失败
-
-
                 resetStutus();
-                mListner.onFailed(msg.arg1, (String) msg.obj);
+                mListner.onFailed( (String) msg.obj);
 
+                break;
+            default:
                 break;
         }
 
     }
 
 
-
     /**
-
      * 发送消息到轮回器
-
      *
-
      * @param what
-
      */
 
     private void sendMessage(int what) {
@@ -486,17 +443,10 @@ public class DownloadTask extends Handler {
     }
 
 
-
-
-
     /**
-
      * 关闭资源
-
      *
-
      * @param closeables
-
      */
 
     private void close(Closeable... closeables) {
@@ -532,11 +482,8 @@ public class DownloadTask extends Handler {
     }
 
 
-
     /**
-
      * 暂停
-
      */
 
     public void pause() {
@@ -546,11 +493,8 @@ public class DownloadTask extends Handler {
     }
 
 
-
     /**
-
      * 取消
-
      */
 
     public void cancel() {
@@ -576,13 +520,8 @@ public class DownloadTask extends Handler {
     }
 
 
-
-
     /**
-
      * 重置下载状态
-
-
      */
 
     private void resetStutus() {
@@ -596,11 +535,8 @@ public class DownloadTask extends Handler {
     }
 
 
-
     /**
-
      * 删除临时文件
-
      */
 
     private void cleanFile(File... files) {
@@ -616,19 +552,37 @@ public class DownloadTask extends Handler {
     }
 
 
-
     /**
-
      * 获取下载状态
-
+     *
      * @return boolean
-
      */
 
     public boolean isDownloading() {
 
         return isDownloading;
 
+    }
+
+
+    /**
+     * 设置状态
+     */
+    private Status status;
+
+    private void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public enum Status {
+        /**
+         * 下载状态
+         */
+        SUCCESS(),
+        FAILED(),
+        PAUSED(),
+        CANCELED(),
+        PROGRESS(),;
     }
 
 }

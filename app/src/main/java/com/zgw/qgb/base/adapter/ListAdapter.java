@@ -30,7 +30,7 @@ public abstract class ListAdapter<T> extends BaseAdapter implements AdapterOpera
 
     public ListAdapter(Context context) {
         this.mContext = context;
-        this.inflater = LayoutInflater.from(context);;
+        this.inflater = LayoutInflater.from(context);
 
         itemDatas = new ArrayList<>();
     }

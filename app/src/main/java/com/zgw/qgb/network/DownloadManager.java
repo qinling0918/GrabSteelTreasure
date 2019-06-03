@@ -8,57 +8,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 /**
-
- * 下载管理器，断点续传 
-
+ * 下载管理器，断点续传
  *
-
  * @author Cheny
-
  */
 
 public class DownloadManager {
-
-
-
-    private String DEFAULT_FILE_DIR;//默认下载目录  
-
-    private Map<String, DownloadTask> mDownloadTasks;//文件下载任务索引，String为url,用来唯一区别并操作下载的文件  
-
+    //默认下载目录
+    private String DEFAULT_FILE_DIR;
+    //文件下载任务索引，String为url,用来唯一区别并操作下载的文件
+    private Map<String, DownloadTask> mDownloadTasks;
     private static DownloadManager mInstance;
 
 
-
     /**
-
-     * 下载文件 
-
+     * 下载指定路径文件
      */
 
     public void download(String... urls) {
 
-        for (int i = 0, length = urls.length; i < length; i++) {
-
-            String url = urls[i];
-
-            if (mDownloadTasks.containsKey(url)) {
-
-                mDownloadTasks.get(url).start();
-
+        if (urlsIsEmpty(urls)){
+            downloadAll();
+        }else{
+            for (String url : urls) {
+                if (mDownloadTasks.containsKey(url)) {
+                    mDownloadTasks.get(url).start();
+                }
             }
-
         }
 
     }
 
-
+    private boolean urlsIsEmpty(String[] urls) {
+        return urls == null || urls.length == 0;
+    }
 
     /**
+     * 下载所有路径文件
+     */
+    public void downloadAll() {
+        if (taskIsNotEmpty()) {
+            for (String url : mDownloadTasks.keySet()) {
+                mDownloadTasks.get(url).start();
+            }
+        }
+    }
 
-     * 通过url获取下载文件的名称 
+    private boolean taskIsNotEmpty() {
+        return mDownloadTasks != null && mDownloadTasks.size() != 0;
+    }
 
+    /**
+     * 通过url获取下载文件的名称
      */
 
     public String getFileName(String url) {
@@ -67,39 +69,32 @@ public class DownloadManager {
     }
 
 
-
     /**
-
-     * 暂停 
-
+     * 暂停
      */
 
     public void pause(String... urls) {
-
-        for (int i = 0, length = urls.length; i < length; i++) {
-
-            String url = urls[i];
-
-            if (mDownloadTasks.containsKey(url)) {
-
-                mDownloadTasks.get(url).pause();
-
+        if (urlsIsEmpty(urls)){
+            downloadAll();
+        }else{
+            for (String url : urls) {
+                if (mDownloadTasks.containsKey(url)) {
+                    mDownloadTasks.get(url).pause();
+                }
             }
-
         }
 
     }
-
-
-
-
-
-
+    public void pauseAll() {
+        if (taskIsNotEmpty()) {
+            for (String url : mDownloadTasks.keySet()) {
+                mDownloadTasks.get(url).pause();
+            }
+        }
+    }
 
     /**
-
-     * 添加下载任务 
-
+     * 添加下载任务
      */
 
     public DownloadManager add(String url, DownloadListener l) {
@@ -108,33 +103,22 @@ public class DownloadManager {
     }
 
 
-
     /**
-
-     * 添加下载任务 
-
+     * 添加下载任务
      */
 
     public DownloadManager add(String url, String filePath, DownloadListener l) {
-
         return add(url, filePath, null, l);
-
     }
 
 
-
     /**
-
-     * 添加下载任务 
-
+     * 添加下载任务
      */
-
     public DownloadManager add(String url, String filePath, String fileName, DownloadListener l) {
-
-        if (TextUtils.isEmpty(filePath)) {//没有指定下载目录,使用默认目录  
-
+        //没有指定下载目录,使用默认目录
+        if (TextUtils.isEmpty(filePath)) {
             filePath = getDefaultDirectory();
-
         }
 
         if (TextUtils.isEmpty(fileName)) {
@@ -142,28 +126,23 @@ public class DownloadManager {
 
         }
 
-        mDownloadTasks.put(url, new DownloadTask(new FilePoint(url, filePath, fileName), l));
+        mDownloadTasks.put(url, new DownloadTask(new FilePoint(url, filePath, fileName),l ));
 
         return this;
     }
 
 
-
     /**
-
-     * 获取默认下载目录 
-
+     * 获取默认下载目录
      *
-
      * @return
-
      */
 
     private String getDefaultDirectory() {
 
         if (TextUtils.isEmpty(DEFAULT_FILE_DIR)) {
 
-            DEFAULT_FILE_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath()+ File.separator;
+            DEFAULT_FILE_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + File.separator;
             //DEFAULT_FILE_DIR =Environment.getExternalStorageDirectory() + File.separator + App.getContext().getString(R.string.app_name)+ File.separator;
             /*DEFAULT_FILE_DIR = Environment.getExternalStorageDirectory().getAbsolutePath()
 
@@ -176,37 +155,25 @@ public class DownloadManager {
     }
 
 
-
     /**
-
-     * 是否正在下载 
-
+     * 是否正在下载
+     *
      * @param urls
-
      * @return boolean
-
      */
 
     public boolean isDownloading(String... urls) {
 
         boolean result = false;
 
-        for (int i = 0, length = urls.length; i < length; i++) {
-
-            String url = urls[i];
-
+        for (String url : urls) {
             if (mDownloadTasks.containsKey(url)) {
-
                 result = mDownloadTasks.get(url).isDownloading();
-
             }
-
         }
-
         return result;
 
     }
-
 
 
     public static DownloadManager getInstance() {
@@ -214,11 +181,8 @@ public class DownloadManager {
         if (mInstance == null) {
 
             synchronized (DownloadManager.class) {
-
                 if (mInstance == null) {
-
                     mInstance = new DownloadManager();
-
                 }
 
             }
@@ -230,15 +194,12 @@ public class DownloadManager {
     }
 
     /**
-
-     * 初始化下载管理器 
-
+     * 初始化下载管理器
      */
 
     private DownloadManager() {
-
         mDownloadTasks = new HashMap<>();
 
     }
 
-}  
+}

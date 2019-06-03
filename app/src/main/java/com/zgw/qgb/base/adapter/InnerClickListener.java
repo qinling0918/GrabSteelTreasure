@@ -8,5 +8,5 @@ import android.view.View;
  * Created by tianlai on 16-7-16.
  */
 public interface InnerClickListener<T> {
-    public void onClick(View view, T itemData, int postition);
+     void onClick(View view, T itemData, int postition);
 }

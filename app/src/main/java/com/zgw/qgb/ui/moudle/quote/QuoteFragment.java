@@ -11,6 +11,7 @@ import com.zgw.qgb.base.adapter.FragmentsPagerAdapter;
 import com.zgw.qgb.helper.BundleConstant;
 import com.zgw.qgb.model.FragmentPagerAdapterModel;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
+import com.zgw.qgb.ui.moudle.mine.SettingsActivity;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuotePresenter;
 import com.zgw.qgb.ui.widgets.NoScrollViewPager;
@@ -87,7 +88,8 @@ public class QuoteFragment extends BaseMainFragment<QuotePresenter> implements Q
 
     @OnClick(R.id.tv_wide_nation)
     public void onViewClicked() {
-        startActivityForResult(new Intent(getContext(), CityActivity.class), BundleConstant.REQUEST_CODE);
+       // startActivityForResult(new Intent(getContext(), CityActivity.class), BundleConstant.REQUEST_CODE);
+        startActivityForResult(new Intent(getContext(), SettingsActivity.class), BundleConstant.REQUEST_CODE);
     }
 
     @OnPageChange(R.id.vp_main_container)
