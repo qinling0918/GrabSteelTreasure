@@ -7,10 +7,18 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.SimpleArrayMap;
+import android.util.Base64;
 
 import com.zgw.qgb.mvc_common.Utils;
+import com.zgw.qgb.mvc_common.download.FileUtils;
 import com.zgw.qgb.mvc_common.utils.EmptyUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -113,6 +121,30 @@ public class PrefHelper {
         public Editor put(String key, boolean value) {
             sp_editor.putBoolean(key,value);
             return this;
+        }
+        /**
+         * 将对象储存到sharepreference
+         *
+         * @param key
+         * @param <T>
+         */
+        public <T extends Serializable> Editor put(String key, T serializable) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = null;
+            try {   //Device为自定义类
+                // 创建对象输出流，并封装字节流
+                oos = new ObjectOutputStream(baos);
+                // 将对象写入字节流
+                oos.writeObject(serializable);
+                // 将字节流编码成base64的字符串
+                String oAuth_Base64 = new String(Base64.encode(baos.toByteArray(), Base64.DEFAULT));
+                put(key, oAuth_Base64);
+                return this;
+            } catch (Exception e) {
+                e.printStackTrace();
+                FileUtils.close(oos,baos);
+                return this;
+            }
         }
 
         public Editor remove(String key) {
@@ -267,6 +299,36 @@ public class PrefHelper {
     public Set<String> getStringSet(@NonNull final String key,
                                     final Set<String> defaultValue) {
         return sp.getStringSet(key, defaultValue);
+    }
+    /**
+     * 将对象从shareprerence中取出来
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public <T extends Serializable> T getSerializable(final String key) {
+        return getSerializable(key,null);
+    }
+    public <T extends Serializable> T getSerializable(final String key,final T defaultValue) {
+        T serializable = defaultValue;
+        String base64Str = getString(key, null);
+        if (base64Str == null) {
+            return defaultValue;
+        }
+        // 读取字节
+        byte[] base64 = Base64.decode(base64Str.getBytes(), Base64.DEFAULT);
+        // 封装到字节流
+        ByteArrayInputStream bais = new ByteArrayInputStream(base64);
+        ObjectInputStream bis = null;
+        try {
+            bis = new ObjectInputStream(bais);
+            serializable = (T) bis.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            FileUtils.close(bais,bis);
+        }
+        return serializable;
     }
 
     /**

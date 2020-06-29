@@ -12,7 +12,7 @@ import android.view.ViewGroup;
  *
  * Created by naivor on 16-4-12.
  */
-public class ListHolder<T> implements HolderOperator<T>{
+public abstract class ListHolder<T> implements HolderOperator<T>{
     protected  final String TAG=this.getClass().getSimpleName();
 
     protected Context context;
@@ -42,7 +42,7 @@ public class ListHolder<T> implements HolderOperator<T>{
      * @param position
      * @param operator
      */
-    public void bindData(AdapterOperator<T> operator,int position, T itemData ){
+    public void onBindViewHolder(AdapterOperator<T> operator,int position, T itemData ){
         this.itemData = itemData;
         this.position = position;
 
@@ -53,8 +53,9 @@ public class ListHolder<T> implements HolderOperator<T>{
         if (adapter != null) {
             clickListener = adapter.getInnerClickListener();
         }
+        bindData(operator,position,itemData);
     }
-
+    public abstract void bindData(AdapterOperator<T> operator,int position, T itemData );
     /**
      * 查找控件
      *

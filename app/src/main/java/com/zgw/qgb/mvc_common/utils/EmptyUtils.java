@@ -1,10 +1,8 @@
 package com.zgw.qgb.mvc_common.utils;
 
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.util.SimpleArrayMap;
-import android.text.TextUtils;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
@@ -13,6 +11,7 @@ import android.util.SparseLongArray;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
+
 
 /**
  * <pre>
@@ -79,13 +78,6 @@ public final class EmptyUtils {
     }
 
 
-
-    private static boolean isWhiteSpaces(@Nullable String s) {
-        return s != null && s.matches("\\s+");
-    }
-    public static boolean isEmpty(@Nullable String text) {
-        return text == null || TextUtils.isEmpty(text) || isWhiteSpaces(text) || text.equalsIgnoreCase("null");
-    }
     /**
      * 判断对象是否非空
      *
@@ -96,7 +88,46 @@ public final class EmptyUtils {
         return !isEmpty(obj);
     }
 
+    /**
+     *  全为空
+     * @param objs
+     * @return
+     */
+    public static boolean isAllEmpty(final Object... objs) {
+        boolean isEmpty = true;
+        if (isEmpty(objs)) {
+            return isEmpty;
+        }
+        for (Object obj : objs) {
+            isEmpty = isEmpty && isEmpty(obj);
+        }
+        return isEmpty;
+    }
 
+    /**
+     *  存在有为空的数据
+     * @param objs
+     * @return
+     */
+    public static boolean isHaveEmpty(final Object... objs) {
+        boolean isEmpty = false;
+        if (isEmpty(objs)) {
+            return isEmpty;
+        }
+        for (Object obj : objs) {
+            isEmpty = isEmpty || isEmpty(obj);
+        }
+        return isEmpty;
+    }
+
+    /**
+     *  不是全为空
+     * @param objs
+     * @return
+     */
+    public static boolean isNotAllEmpty(final Object... objs) {
+        return !isAllEmpty(objs);
+    }
     public static <T> T checkNotNull(T value, String message) {
         if (value == null) {
             throw new NullPointerException(message);

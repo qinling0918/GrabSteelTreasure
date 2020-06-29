@@ -77,7 +77,7 @@ public abstract class ListAdapter<T> extends BaseAdapter implements AdapterOpera
      * @param position
      */
     public void onBindViewHolder(ListHolder<T> viewHolder, int position) {
-        viewHolder.bindData(this,position, getItem(position));
+        viewHolder.onBindViewHolder(this,position, getItem(position));
     }
 
     /**

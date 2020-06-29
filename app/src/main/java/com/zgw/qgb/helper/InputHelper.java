@@ -4,8 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+
+
 
 /**
  * Created by kosh20111 on 3/11/2015. CopyRights @
@@ -16,6 +19,7 @@ public final class InputHelper {
     private InputHelper() {
         // No instances.
     }
+
     public static final String SPACE = "\u202F\u202F";
 
     private static boolean isWhiteSpaces(@Nullable String s) {
@@ -30,10 +34,6 @@ public final class InputHelper {
         return text == null || isEmpty(text.toString());
     }
 
-    public static boolean isEmpty(@Nullable EditText text) {
-        return text == null || isEmpty(text.getText().toString());
-    }
-
     public static boolean isEmpty(@Nullable TextView text) {
         return text == null || isEmpty(text.getText().toString());
     }
@@ -42,27 +42,36 @@ public final class InputHelper {
         return txt == null || isEmpty(txt.getEditText());
     }
 
-    public static String toString(@NonNull EditText editText) {
-        return editText.getText().toString();
+
+    public static String toString(@Nullable TextView text) {
+        return text == null ? "" : text.getText().toString();
+    }
+    public static String toString(@Nullable EditText text) {
+        return text == null ? "" : text.getText().toString();
+    }
+    public static String toString(@Nullable AutoCompleteTextView text) {
+        return text == null ? "" : text.getText().toString();
+    }
+    public static String tagToString(@Nullable TextView text) {
+        return text == null || text.getTag()==null? "" : text.getTag().toString();
+    }
+    public static String toString(@Nullable TextInputLayout textInputLayout) {
+        return textInputLayout != null && textInputLayout.getEditText() != null ? toString(textInputLayout.getEditText()) : "";
     }
 
-    public static String toString(@NonNull TextView editText) {
-        return editText.getText().toString();
-    }
-
-    public static String toString(@NonNull TextInputLayout textInputLayout) {
-        return textInputLayout.getEditText() != null ? toString(textInputLayout.getEditText()) : "";
-    }
-
-    @NonNull
-    public static String toNA(@Nullable String value) {
-        return valueOrDefault(value,"N/A");
-    }
 
     public static String valueOrDefault(String string, String defaultString) {
         return isWhiteSpaces(string) ? defaultString : string;
     }
-
+    /**
+     * 若字符串
+     * @param string
+     * @param defaultString
+     * @return
+     */
+    public static String emptyOrDefault(String string, String defaultString) {
+        return isEmpty(string) ? defaultString : string;
+    }
     @NonNull
     public static String toString(@Nullable Object object) {
         return !isEmpty(object) ? object.toString() : "";
@@ -76,7 +85,8 @@ public final class InputHelper {
         if (!isEmpty(text)) {
             try {
                 return Long.valueOf(text.replace(".", "").replaceAll(",", ""));
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
         return 0;
     }
@@ -88,6 +98,7 @@ public final class InputHelper {
 
     /**
      * 将字符串首字母变成大写
+     *
      * @param s
      * @return
      */

@@ -1,6 +1,9 @@
 package com.zgw.qgb.helper.utils;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -79,7 +82,6 @@ public final class FileUtils {
                 }
             }
         }
-
     }
 
 
@@ -169,7 +171,24 @@ public final class FileUtils {
         return file;
     }
 
-
+    public static boolean isAndroidQFileExists(Context context, String path){
+        AssetFileDescriptor afd = null;
+        ContentResolver cr = context.getContentResolver();
+        try {
+            Uri uri = Uri.parse(path);
+            afd = cr.openAssetFileDescriptor(uri, "r");
+            if (afd == null) {
+                return false;
+            } else {
+                close(afd);
+            }
+        } catch (FileNotFoundException e) {
+            return false;
+        }finally {
+            close(afd);
+        }
+        return true;
+    }
     public static void installAPk(File file) {
         Intent intent = getInstallApkIntent(file);
         Utils.getContext().startActivity(intent);

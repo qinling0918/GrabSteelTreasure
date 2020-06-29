@@ -1,5 +1,6 @@
 package com.zgw.qgb.base;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +34,8 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
 
-import static com.trello.rxlifecycle2.internal.Preconditions.checkNotNull;
+import static com.zgw.qgb.helper.utils.EmptyUtils.checkNotNull;
+
 
 /**
  * Created by Tsinling on 2017/8/12 11:49.
@@ -44,12 +46,15 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
     protected final String TAG = this.getClass().getSimpleName();
     protected P mPresenter;
     protected Context mContext;
-    @State boolean isProgressShowing;
-    @State Bundle presenterStateBundle = new Bundle();
+    @State
+    boolean isProgressShowing;
+    @State
+    Bundle presenterStateBundle = new Bundle();
     //private Toast toast;
     private long backPressTimer;
 
-    @Nullable @BindView(R.id.toolbar) public Toolbar toolbar;
+    @Nullable
+    @BindView(R.id.toolbar) public Toolbar toolbar;
     @Nullable @BindView(R.id.tv_title) public TextView tv_title;
 
     @Override
@@ -237,8 +242,8 @@ public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActi
 
     @Override
     public void hideProgress() {
-        ProgressDialogFragment fragment = (ProgressDialogFragment) AppHelper.getFragmentByTag(getSupportFragmentManager(),
-                ProgressDialogFragment.TAG);
+        ProgressDialogFragment fragment = (ProgressDialogFragment) (getSupportFragmentManager().findFragmentByTag(
+                ProgressDialogFragment.TAG));
         if (fragment != null) {
             isProgressShowing = false;
             fragment.dismiss();

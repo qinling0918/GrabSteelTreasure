@@ -29,8 +29,6 @@ import java.util.Locale;
 public class App extends TinkerApplication {
     private static App instance;
 
-
-
     public App() {
         //tinkerFlags, which types is supported
         //dex only, library only, all support

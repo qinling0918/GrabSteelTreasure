@@ -69,7 +69,6 @@ public class AppsListAdapter extends ListAdapter<ApplicationInfo> {
 
         @Override
         public void bindData(AdapterOperator<ApplicationInfo> operator, int position, ApplicationInfo itemData) {
-            super.bindData(operator, position, itemData);
             textView.setText(itemData.packageName);
             // textView.setBackground(context.getResources().getDrawable(itemData.icon));
 
@@ -86,7 +85,6 @@ public class AppsListAdapter extends ListAdapter<ApplicationInfo> {
 
         @Override
         public void bindData(AdapterOperator<ApplicationInfo> operator, int position, ApplicationInfo itemData) {
-            super.bindData(operator, position, itemData);
             textView.setText(itemData.packageName);
             //  textView.setBackground(context.getResources().getDrawable(itemData.icon));
         }
@@ -103,7 +101,6 @@ public class AppsListAdapter extends ListAdapter<ApplicationInfo> {
 
         @Override
         public void bindData(AdapterOperator<ApplicationInfo> operator, int position, ApplicationInfo itemData) {
-            super.bindData(operator, position, itemData);
             textView.setText(itemData.packageName);
             //  textView.setBackground(context.getResources().getDrawable(itemData.icon));
         }
