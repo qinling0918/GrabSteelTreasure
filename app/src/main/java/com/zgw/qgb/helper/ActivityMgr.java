@@ -53,7 +53,7 @@ public class ActivityMgr {
 
     public static void init(Context context) {
         // 注册退出广播
-        new AppExitReceiver(context).register();
+       // new AppExitReceiver(context).register();
 
         getInstance().setApplication((Application) context.getApplicationContext());
         getInstance().getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -175,6 +175,7 @@ public class ActivityMgr {
                 String action = intent.getAction();
                 Timber.d("AppExitReceiver : " + action);
                 if (TextUtils.equals(action, ACTION)) {
+                    unregister();
                     getInstance().appExit();
                 }
             }
@@ -184,7 +185,12 @@ public class ActivityMgr {
             unregister();
             IntentFilter filter = new IntentFilter();
             filter.addAction(ACTION);
-            context.registerReceiver(this, filter);
+            try {
+                context.registerReceiver(this, filter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         /**
