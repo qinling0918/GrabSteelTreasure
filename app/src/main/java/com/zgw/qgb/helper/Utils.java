@@ -3,7 +3,6 @@ package com.zgw.qgb.helper;
 import android.app.Application;
 import android.content.Context;
 
-import com.zgw.qgb.AppLike;
 
 import java.util.Locale;
 

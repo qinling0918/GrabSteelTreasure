@@ -1,6 +1,6 @@
 package com.zgw.qgb.net.converters;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 

@@ -2,6 +2,8 @@ package com.zgw.qgb.net.downloads;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
@@ -12,7 +14,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.reactivex.annotations.Nullable;
 
 /**
  * created by tsinling on: 2018/12/16 13:43

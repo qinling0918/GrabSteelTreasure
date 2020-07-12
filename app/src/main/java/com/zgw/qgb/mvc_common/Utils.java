@@ -3,7 +3,7 @@ package com.zgw.qgb.mvc_common;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * created by tsinling on: 2018/4/29 09:07

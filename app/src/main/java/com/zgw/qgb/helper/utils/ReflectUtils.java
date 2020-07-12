@@ -2,7 +2,7 @@ package com.zgw.qgb.helper.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.lang.reflect.AccessibleObject;

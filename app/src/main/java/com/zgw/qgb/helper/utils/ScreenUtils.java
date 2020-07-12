@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;

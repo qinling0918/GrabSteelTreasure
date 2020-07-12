@@ -2,9 +2,10 @@ package com.zgw.qgb.net.extension;
 
 import android.util.Log;
 
-import io.reactivex.Observer;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import retrofit2.HttpException;
 
 /**
@@ -13,15 +14,19 @@ import retrofit2.HttpException;
  * Created by tianyang on 2017/9/27.
  */
 
-public abstract class BaseObserver<T> implements Observer<T> ,SingleObserver<T>{
+public abstract class BaseObserver<T> implements Observer<T>, SingleObserver<T> {
 
     private static final String TAG = "BaseObserver";
-
-    @Override
+    private Disposable d;
+  /*  @Override
     public void onSubscribe(Disposable d) {
 
-    }
+    }*/
 
+    @Override
+    public void onSubscribe(@NonNull Disposable d) {
+     this.d = d;
+    }
 
 
     @Override
@@ -36,7 +41,9 @@ public abstract class BaseObserver<T> implements Observer<T> ,SingleObserver<T>{
 
     @Override
     public void onComplete() {
-
+        if (d!=null){
+            d.dispose();
+        }
     }
 
     public static int getErrorCode(Throwable throwable) {

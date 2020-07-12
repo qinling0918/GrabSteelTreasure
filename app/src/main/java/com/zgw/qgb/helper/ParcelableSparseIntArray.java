@@ -39,6 +39,4 @@ public class ParcelableSparseIntArray extends SparseIntArray implements Parcelab
     public void writeToParcel(Parcel dest, int flags) {
     }
 
-
-
 }

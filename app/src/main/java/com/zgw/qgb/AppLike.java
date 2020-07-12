@@ -1,3 +1,4 @@
+/*
 package com.zgw.qgb;
 
 import android.annotation.TargetApi;
@@ -5,32 +6,32 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.multidex.MultiDex;
-import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
+import androidx.multidex.MultiDex;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.squareup.leakcanary.LeakCanary;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
 import com.tencent.tinker.loader.app.DefaultApplicationLike;
-import com.tencent.tinker.loader.app.TinkerApplication;
-import com.tencent.tinker.loader.shareutil.ShareConstants;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
 import com.zgw.qgb.helper.Utils;
-import com.zgw.qgb.helper.utils.ScreenUtils;
 
 import java.util.Locale;
 
+*/
 /**
  * Created by qinling on 2018/9/14 18:51
  * Description:
- */
+ *//*
 
+
+*/
 /*@SuppressWarnings("unused")
 @DefaultLifeCycle(application = "com.zgw.qgb.App",
         flags = ShareConstants.TINKER_ENABLE_ALL,
-        loadVerifyFlag = false)*/
+        loadVerifyFlag = false)*//*
+
 public class AppLike extends DefaultApplicationLike  {
     private static final String TAG = "AppLike";
 
@@ -87,3 +88,4 @@ public class AppLike extends DefaultApplicationLike  {
     }
 
 }
+*/

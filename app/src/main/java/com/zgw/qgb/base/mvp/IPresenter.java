@@ -1,7 +1,6 @@
 package com.zgw.qgb.base.mvp;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 
 /**
  * Created by tsinling on 17/9/8

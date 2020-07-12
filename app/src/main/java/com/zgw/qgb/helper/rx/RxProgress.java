@@ -1,15 +1,16 @@
 package com.zgw.qgb.helper.rx;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.zgw.qgb.base.BaseActivity;
 import com.zgw.qgb.base.mvp.IView;
 
-import io.reactivex.ObservableTransformer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.ObservableTransformer;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public final class RxProgress {
 

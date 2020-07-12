@@ -1,8 +1,7 @@
 package com.zgw.qgb.download;
 
-import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.zgw.qgb.App;
@@ -11,7 +10,6 @@ import com.zgw.qgb.download.bean.ThreadInfo;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;

@@ -4,18 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.trello.rxlifecycle2.LifecycleTransformer;
-import com.trello.rxlifecycle2.components.support.RxFragment;
+import com.trello.rxlifecycle4.LifecycleTransformer;
+import com.trello.rxlifecycle4.components.support.RxFragment;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.mvp.IPresenter;
 import com.zgw.qgb.base.mvp.IView;
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import icepick.Icepick;
 
-import static com.trello.rxlifecycle2.internal.Preconditions.checkNotNull;
+import static com.trello.rxlifecycle4.internal.Preconditions.checkNotNull;
 
 
 /**

@@ -3,9 +3,9 @@ package com.zgw.qgb.helper;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.SimpleArrayMap;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.SimpleArrayMap;
 
 /**
  * Created by tsinling on 2018-2

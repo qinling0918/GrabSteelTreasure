@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.zgw.qgb.Constant;
@@ -25,7 +25,7 @@ import java.util.Map;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 
 import static com.zgw.qgb.net.OkHttpConfig.DEFAULT_CONFIG;
 
@@ -89,7 +89,7 @@ public class RetrofitProvider1 {
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(provideOkHttpClient(baseUrl, config))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .addConverterFactory(new StringConverterFactory(gson));
 
         Retrofit retrofit = builder.build();

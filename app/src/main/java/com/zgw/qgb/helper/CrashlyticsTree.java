@@ -1,6 +1,6 @@
 package com.zgw.qgb.helper;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import timber.log.Timber;

@@ -1,7 +1,7 @@
 package com.zgw.qgb.mvc_common.helper;
 
 import android.accounts.Account;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 
 /**

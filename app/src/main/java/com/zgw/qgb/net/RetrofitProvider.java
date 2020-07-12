@@ -11,7 +11,7 @@ import com.zgw.qgb.net.progressmanager.ProgressManager;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 
 import static com.zgw.qgb.net.OkHttpConfig.DEFAULT_CONFIG;
 
@@ -68,7 +68,7 @@ public class RetrofitProvider {
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(provideOkHttpWithConfig(config))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .addConverterFactory(new StringConverterFactory(gson));
 
         return builder.build();

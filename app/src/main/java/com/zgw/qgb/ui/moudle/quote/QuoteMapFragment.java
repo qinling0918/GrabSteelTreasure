@@ -1,10 +1,10 @@
 package com.zgw.qgb.ui.moudle.quote;
 
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
@@ -14,16 +14,11 @@ import com.zgw.qgb.network.download.DownLoadInfoManager;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteMapContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteMapPresenter;
 
-import java.io.IOException;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 
-import static android.os.Environment.DIRECTORY_DOWNLOADS;
 import static java.lang.Thread.NORM_PRIORITY;
 import static java.lang.Thread.sleep;
 

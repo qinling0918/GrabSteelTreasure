@@ -1,4 +1,4 @@
-package com.zgw.qgb.model;
+package com.zgw.qgb.model.bean;
 
 import java.util.List;
 

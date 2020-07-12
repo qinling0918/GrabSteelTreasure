@@ -1,8 +1,8 @@
 package com.zgw.qgb.helper.rx;
 
 import android.os.Environment;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,9 +20,9 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;

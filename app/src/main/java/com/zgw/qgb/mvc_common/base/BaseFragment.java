@@ -3,15 +3,15 @@ package com.zgw.qgb.mvc_common.base;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.trello.rxlifecycle2.components.support.RxFragment;
+import com.trello.rxlifecycle4.components.support.RxFragment;
 import com.zgw.qgb.R;
 
 import butterknife.BindView;

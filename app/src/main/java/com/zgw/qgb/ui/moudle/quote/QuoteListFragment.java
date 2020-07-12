@@ -10,18 +10,14 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
-import android.os.Looper;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.tinker.lib.tinker.Tinker;
-import com.tencent.tinker.lib.tinker.TinkerInstaller;
-import com.tencent.tinker.loader.shareutil.ShareTinkerInternals;
+import com.tsinling.rxpermission3.RxPermissions;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseFragment;
 import com.zgw.qgb.download.DownloadListener;
@@ -32,7 +28,6 @@ import com.zgw.qgb.interf.DefaultDownloadListener;
 import com.zgw.qgb.net.download.DownloadsService;
 import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.network.download.DownloadManager;
-import com.zgw.qgb.network.download.listener.DownloadsListener;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteListContract;
 import com.zgw.qgb.ui.moudle.quote.presenter.QuoteListPresenter;
 
@@ -43,6 +38,8 @@ import java.io.RandomAccessFile;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 import static android.os.Environment.DIRECTORY_DOWNLOADS;

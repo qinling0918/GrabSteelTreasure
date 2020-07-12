@@ -2,14 +2,14 @@ package com.zgw.qgb.ui.moudle.quote;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.adapter.FragmentsPagerAdapter;
 import com.zgw.qgb.helper.BundleConstant;
-import com.zgw.qgb.model.FragmentPagerAdapterModel;
+import com.zgw.qgb.model.bean.FragmentPagerAdapterModel;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
 import com.zgw.qgb.ui.moudle.mine.SettingsActivity;
 import com.zgw.qgb.ui.moudle.quote.contract.QuoteContract;

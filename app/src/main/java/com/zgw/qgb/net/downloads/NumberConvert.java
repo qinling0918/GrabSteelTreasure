@@ -3,7 +3,7 @@ package com.zgw.qgb.net.downloads;
 
 import java.util.Locale;
 
-import io.reactivex.annotations.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by qinling on 2018/5/5 14:58

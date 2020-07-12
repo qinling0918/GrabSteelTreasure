@@ -1,25 +1,21 @@
 package com.zgw.qgb.ui.moudle.message;
 
-import android.Manifest;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.adapter.RecycleViewCursorAdapter;
 import com.zgw.qgb.helper.Bundler;
-import com.zgw.qgb.helper.ToastUtils;
-import com.zgw.qgb.net.extension.BaseObserver;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
 import com.zgw.qgb.ui.moudle.message.contract.MessageContract;
 import com.zgw.qgb.ui.moudle.message.presenter.MessagePresenter;
@@ -73,7 +69,7 @@ public class MessageFragment
         setTitle(title);
 
         setAdapter();
-        RxPermissions rxPermissions = new RxPermissions(getmActivity());
+  /*      RxPermissions rxPermissions = new RxPermissions(getmActivity());
         rxPermissions.request( Manifest.permission.READ_CONTACTS)
                 .subscribe(new BaseObserver<Boolean>() {
                     @Override
@@ -85,7 +81,7 @@ public class MessageFragment
                         }
                     }
                 });
-
+*/
 
     }
 

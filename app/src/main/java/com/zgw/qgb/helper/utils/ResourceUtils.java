@@ -2,7 +2,7 @@ package com.zgw.qgb.helper.utils;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.support.annotation.ArrayRes;
+import androidx.annotation.ArrayRes;
 
 import com.zgw.qgb.helper.Utils;
 

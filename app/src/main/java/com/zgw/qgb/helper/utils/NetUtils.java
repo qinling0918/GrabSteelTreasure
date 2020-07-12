@@ -3,12 +3,10 @@ package com.zgw.qgb.helper.utils;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 
 import java.util.List;

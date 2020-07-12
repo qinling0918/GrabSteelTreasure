@@ -10,7 +10,7 @@ import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseActivity;
 import com.zgw.qgb.base.adapter.FragmentsPagerAdapter;
 import com.zgw.qgb.helper.utils.ResourceUtils;
-import com.zgw.qgb.model.FragmentPagerAdapterModel;
+import com.zgw.qgb.model.bean.FragmentPagerAdapterModel;
 import com.zgw.qgb.ui.widgets.NoScrollViewPager;
 
 import butterknife.BindArray;

@@ -95,12 +95,29 @@
 
 ###############################
 #ARouter
+
 -keep public class com.alibaba.android.arouter.routes.**{*;}
+-keep public class com.alibaba.android.arouter.facade.**{*;}
 -keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
 
 # 如果使用了 byType 的方式获取 Service，需添加下面规则，保护接口
 -keep interface * implements com.alibaba.android.arouter.facade.template.IProvider
 
 # 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
--keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+# -keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+
+
 ###############################
+# greendao
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties { *; }
+
+# If you DO use SQLCipher:
+ -keep class org.greenrobot.greendao.database.SqlCipherEncryptedHelper { *; }
+
+# If you do NOT use SQLCipher:
+-dontwarn net.sqlcipher.database.**
+# If you do NOT use RxJava:
+#-dontwarn rx.**

@@ -1,7 +1,7 @@
 package com.zgw.qgb.mvc_common.helper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;

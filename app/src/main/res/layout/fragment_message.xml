@@ -8,7 +8,7 @@
     tools:context="com.zgw.qgb.ui.moudle.message.MessageFragment">
 
     <include layout="@layout/layout_toolbar"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,7 +18,7 @@
         app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
         app:fastScrollVerticalTrackDrawable="@drawable/line_drawable">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </LinearLayout>

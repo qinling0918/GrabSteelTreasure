@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/GrabSteelTreasure.iml" filepath="$PROJECT_DIR$/.idea/GrabSteelTreasure.iml" />
-      <module fileurl="file://$PROJECT_DIR$/GrabSteelTreasure.iml" filepath="$PROJECT_DIR$/GrabSteelTreasure.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GrabSteelTreasure.iml" filepath="$PROJECT_DIR$/.idea/modules/GrabSteelTreasure.iml" group="GrabSteelTreasure" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="GrabSteelTreasure/app" />
     </modules>
   </component>
 </project>

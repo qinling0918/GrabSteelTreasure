@@ -17,7 +17,7 @@ package com.zgw.qgb.net.progressmanager.body;
 
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.zgw.qgb.net.progressmanager.ProgressListener;
 

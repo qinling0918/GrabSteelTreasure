@@ -5,7 +5,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.Filter;
 import android.widget.FilterQueryProvider;
 import android.widget.Filterable;
@@ -142,7 +142,7 @@ public abstract class RecycleViewCursorAdapter<VH extends RecyclerView.ViewHolde
     }
 
     /**
-     * @see android.support.v7.widget.RecyclerView.Adapter#getItemCount()
+     * @see RecyclerView.Adapter#getItemCount()
      */
     @Override
     public int getItemCount() {
@@ -154,7 +154,7 @@ public abstract class RecycleViewCursorAdapter<VH extends RecyclerView.ViewHolde
     }
 
     /**
-     * @see android.support.v7.widget.RecyclerView.Adapter#getItemId(int)
+     * @see RecyclerView.Adapter#getItemId(int)
      *
      * @param position Adapter position to query
      * @return

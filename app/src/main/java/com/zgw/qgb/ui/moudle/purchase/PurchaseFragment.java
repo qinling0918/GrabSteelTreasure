@@ -1,27 +1,19 @@
 package com.zgw.qgb.ui.moudle.purchase;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
+
+import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
 import com.zgw.qgb.R;
-import com.zgw.qgb.base.adapter.BindableAdapter;
-import com.zgw.qgb.base.adapter.ListAdapter;
-import com.zgw.qgb.base.adapter.ListHolder;
 import com.zgw.qgb.helper.Bundler;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
 import com.zgw.qgb.ui.moudle.purchase.contract.PurchaseContract;

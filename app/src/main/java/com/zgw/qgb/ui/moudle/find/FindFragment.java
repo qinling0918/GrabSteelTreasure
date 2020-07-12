@@ -1,7 +1,7 @@
 package com.zgw.qgb.ui.moudle.find;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.zgw.qgb.R;

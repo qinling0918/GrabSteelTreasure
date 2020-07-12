@@ -1,7 +1,6 @@
 package com.zgw.qgb.download;
 
-import android.os.AsyncTask;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayDeque;
@@ -9,7 +8,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;

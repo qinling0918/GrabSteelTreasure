@@ -6,6 +6,8 @@ import android.util.Log;
 import android.util.SparseArray;
 
 
+import androidx.annotation.NonNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import io.reactivex.annotations.NonNull;
 
 /**
  * created by tsinling on: 2018/12/16 18:17

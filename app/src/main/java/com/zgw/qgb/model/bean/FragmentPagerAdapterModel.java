@@ -1,8 +1,8 @@
-package com.zgw.qgb.model;
+package com.zgw.qgb.model.bean;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;

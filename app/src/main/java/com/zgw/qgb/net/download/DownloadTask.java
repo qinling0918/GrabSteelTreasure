@@ -1,16 +1,10 @@
 package com.zgw.qgb.net.download;
 
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.zgw.qgb.R;
-import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.helper.utils.FileUtils;
 import com.zgw.qgb.net.RetrofitProvider;
-import com.zgw.qgb.network.download.DownLoadInfoManager;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -18,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;

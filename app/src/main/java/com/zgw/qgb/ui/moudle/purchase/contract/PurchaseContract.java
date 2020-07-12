@@ -1,7 +1,5 @@
 package com.zgw.qgb.ui.moudle.purchase.contract;
 
-import android.support.v4.app.LoaderManager;
-
 import com.zgw.qgb.base.mvp.IPresenter;
 import com.zgw.qgb.base.mvp.IView;
 

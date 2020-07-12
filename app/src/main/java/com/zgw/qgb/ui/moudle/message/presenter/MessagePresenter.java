@@ -10,6 +10,7 @@ import com.zgw.qgb.ui.moudle.main.BaseBean;
 import com.zgw.qgb.ui.moudle.main.MainService;
 import com.zgw.qgb.ui.moudle.message.contract.MessageContract;
 
+
 /**
  * Name:MessagePresenter
  * Created by Tsinling on 2017/11/1 15:33.
@@ -24,6 +25,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.IMessageView
                 .compose(RxProgress.bindToLifecycle_observable(getView(), R.string.message))
                 .compose(getView().bind2Lifecycle())
                 .subscribe(new BaseObserver<BaseBean>() {
+
                     @Override
                     public void onSuccess(BaseBean mainBean) {
 

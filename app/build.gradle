@@ -8,15 +8,16 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
+   // buildToolsVersion  "30.0.0"
+    buildToolsVersion  versions.buildTools
 
     defaultConfig {
         applicationId "com.zgw.qgb"
         minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
+        targetSdkVersion  versions.targetSdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         /* javaCompileOptions {
@@ -38,6 +39,10 @@ android {
                 }
             }
         }*/
+
+        buildFeatures{
+            viewBinding = true
+        }
     }
 
     buildTypes {
@@ -85,7 +90,7 @@ android {
 
 kapt {
     arguments {
-        arg("moduleName", project.getName())
+        arg("AROUTER_MODULE_NAME", project.getName())
     }
 }
 
@@ -96,23 +101,21 @@ dependencies {
     //kotlin
     implementation deps.kotlin
     //support
-    implementation deps.support.design
-    implementation deps.support.appCompat
-    implementation deps.support.cardview
-    implementation deps.support.recyclerview
-    implementation deps.support.v4
-    implementation deps.support.vectorDrawable
-    implementation deps.support.constraint
-    implementation deps.support.multidex
+    implementation deps.androidx.design
+  //  implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation deps.androidx.appCompat
+   // implementation deps.androidx.cardview
+    implementation deps.androidx.recyclerview
+   // implementation deps.androidx.v4
+    implementation deps.androidx.vectorDrawable
+    implementation deps.androidx.constraint
+    implementation deps.androidx.multidex
 
 
-
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:support-vector-drawable:27.1.1'
     kapt deps.kapt.glide_compiler
     implementation deps.retrofit.core
     implementation deps.retrofit.converter
-    implementation deps.retrofit.rxjava2
+    implementation deps.retrofit.rxjava3
     //network
     implementation deps.okhttp.core
     implementation deps.okhttp.logger
@@ -129,12 +132,20 @@ dependencies {
     //implementation "frankiesardo:icepick:${icepickVersion}"
     //kapt "frankiesardo:icepick-processor:${icepickVersion}"
 
-    //rx2
-    implementation deps.rx2.core
-    implementation deps.rx2.android
-    implementation deps.rx2.rxlifecycle_android
-    implementation deps.rx2.rxlifecycle_components
-    implementation deps.rx2.rxpermissions
+    //rx3
+    implementation deps.rx3.core
+    implementation deps.rx3.android
+   // implementation deps.rx3.rxpermissions
+    implementation 'com.github.tbruyelle:rxpermissions:0.11'
+
+    implementation deps.rxlifecycle4.core
+    implementation deps.rxlifecycle4.android
+    implementation deps.rxlifecycle4.components
+
+
+
+
+    implementation deps.greendao
 
     //tool
     implementation deps.timber
@@ -157,7 +168,7 @@ dependencies {
     releaseImplementation deps.leakCanary.noOp
     testImplementation deps.junit
     androidTestImplementation deps.junit
-    androidTestImplementation deps.espresso
+    androidTestImplementation deps.espresso.core
     androidTestImplementation deps.runner
 
     //implementation 'com.alibaba:arouter-annotation:1.0.4'
@@ -185,4 +196,4 @@ dependencies {
     /// compile 'skin.support:skin-support-constraint-layout:2.2.3' // skin-support-constraint-layout ConstraintLayout 控件支
 }
 // 该文件需要获取 versionName的值，故需要保证在defaultConfig {} 函数完成后 调用
-apply from: 'tinkerpatch.gradle'
+// apply from: 'tinkerpatch.gradle'

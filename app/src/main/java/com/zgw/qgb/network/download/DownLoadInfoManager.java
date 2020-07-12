@@ -1,8 +1,7 @@
 package com.zgw.qgb.network.download;
 
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
+import androidx.annotation.NonNull;
 
 import android.util.Log;
 import android.util.SparseLongArray;
@@ -17,16 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.io.SequenceInputStream;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.zgw.qgb.network.download.DownLoadInfoManager.Status.CANCELED;
 import static com.zgw.qgb.network.download.DownLoadInfoManager.Status.PAUSED;
 import static com.zgw.qgb.network.download.DownLoadInfoManager.Status.PROGRESS;
-import static com.zgw.qgb.network.download.DownLoadInfoManager.Status.START;
 import static com.zgw.qgb.network.download.DownLoadInfoManager.Status.SUCCESS;
 
 

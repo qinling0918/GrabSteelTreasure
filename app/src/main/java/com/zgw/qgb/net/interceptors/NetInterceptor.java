@@ -1,6 +1,6 @@
 package com.zgw.qgb.net.interceptors;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.zgw.qgb.net.RequestHandler;
 

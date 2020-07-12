@@ -1,22 +1,26 @@
 ext.versions = [
 
         // 可以将这些值存放到 gradle.properties 里面。
-        'compileSdk'  : 27,
-        'buildTools'  : '27.0.3',
+        'compileSdk'  : 29,
+        'buildTools'  : "29.0.3",
         'minSdk'      : 19,
-        'targetSdk'   : 28,
+        'targetSdk'   : 29,
 
-        'gradlePlugin': "3.1.2",
-        'support'     : '27.1.0',
-        'butterKnife' : '8.8.1',
-        'rxlifecycle' : '2.2.0',
+        'gradlePlugin': "4.0.0",
+        'support'     : '28.0.0',
+        'androidx'     : '1.1.0',
+        'butterKnife' : '10.2.1',
+        'rxlifecycle2' : '2.2.0',
+        'rxlifecycle4' : '4.0.0',
         'icepick'     : '3.2.0',
-        'okhttp'      : '3.9.0',
-        'retrofit'    : '2.3.0',
-        'leakCanary'  : '1.5.4',
-        'kotlin'      : '1.2.30',
-        'glide'       : '4.5.0',
-        'tinker'      : '1.9.1',
+        'okhttp'      : '4.7.2',
+        'retrofit'    : '2.9.0',
+        'leakCanary'  : '2.4',
+        'kotlin'      : '1.3.72',
+        'glide'       : '4.11.0',
+        'tinker'      : '1.9.14.7',
+        'dagger2'     : '2.28.1',
+        'espresso'     : '3.0.1',
 
 
 ]
@@ -27,13 +31,25 @@ ext.deps = [
                 'appCompat'     : "com.android.support:appcompat-v7:${versions.support}",
                 'design'        : "com.android.support:design:${versions.support}",
                 'recyclerview'  : "com.android.support:recyclerview-v7:${versions.support}",
-                'cardview'      : "com.android.support:cardview-v7:${versions.support}",
+                'cardview'      : "androidx.cardview:cardview:1.0.0",
                 'vectorDrawable': "com.android.support:support-vector-drawable:${versions.support}",
-                'constraint'    : "com.android.support.constraint:constraint-layout:1.0.2",
-                'multidex'      : "com.android.support:multidex:1.0.2",
+                'constraint'    : "com.android.support.constraint:constraint-layout:1.1.3",
+                'multidex'      : "com.android.support:multidex:1.0.3",
+        ],
+        'androidx'            : [
+                "annotations"              : "androidx.annotation:annotation:${versions.androidx}",
+                "v4"        : "androidx.legacy:legacy-support-v4:1.0.0",
+                "appCompat"                : "androidx.appcompat:appcompat:${versions.androidx}",
+                "design"                   : "com.google.android.material:material:${versions.androidx}",
+                "recyclerview"             : "androidx.recyclerview:recyclerview:${versions.androidx}",
+                "cardview"                 : "androidx.cardview:cardview:${versions.androidx}",
+                "vectorDrawable"                 : "androidx.vectordrawable:vectordrawable:${versions.androidx}",
+                "constraint"                 : "androidx.constraintlayout:constraintlayout:1.1.3",
+                "multidex"             : "androidx.multidex:multidex:2.0.1",
         ],
 
-        'kotlin'             : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}",
+        //'kotlin'             : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}",
+        'kotlin'             : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
 
         'okhttp'             : [
                 'core'  : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
@@ -44,11 +60,18 @@ ext.deps = [
                 'core'  : "com.github.bumptech.glide:glide:${versions.glide}",
                 'okhttp': "com.github.bumptech.glide:okhttp3-integration:${versions.glide}",
         ],
-
+        'dagger2'            : [
+                'core'           : "com.google.dagger:dagger:${versions.dagger2}",
+                'android'        : "com.google.dagger:dagger-android:${versions.dagger2}",
+                'android-support': "com.google.dagger:dagger-android-support:${versions.dagger2}",
+                "compiler"         : "com.google.dagger:dagger-compiler:${versions.dagger2}",
+                "dagger2-android-processor": "com.google.dagger:dagger-android-processor:${versions.dagger2}",
+        ],
         'retrofit'           : [
                 'core'     : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
                 'converter': "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
                 'rxjava2'  : "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}",
+                'rxjava3'  : "com.squareup.retrofit2:adapter-rxjava3:${versions.retrofit}",
 
         ],
         'butterKnife'        : [
@@ -62,44 +85,101 @@ ext.deps = [
         ],
 
         'rx2'                : [
-                'core'                  : 'io.reactivex.rxjava2:rxjava:2.1.3',
+                'core'                  : 'io.reactivex.rxjava2:rxjava:3.0.4',
                 'android'               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
-                'rxlifecycle_android'   : "com.trello.rxlifecycle2:rxlifecycle-android:${versions.rxlifecycle}",
-                'rxlifecycle_components': "com.trello.rxlifecycle2:rxlifecycle-components:${versions.rxlifecycle}",
-                'rxpermissions'         : 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar',
+                'rxlifecycle-android'   : "com.trello.rxlifecycle4:rxlifecycle-android:${versions.rxlifecycle4}",
+                'rxlifecycle-components': "com.trello.rxlifecycle4:rxlifecycle-components:${versions.rxlifecycle4}",
+                "rxpermissions"           : 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar',
+                // "rxerrorhandler2"          : "me.jessyan:rxerrorhandler:2.1.1",
                 //'rxbinding': 'com.jakewharton.rxbinding:rxbinding:1.0.1',
         ],
-
+        'rx3'                : [
+                'core'                  : 'io.reactivex.rxjava3:rxjava:3.0.4',
+                'android'               : 'io.reactivex.rxjava3:rxandroid:3.0.0',
+                "rxpermissions"           : 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar',
+                //  "rxerrorhandler"        : "me.jessyan:rxerrorhandler:2.1.1",
+                //'rxbinding': 'com.jakewharton.rxbinding:rxbinding:1.0.1',
+        ],
+        'rxlifecycle4'             : [
+                'core'   : "com.trello.rxlifecycle4:rxlifecycle:${versions.rxlifecycle4}",
+                'android'   : "com.trello.rxlifecycle4:rxlifecycle-android:${versions.rxlifecycle4}",
+                'components': "com.trello.rxlifecycle4:rxlifecycle-components:${versions.rxlifecycle4}",
+                'components-preference': "com.trello.rxlifecycle4:rxlifecycle-components-preference:${versions.rxlifecycle4}",
+                'android-lifecycle': "com.trello.rxlifecycle4:rxlifecycle-android-lifecycle:${versions.rxlifecycle4}",
+                'kotlin': "com.trello.rxlifecycle4:rxlifecycle-kotlin:${versions.rxlifecycle4}",
+                'android-lifecycle-kotlin': "com.trello.rxlifecycle4:rxlifecycle-android-lifecycle-kotlin:${versions.rxlifecycle4}",
+        ],
         'tinker'             : [
-                'core'  : "com.tencent.tinker:tinker-android-lib:${versions.tinker}",
+                'core': "com.tencent.tinker:tinker-android-lib:${versions.tinker}",
                 'anno': "com.tencent.tinker:tinker-android-anno:${versions.tinker}",
         ],
-        'timber'             : 'com.jakewharton.timber:timber:4.5.1',
+
+        "logger"                   : "com.orhanobut:logger:2.2.0",
+        'timber'             : 'com.jakewharton.timber:timber:4.7.1',
         'icepick'            : "frankiesardo:icepick:${versions.icepick}",
         'statusbarutil'      : 'com.jaeger.statusbarutil:library:1.4.0',
-        'gson'               : 'com.google.code.gson:gson:2.8.2',
+        'gson'               : 'com.google.code.gson:gson:2.8.6',
         'stream'             : 'com.annimon:stream:1.1.7',
         'SmartRefreshLayout' : 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3',
         'bottomNavigationBar': 'com.ashokvarma.android:bottom-navigation-bar:2.0.3',
         'materialDialogs'    : "com.afollestad.material-dialogs:core:0.9.4.7",
         'toasty'             : 'com.github.GrenderG:Toasty:1.1.3',
+        "photoview"          : "com.github.chrisbanes.photoview:library:1.2.3",
+        "multidex"                 : "com.android.support:multidex:1.0.3",
+        "androideventbus"          : "org.simple:androideventbus:1.0.5.1",
+        "eventbus"                 : "org.greenrobot:eventbus:3.2.0",
+        "otto"                     : "com.squareup:otto:1.3.8",
+        "pickerview"               : "com.contrarywind:Android-PickerView:3.2.5",
 
 
-        'arouter'            : 'com.alibaba:arouter-api:1.3.1',
+        'arouter'            : 'com.alibaba:arouter-api:1.5.0',
         'junit'              : 'junit:junit:4.12',
-        'espresso'           : 'com.android.support.test.espresso:espresso-core:3.0.1',
-        'runner'             : 'com.android.support.test:runner:1.0.2',
+        'runner'             : 'androidx.test.ext:junit:1.1.1',
+        'greendao'           : 'org.greenrobot:greendao:3.3.0',
 
+        'espresso'               : [
+                'core'      : "androidx.test.espresso:espresso-core:3.1.0",
+                'contrib'      : "com.android.support.test.espresso:espresso-contrib:${versions.espresso}",
+                'intents'      : "com.android.support.test.espresso:espresso-intents:${versions.espresso}",
+        ],
 
 
         'kapt'               : [
                 'glide_compiler'      : "com.github.bumptech.glide:compiler:${versions.glide}",
                 'icepick_processor'   : "frankiesardo:icepick-processor:${versions.icepick}",
                 'butterknife_compiler': "com.jakewharton:butterknife-compiler:${versions.butterKnife}",
-                'arouter_compiler'    : "com.alibaba:arouter-compiler:1.1.4",
-                'tinker_processor': "com.tencent.tinker:tinker-android-anno:${versions.tinker}",
+                'arouter_compiler'    : "com.alibaba:arouter-compiler:1.2.2",
+                'tinker_processor'    : "com.tencent.tinker:tinker-android-anno:${versions.tinker}",
         ],
 ]
+ext.versions = [
+
+        // 可以将这些值存放到 gradle.properties 里面。
+        'compileSdk'  : 29,
+        'buildTools'  : '30.0.0',
+        'minSdk'      : 19,
+        'targetSdk'   : 29,
+
+        'gradlePlugin': "4.0.0",
+        'support'     : '28.0.0',
+        'butterKnife' : '8.8.1',
+        'rxlifecycle4' : '2.2.0',
+        'rxlifecycle4' : '4.0.0',
+        'icepick'     : '3.2.0',
+        'okhttp'      : '4.7.2',
+        'retrofit'    : '2.9.0',
+        'leakCanary'  : '2.4',
+        'kotlin'      : '1.3.72',
+        'glide'       : '4.11.0',
+        'tinker'      : '1.9.14.7',
+        'dagger2'     : '2.28.1',
+        'espresso'     : '3.0.1',
+
+
+]
+
+
+
 
 def addRepos(RepositoryHandler handler) {
     handler.google()
@@ -109,8 +189,6 @@ def addRepos(RepositoryHandler handler) {
     handler.maven { url "https://clojars.org/repo/" }//icepick
     handler.maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     //handler.maven { url 'https://maven.fabric.io/public' }
-    handler.maven {url 'https://dl.bintray.com/jetbrains/anko'}
+    handler.maven { url 'https://dl.bintray.com/jetbrains/anko' }
 }
-
-
 ext.addRepos = this.&addRepos

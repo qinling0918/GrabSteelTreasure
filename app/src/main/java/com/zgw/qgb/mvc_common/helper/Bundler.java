@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.io.Serializable;

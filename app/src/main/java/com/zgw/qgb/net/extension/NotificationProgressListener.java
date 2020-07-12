@@ -2,7 +2,7 @@ package com.zgw.qgb.net.extension;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.Utils;

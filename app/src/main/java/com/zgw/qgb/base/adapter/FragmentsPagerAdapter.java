@@ -1,10 +1,10 @@
 package com.zgw.qgb.base.adapter;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.zgw.qgb.model.FragmentPagerAdapterModel;
+import com.zgw.qgb.model.bean.FragmentPagerAdapterModel;
 
 import java.util.List;
 

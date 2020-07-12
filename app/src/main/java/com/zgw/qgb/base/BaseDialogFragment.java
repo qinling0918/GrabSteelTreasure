@@ -6,18 +6,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.annotation.UiThread;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.view.ViewCompat;
-import android.view.View;
-import android.view.ViewAnimationUtils;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.trello.rxlifecycle2.LifecycleTransformer;
-import com.trello.rxlifecycle2.components.support.RxAppCompatDialogFragment;
+import com.trello.rxlifecycle4.LifecycleTransformer;
+import com.trello.rxlifecycle4.components.support.RxAppCompatDialogFragment;
 import com.zgw.qgb.base.mvp.IPresenter;
 import com.zgw.qgb.base.mvp.IView;
 import com.zgw.qgb.helper.AnimHelper;
@@ -25,7 +19,7 @@ import com.zgw.qgb.helper.AnimHelper;
 import butterknife.Unbinder;
 import icepick.Icepick;
 
-import static com.trello.rxlifecycle2.internal.Preconditions.checkNotNull;
+import static com.trello.rxlifecycle4.internal.Preconditions.checkNotNull;
 
 /**
  * Created by Tsinling on 2017/9/9 15:28.
