@@ -87,7 +87,7 @@ public class MessageFragment
 
 
     private void initLoader() {
-        getmActivity().getSupportLoaderManager().initLoader(0, null, this);
+        LoaderManager.getInstance(this).initLoader(0, null, this);
     }
 
     private void setAdapter() {
@@ -104,7 +104,7 @@ public class MessageFragment
     public void onDestroy() {
         super.onDestroy();
         //mAdapter.changeCursor(null);
-        getmActivity().getSupportLoaderManager().destroyLoader(0);
+        LoaderManager.getInstance(this).destroyLoader(0);
     }
 
     // These are the Contacts rows that we will retrieve.

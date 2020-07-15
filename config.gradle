@@ -96,7 +96,7 @@ ext.deps = [
         'rx3'                : [
                 'core'                  : 'io.reactivex.rxjava3:rxjava:3.0.4',
                 'android'               : 'io.reactivex.rxjava3:rxandroid:3.0.0',
-                "rxpermissions"           : 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar',
+             //   "rxpermissions"           : 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.3@aar',
                 //  "rxerrorhandler"        : "me.jessyan:rxerrorhandler:2.1.1",
                 //'rxbinding': 'com.jakewharton.rxbinding:rxbinding:1.0.1',
         ],
@@ -119,7 +119,7 @@ ext.deps = [
         'icepick'            : "frankiesardo:icepick:${versions.icepick}",
         'statusbarutil'      : 'com.jaeger.statusbarutil:library:1.4.0',
         'gson'               : 'com.google.code.gson:gson:2.8.6',
-        'stream'             : 'com.annimon:stream:1.1.7',
+        'stream'             : 'com.annimon:stream:1.2.1',
         'SmartRefreshLayout' : 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3',
         'bottomNavigationBar': 'com.ashokvarma.android:bottom-navigation-bar:2.0.3',
         'materialDialogs'    : "com.afollestad.material-dialogs:core:0.9.4.7",
@@ -130,6 +130,7 @@ ext.deps = [
         "eventbus"                 : "org.greenrobot:eventbus:3.2.0",
         "otto"                     : "com.squareup:otto:1.3.8",
         "pickerview"               : "com.contrarywind:Android-PickerView:3.2.5",
+        "threetenabp"               : "com.jakewharton.threetenabp:threetenabp:1.2.4",
 
 
         'arouter'            : 'com.alibaba:arouter-api:1.5.0',
