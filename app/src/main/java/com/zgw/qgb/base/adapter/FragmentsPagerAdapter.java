@@ -20,11 +20,11 @@ public class FragmentsPagerAdapter extends FragmentStatePagerAdapter {
     //private Fragment selected;
 
     public FragmentsPagerAdapter(AppCompatActivity activity) {
-        super(activity.getSupportFragmentManager());
+        super(activity.getSupportFragmentManager(),BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
     public FragmentsPagerAdapter(Fragment fragment) {
-        super(fragment.getChildFragmentManager());
+        super(fragment.getChildFragmentManager(),BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
     public FragmentsPagerAdapter(AppCompatActivity activity, List<FragmentPagerAdapterModel> fragments) {
@@ -59,25 +59,21 @@ public class FragmentsPagerAdapter extends FragmentStatePagerAdapter {
         return fragments.get(position).getTitle();
     }
 
-    /*  @Override public float getPageWidth(int position) {
-        return super.getPageWidth(position);
-    }
+   /*
+ 使用add()加入fragment时将触发onAttach(),使用attach()不会触发onAttach()
 
-  @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        super.setPrimaryItem(container, position, object);
+使用replace()替换后会将之前的fragment的view从viewtree中删除
 
-        boolean changed = false;
-        if (object instanceof Fragment) {
-            changed = object != selected;
-            selected = (Fragment) object;
-        } else {
-            changed = object != null;
-            selected = null;
-        }
+触发顺序:
 
-        if (changed) {
-            activity.invalidateOptionsMenu();
-        }
-    }*/
+detach()->onPause()->onStop()->onDestroyView()
+
+attach()->onCreateView()->onActivityCreated()->onStart()->onResume()
+
+使用hide()方法只是隐藏了fragment的view并没有将view从viewtree中删除,随后可用show()方法将view设置为显示
+
+而使用detach()会将view从viewtree中删除,和remove()不同,此时fragment的状态依然保持着,在使用 attach()时会再次调用onCreateView()来重绘视图,注意使用detach()后fragment.isAdded()方法将返回 false,在使用attach()还原fragment后isAdded()会依然返回false(需要再次确认)
+
+执行detach()和replace()后要还原视图的话, 可以在相应的fragment中保持相应的view,并在onCreateView()方法中通过view的parent的removeView()方法将view和parent的关联删除后返回
+   * */
 }
