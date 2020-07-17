@@ -60,6 +60,18 @@ public class FragmentsPagerAdapter extends FragmentStatePagerAdapter {
     }
 
    /*
+   FragmentStatePagerAdapter与FragmentPagerAdapter用法类似，
+   区别在于，卸载不需要的Fragment时，各自的处理方法不同。
+   FragmentStatePagerAdapter会销毁不需要的Fragment，事务提交后，
+   FragmentManager中的Fragment会被彻底移除，销毁时可在onSaveInstanceState方法中保存信息；
+   FragmentPagerAdapter对于不再需要的Fragment会调用事务的detach方法而非remove方法，
+   仅仅是销毁Fragment的视图，而实例对象仍然保留。
+   所以FragmentStatePagerAdapter更节省内存，当page页面较多时适合使用。
+   如果界面只是少量固定页面，FragmentPagerAdapter更安全。
+
+
+
+
  使用add()加入fragment时将触发onAttach(),使用attach()不会触发onAttach()
 
 使用replace()替换后会将之前的fragment的view从viewtree中删除
@@ -76,4 +88,8 @@ attach()->onCreateView()->onActivityCreated()->onStart()->onResume()
 
 执行detach()和replace()后要还原视图的话, 可以在相应的fragment中保持相应的view,并在onCreateView()方法中通过view的parent的removeView()方法将view和parent的关联删除后返回
    * */
+
+
+
+
 }

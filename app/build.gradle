@@ -164,7 +164,7 @@ dependencies {
     //annotationProcessor deps.kapt.tinker_processor
 
     debugImplementation deps.leakCanary.real
-    releaseImplementation deps.leakCanary.noOp
+   // releaseImplementation deps.leakCanary.noOp
     testImplementation deps.junit
     androidTestImplementation deps.junit
     androidTestImplementation deps.espresso.core
