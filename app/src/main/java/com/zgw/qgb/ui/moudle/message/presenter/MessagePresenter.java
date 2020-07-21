@@ -20,7 +20,7 @@ import com.zgw.qgb.ui.moudle.message.contract.MessageContract;
 public class MessagePresenter extends BasePresenter<MessageContract.IMessageView> implements MessageContract.IMessagePresenter{
     public MessagePresenter(MessageContract.IMessageView view) {
         super(view);
-        RetrofitProvider.getService(MainService.class)
+       /* RetrofitProvider.getService(MainService.class)
                 .sendVcode("18638649308",0,2)
                 .compose(RxProgress.bindToLifecycle_observable(getView(), R.string.message))
                 .compose(getView().bind2Lifecycle())
@@ -32,7 +32,7 @@ public class MessagePresenter extends BasePresenter<MessageContract.IMessageView
                     }
 
 
-                });
+                });*/
 
     }
 }

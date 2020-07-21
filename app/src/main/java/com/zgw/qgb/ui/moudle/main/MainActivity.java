@@ -1,5 +1,6 @@
 package com.zgw.qgb.ui.moudle.main;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -9,6 +10,7 @@ import com.ashokvarma.bottomnavigation.TextBadgeItem;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseActivity;
 import com.zgw.qgb.base.adapter.FragmentsPagerAdapter;
+import com.zgw.qgb.helper.ConfigContextWrapper;
 import com.zgw.qgb.helper.utils.ResourceUtils;
 import com.zgw.qgb.model.bean.FragmentPagerAdapterModel;
 import com.zgw.qgb.ui.widgets.NoScrollViewPager;
@@ -53,6 +55,11 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     @Override
     public void setText(String str) {
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ConfigContextWrapper.create(newBase,360));
     }
 
     @Override

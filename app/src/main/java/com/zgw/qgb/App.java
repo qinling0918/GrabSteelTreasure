@@ -1,16 +1,22 @@
 package com.zgw.qgb;
 
+import android.app.Application;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 import androidx.appcompat.app.AppCompatDelegate;
+
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.tencent.tinker.loader.app.TinkerApplication;
 import com.tencent.tinker.loader.shareutil.ShareConstants;
+import com.zgw.qgb.helper.ConfigContextWrapper;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
+import com.zgw.qgb.helper.Utils;
 import com.zgw.qgb.helper.utils.ScreenUtils;
 
 import java.util.Locale;
@@ -20,20 +26,41 @@ import java.util.Locale;
 /**
  */
 
-public class App extends TinkerApplication {
+public class App extends Application {
     private static App instance;
 
-    public App() {
+ /*   public App() {
         //tinkerFlags, which types is supported
         //dex only, library only, all support
         super(ShareConstants.TINKER_ENABLE_ALL,"com.zgw.qgb.AppLike");
     }
-
+*/
     @Override
     protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
+       /* DisplayMetrics dm =new DisplayMetrics();
+        WindowManager manager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        manager.getDefaultDisplay().getMetrics(dm);
+
+        Log.d("density1"  ,"before DisplayMetrics;"+ dm.toString());
+        Log.d("density1"  ,"before Display;"+  manager.getDefaultDisplay().toString());*/
+        Log.d("density1"  ,"before getDefaultDisplayDensity;"+ ConfigContextWrapper.getDefaultDisplayDensity());
+        Log.d("density1"  ,"before base.getResources();"+base.getResources().getDisplayMetrics().toString());
+        Log.d("density1"  ,"before base.getConfiguration();"+base.getResources().getConfiguration().toString());
+       // Log.d("density1"  ,"before getResources();"+getResources().getDisplayMetrics().toString());
+        super.attachBaseContext(new ConfigContextWrapper(base,640));
+
+    /*    Log.d("density1"  ,"after DisplayMetrics;"+ dm.toString());
+        Log.d("density1"  ,"after Display;"+  manager.getDefaultDisplay().toString());*/
+        Log.d("density1"  ,"after getDefaultDisplayDensity;"+ ConfigContextWrapper.getDefaultDisplayDensity());
+        Log.d("density1"  ,"after base.getResources();"+base.getResources().getDisplayMetrics().toString());
+      //  Log.d("density1"  ,"after base.getConfiguration();"+base.getResources().getConfiguration().toString());
+        Log.d("density1"  ,"after getResources() ;"+getResources().getDisplayMetrics().toString());
+      //  Log.d("density1"  ,"after getConfiguration() ;"+getResources().getConfiguration().toString());
+
         //支持vector drawable
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+
     }
 
     @Override public void onCreate() {
@@ -41,7 +68,6 @@ public class App extends TinkerApplication {
 
         //Glide.with(this).applyDefaultRequestOptions(new RequestOptions()).
         instance = this;
-        Log.d("density1"  ,"123;"+ScreenUtils.px2dp(this,ScreenUtils.getStatusBarHeight()));
         init();
     }
 
@@ -56,7 +82,7 @@ public class App extends TinkerApplication {
 
     private void init() {
 
-
+        Utils.getInstance().init(this);
         MultiDex.install(this);
         DebugHelper.getInstance().syscIsDebug(this);
       //  LeakCanary.install(this);
@@ -65,12 +91,7 @@ public class App extends TinkerApplication {
         RudenessScreenHelper.getInstance().init(this,720)/*.activate()*/;
         //FabricHelper.getInstance().init(this);
         //Timber.plant(isDebug() ? new Timber.DebugTree() : new CrashlyticsTree());
-        Log.d("density1"  ,";"+ScreenUtils.getDisplayMetrics(this).toString());
-        Log.d("density1"  ,";"+ScreenUtils.getStatusBarHeight());
-        Log.d("density2"  ,":"+ScreenUtils.getDisplayMetrics(this).densityDpi);
-        Log.d("density3"  ,";"+ScreenUtils.getDisplayMetrics(this).scaledDensity);
-        Log.d("density4"  ,";"+ScreenUtils.getDisplayMetrics(this).scaledDensity);
-        Log.d("density5"  ,";"+ScreenUtils.getDisplayMetrics(this).scaledDensity);
+
         initARouter();
 
 
