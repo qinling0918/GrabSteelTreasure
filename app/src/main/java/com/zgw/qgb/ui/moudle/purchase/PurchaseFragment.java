@@ -15,6 +15,7 @@ import android.widget.Spinner;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.Bundler;
+import com.zgw.qgb.helper.ConfigContextWrapper;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
 import com.zgw.qgb.ui.moudle.purchase.contract.PurchaseContract;
 import com.zgw.qgb.ui.moudle.purchase.presenter.PurchasePresenter;
@@ -22,6 +23,7 @@ import com.zgw.qgb.ui.moudle.purchase.presenter.PurchasePresenter;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.rxjava3.internal.schedulers.NewThreadWorker;
 
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
@@ -40,6 +42,8 @@ public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implem
     public PurchaseFragment() {
 
     }
+
+
 
     public static PurchaseFragment newInstance(String title) {
         PurchaseFragment fragment = new PurchaseFragment();

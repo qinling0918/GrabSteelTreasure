@@ -122,6 +122,7 @@ public class ConfigContextWrapper extends ContextWrapper {
             return false;
         }
         int densityDpi = getScaleDensityDpi();
+       // int densityDpi = getDensityDpi();
         Timber.d("getResources densityDpi :%s", densityDpi);
         // 若是获取不到需要设置的 值，不再重置
         if (DENSITY_DPI_UNDEFINED == densityDpi || densityDpi < 0) {
@@ -161,10 +162,23 @@ public class ConfigContextWrapper extends ContextWrapper {
      */
 
     protected float getFontScaleSize() {
-        return null != config ? config.getFontScaleSize() : 1f;
+        return null != config ? config.getFontScaleSize() : 0;
     }
     //
-
+/*    private int getScaleFontScaleSize() {
+        int defaultDensityDpi = getDefaultDisplayDensity();
+        if (defaultDensityDpi<=0) {
+            return  getDensityDpi();
+        }
+        float dmScaleDensity =  getBaseContext().getResources().getDisplayMetrics().scaledDensity;
+        float dmDensity =  getBaseContext().getResources().getDisplayMetrics().density;
+        float fontScale = dmScaleDensity/dmDensity;
+        if (dmDensityDpi <=0){
+            return  getDensityDpi();
+        }
+        //return DENSITY_DPI_UNDEFINED;
+        return(int)((getDensityDpi()*1f/defaultDensityDpi)* dmDensityDpi);
+    }*/
     /**
      * 若是想随着系统设置中的显示大小 则返回  DENSITY_DPI_UNDEFINED，
      * // 若是不想随着变化，则使用getDefaultDisplayDensity
@@ -181,6 +195,9 @@ public class ConfigContextWrapper extends ContextWrapper {
      * @return
      */
     private int getScaleDensityDpi() {
+        if (scale == 1) {
+            return  getDensityDpi();
+        }
         int defaultDensityDpi = getDefaultDisplayDensity();
         if (defaultDensityDpi<=0) {
             return  getDensityDpi();
