@@ -138,7 +138,7 @@ public class ConfigContextWrapper extends ContextWrapper {
     /**
      * 重置字体大小
      *
-     * @param configuration
+     * @param configuration 系统配置
      * @return 是否需要调用 res.updateConfiguration（）； true为需要，false 为不需要。
      */
     private boolean resetFontScale(Configuration configuration) {
