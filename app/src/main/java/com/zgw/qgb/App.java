@@ -21,6 +21,7 @@ import com.zgw.qgb.helper.utils.ScreenUtils;
 
 import java.util.Locale;
 
+import timber.log.Timber;
 
 
 /**
@@ -37,23 +38,26 @@ public class App extends Application {
 */
     @Override
     protected void attachBaseContext(Context base) {
+        Timber.plant(new Timber.DebugTree() );
        /* DisplayMetrics dm =new DisplayMetrics();
         WindowManager manager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         manager.getDefaultDisplay().getMetrics(dm);
 
         Log.d("density1"  ,"before DisplayMetrics;"+ dm.toString());
         Log.d("density1"  ,"before Display;"+  manager.getDefaultDisplay().toString());*/
-        Log.d("density1"  ,"before getDefaultDisplayDensity;"+ ConfigContextWrapper.getDefaultDisplayDensity());
+        Log.d("density1"  ,"before getDefaultDisplayDensity;"+ ConfigContextWrapper.getInitialDisplayDensity());
         Log.d("density1"  ,"before base.getResources();"+base.getResources().getDisplayMetrics().toString());
         Log.d("density1"  ,"before base.getConfiguration();"+base.getResources().getConfiguration().toString());
        // Log.d("density1"  ,"before getResources();"+getResources().getDisplayMetrics().toString());
-        super.attachBaseContext(new ConfigContextWrapper(base,640));
+        ConfigContextWrapper contextWrapper = new ConfigContextWrapper(base,200);
+        super.attachBaseContext(contextWrapper);
 
     /*    Log.d("density1"  ,"after DisplayMetrics;"+ dm.toString());
         Log.d("density1"  ,"after Display;"+  manager.getDefaultDisplay().toString());*/
-        Log.d("density1"  ,"after getDefaultDisplayDensity;"+ ConfigContextWrapper.getDefaultDisplayDensity());
+        Log.d("density1"  ,"after getDefaultDisplayDensity;"+ ConfigContextWrapper.getInitialDisplayDensity());
         Log.d("density1"  ,"after base.getResources();"+base.getResources().getDisplayMetrics().toString());
-      //  Log.d("density1"  ,"after base.getConfiguration();"+base.getResources().getConfiguration().toString());
+        Log.d("density1"  ,"after base.getConfiguration();"+contextWrapper.getBaseContext().getResources().getConfiguration().toString());
+        Log.d("density1"  ,"after base.getConfiguration();"+contextWrapper.getResources().getConfiguration().toString());
         Log.d("density1"  ,"after getResources() ;"+getResources().getDisplayMetrics().toString());
       //  Log.d("density1"  ,"after getConfiguration() ;"+getResources().getConfiguration().toString());
 

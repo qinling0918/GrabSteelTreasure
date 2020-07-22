@@ -1,4 +1,4 @@
-package com.zgw.qgb.delete;
+package com.zgw.qgb.mvc_common.helper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,10 +7,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import timber.log.Timber;
@@ -31,94 +29,52 @@ import static android.content.res.Configuration.DENSITY_DPI_UNDEFINED;
  * }
  */
 public class ConfigContextWrapper extends ContextWrapper {
-
+    private final float scale ;
     /**
      * @param base
      */
     public ConfigContextWrapper(Context base) {
         super(base);
-        // 若是显示大小缩放比 设置为1，即不随系统变化而变化，则此处用系统初始值，该值可能会偏大。
-        // 在测试机（华为 STL-Al00,2340*1080,6.59inch）系统设置中默认为480，而getDefaultDisplayDensity值为540
-        if (getDensityDpiScale() == 1) {
-            DisplayMetrics dm = getResources().getDisplayMetrics();
-            float scale = dm.densityDpi <= 0 ? 1 : 1f * getDefaultDisplayDensity() / dm.densityDpi;
-            if (scale > 0) {
-                resetDisplayMetrics(dm,scale);
-            }
-        }
-
-        try {
-            test();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        this.scale =1f;
     }
 
     /**
-     * @param base  上下文
+     * @param base           上下文
      * @param width 设计图对应的宽，单位 px   例如手机宽为1080 px ，而设计图宽为 720px，在此设置之后,便可以根据设计图在布局文件中分为720dp
-     *              则在ui布局中 设置ui布局单位为 720dp 便是满屏效果。设置为 360dp 便是半屏效果
-     *              系统原来的displayDensity值参见 @{{@link #getDefaultDisplayDensity()}}
-     *              若 下面@{@link #getDensityDpiScale()} 设置的为随着系统设置变化而变化,则无法保证360dp 是一半的效果
+     *                       则在ui布局中 设置ui布局单位为 720dp 便是满屏效果。设置为 360dp 便是半屏效果
+     *                       系统原来的displayDensity值参见 @{{@link #getDefaultDisplayDensity()}}
+     *             若 下面@{@link #getDensityDpi()} 设置的为随着系统设置变化而变化,则无法保证360dp 是一半的效果
      *              例如某手机(宽1080px,其系统中显示大小分为 小(408)  默认(480)  大(540) )
      *              则正常情况显示大小为默认值 480 ,若在系统设置中设置了显示大小,例如设置为小 408,则满屏效果为 720*(408/480)
      *              故若是需要严格按照设计稿进行UI 布局绘制,请关闭随系统显示大小的配置,关闭方法参见@{@link #NOT_ADJUST_CONFIG}
      */
     public ConfigContextWrapper(Context base, float width) {
         super(base);
-
-        try {
-            test();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        // 計算出設置中系統 顯示大小与设备初始显示大小的比例,为后面的显示进行配置
+        // 例如手机自带的 densityDpi 默认大小为480,而若在系统设置中将显示大小(通常由 408 480 ,540 三档)进行调整,
+        // 计算出 设置后的缩放比
+        this.scale =base.getResources().getConfiguration().densityDpi/(getDefaultDisplayDensity()*1f);
         setDensity(base, width);
     }
 
     /**
      * 重新设置屏幕显示配置
      *
-     * @param base  上下文
+     * @param base           上下文
      * @param width 设计图对应的宽，单位 px   例如手机宽为1080 px ，而设计图宽为 540px，
-     *              则在ui布局中 设置ui布局单位为 540dp 便是满屏效果。设置为 270dp 便是半屏效果
-     *              系统原来的displayDensity值参见 @{{@link #getDefaultDisplayDensity()}}
+     *                       则在ui布局中 设置ui布局单位为 540dp 便是满屏效果。设置为 270dp 便是半屏效果
+     *                       系统原来的displayDensity值参见 @{{@link #getDefaultDisplayDensity()}}
      */
     public void setDensity(Context base, float width) {
         if (width <= 0) {
             return;
         }
-        // float scale = getScale(base);
-        //  Timber.d("ConfigContextWrapper getScale :%s", scale);
         // width = width > 0 ? width : getDefaultDisplayDensity();
         DisplayMetrics displayMetrics = base.getResources().getDisplayMetrics();
-        // 将该上下文对应的Resources的density、scaledDensity、densityDpi重置
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        dm.density = displayMetrics.widthPixels / width;
+        dm.density = displayMetrics.widthPixels / width *scale;
         dm.scaledDensity = dm.density * (displayMetrics.scaledDensity / displayMetrics.density);
-        dm.densityDpi = (int) (dm.density * 160);
-
-    }
-
-    /**
-     * // 計算出設置中系統 顯示大小与设备初始显示大小的比例,为后面的显示进行配置
-     * // 例如手机自带的 densityDpi 默认大小为480,而若在系统设置中将显示大小(通常由 408 480 ,540 三档)进行调整,
-     * // 计算出 设置后的缩放比
-     *
-     * @param base
-     * @return
-     */
-    private float getScale(Context base) {
-        if (getDensityDpiScale() <= 0) {
-            return 1;
-        }
-        int defaultDensityDpi = getDefaultDisplayDensity();
-        if (defaultDensityDpi <= 0) {
-            return 1;
-        }
-        Timber.d("ConfigContextWrapper defaultDensityDpi :%s", defaultDensityDpi);
-        Timber.d("ConfigContextWrapper getConfiguration().densityDpi :%s", base.getResources().getConfiguration().densityDpi);
-        // if (DENSITY_DPI_UNDEFINED == getDensityDpi() || densityDpi < 0)
-        return base.getResources().getConfiguration().densityDpi / (defaultDensityDpi * 1f);
+        dm.densityDpi = (int) (dm.density * 160 );
     }
 
 
@@ -165,9 +121,9 @@ public class ConfigContextWrapper extends ContextWrapper {
             return false;
         }
         int densityDpi = getScaleDensityDpi();
-        // int densityDpi = getDensityDpi();
-        Timber.d("ConfigContextWrapper densityDpi :%s", densityDpi);
-        Timber.d("ConfigContextWrapper configuration.densityDpi :%s", configuration.densityDpi);
+       // int densityDpi = getDensityDpi();
+        Timber.d("getResources densityDpi :%s", densityDpi);
+        Timber.d("getResources configuration.densityDpi :%s", configuration.densityDpi);
         // 若是获取不到需要设置的 值，不再重置
         if (DENSITY_DPI_UNDEFINED == densityDpi || densityDpi < 0) {
             return false;
@@ -177,7 +133,6 @@ public class ConfigContextWrapper extends ContextWrapper {
             return false;
         }
         configuration.densityDpi = densityDpi;
-
         return true;
     }
 
@@ -188,14 +143,14 @@ public class ConfigContextWrapper extends ContextWrapper {
      * @return 是否需要调用 res.updateConfiguration（）； true为需要，false 为不需要。
      */
     private boolean resetFontScale(Configuration configuration) {
-        float fontScale = getFontScale();
-        if (fontScale <= 0) {
+        float fontScaleSize = getFontScaleSize();
+        if (fontScaleSize <= 0) {
             return false;
         }
-        if (configuration.fontScale == fontScale) {
+        if (configuration.fontScale == fontScaleSize) {
             return false;
         }
-        configuration.fontScale = fontScale;
+        configuration.fontScale = fontScaleSize;
         return true;
     }
 
@@ -206,9 +161,8 @@ public class ConfigContextWrapper extends ContextWrapper {
      * @return 字体缩放尺寸
      */
 
-    protected float getFontScale() {
-        Timber.d("ConfigContextWrapper getFontScaleSize :%s", config == null);
-        return null != config ? config.getFontScale() : -1;
+    protected float getFontScaleSize() {
+        return null != config ? config.getFontScaleSize() : 0;
     }
     //
 /*    private int getScaleFontScaleSize() {
@@ -225,37 +179,35 @@ public class ConfigContextWrapper extends ContextWrapper {
         //return DENSITY_DPI_UNDEFINED;
         return(int)((getDensityDpi()*1f/defaultDensityDpi)* dmDensityDpi);
     }*/
-
     /**
-     * @return
-     */
-    protected float getDensityDpiScale() {
-        return null != config ? config.getDensityDpiScale() : -1;
-    }
-
-    /**
-     * 根据缩放比例获取 DensityDpi
+     * 若是想随着系统设置中的显示大小 则返回  DENSITY_DPI_UNDEFINED，
+     * // 若是不想随着变化，则使用getDefaultDisplayDensity
      *
      * @return
      */
-    private int getScaleDensityDpi() {
-
-        DisplayMetrics dm = super.getResources().getDisplayMetrics();
-        float densityDpiScale = getDensityDpiScale();
-        densityDpiScale = densityDpiScale <= 0 ? 1 : densityDpiScale;
-        // if (densityDpiScale == 1) return DENSITY_DPI_UNDEFINED;
-        int scaleDensityDpi = (int) (densityDpiScale * dm.densityDpi);
-        resetDisplayMetrics(dm, densityDpiScale);
-        Timber.d("ConfigContextWrapper scaleDensityDpi :%s", scaleDensityDpi);
+    protected int getDensityDpi() {
         //return DENSITY_DPI_UNDEFINED;
-        return scaleDensityDpi;
+        return null != config ? config.getDensityDpi() :  getDefaultDisplayDensity();
     }
 
-    private void resetDisplayMetrics(DisplayMetrics dm, float densityDpiScale) {
-        if (densityDpiScale == 1) return;
-        dm.density = dm.density * densityDpiScale;
-        dm.scaledDensity = dm.scaledDensity * densityDpiScale;
-        dm.densityDpi = (int) (dm.densityDpi * densityDpiScale);
+    /**
+     *  根据缩放比例获取 DensityDpi
+     * @return
+     */
+    private int getScaleDensityDpi() {
+        if (scale == 1) {
+            return  getDensityDpi();
+        }
+        int defaultDensityDpi = getDefaultDisplayDensity();
+        if (defaultDensityDpi<=0) {
+            return  getDensityDpi();
+        }
+        int dmDensityDpi =  getBaseContext().getResources().getDisplayMetrics().densityDpi;
+        if (dmDensityDpi <=0){
+            return  getDensityDpi();
+        }
+        //return DENSITY_DPI_UNDEFINED;
+        return(int)((getDensityDpi()*1f/defaultDensityDpi)* dmDensityDpi);
     }
 
     /**
@@ -279,6 +231,62 @@ public class ConfigContextWrapper extends ContextWrapper {
             return DENSITY_DPI_UNDEFINED;
         }
     }
+    public static ConfigContextWrapper create(Context base) {
+        return new ConfigContextWrapper(base);
+    }
+    public static ConfigContextWrapper create(Context base, IConfig config) {
+        return new ConfigContextWrapper(base).setConfig(config);
+    }
+    public static ConfigContextWrapper create(Context base, float displayDensity) {
+        return new ConfigContextWrapper(base, displayDensity);
+    }
+    public static ConfigContextWrapper create(Context base, float displayDensity, IConfig config) {
+        return new ConfigContextWrapper(base, displayDensity).setConfig(config);
+    }
+
+    private IConfig config;
+
+    public ConfigContextWrapper setConfig(IConfig config) {
+        this.config = config;
+        return this;
+    }
+
+    public interface IConfig {
+        float getFontScaleSize();
+
+        int getDensityDpi();
+    }
+
+    /**
+     * 默认的 随系统设置的显示大小以及字体大小的变化而变化
+     */
+    public final static IConfig DEFAULT_CONFIG = new IConfig() {
+        @Override
+        public float getFontScaleSize() {
+            return -1;
+        }
+
+        @Override
+        public int getDensityDpi() {
+            return DENSITY_DPI_UNDEFINED;
+        }
+    };
+    /**
+     * 不随系统设置的字体大小、显示大小变化而变化
+     */
+    public final static IConfig NOT_ADJUST_CONFIG = new IConfig() {
+        @Override
+        public float getFontScaleSize() {
+            return 1f;
+        }
+
+        @Override
+        public int getDensityDpi() {
+            return getDefaultDisplayDensity();
+        }
+    };
+
+
     public static int getBaseDisplayDensity() {
         try {
             Class aClass = Class.forName("android.view.WindowManagerGlobal");
@@ -294,81 +302,5 @@ public class ConfigContextWrapper extends ContextWrapper {
             return DENSITY_DPI_UNDEFINED;
         }
     }
-
-    private void test() throws Throwable {
-
-        Log.i("declareField: ", "getBaseDisplayDensity: " +  getBaseDisplayDensity());
-
-        Class<?> aClass = Class.forName("android.view.WindowManagerGlobal");
-        Method method = aClass.getMethod("getWindowManagerService");
-        method.setAccessible(true);
-        Object iwm = method.invoke(aClass);
-         Class<?> hclass = iwm.getClass();
-        Field[] declaredFields = hclass.getDeclaredFields();
-        for (Field declaredField : declaredFields) {
-            Log.i("declareField: ", "declareField: " + declaredField);
-        }
-        Method[] declaredMethods = hclass.getDeclaredMethods();
-        for (Method declaredMethod : declaredMethods) {
-            Log.i("declareField: ", "declaredMethod: " + declaredMethod);
-        }
-    }
-    public static ConfigContextWrapper create(Context base) {
-        return new ConfigContextWrapper(base);
-    }
-
-    public static ConfigContextWrapper create(Context base, IConfig config) {
-        return new ConfigContextWrapper(base).setConfig(config);
-    }
-
-    public static ConfigContextWrapper create(Context base, float displayDensity) {
-        return new ConfigContextWrapper(base, displayDensity);
-    }
-
-    public static ConfigContextWrapper create(Context base, float displayDensity, IConfig config) {
-        return new ConfigContextWrapper(base, displayDensity).setConfig(config);
-    }
-
-    private IConfig config;
-
-    public ConfigContextWrapper setConfig(IConfig config) {
-        this.config = config;
-        return this;
-    }
-
-    public interface IConfig {
-        float getFontScale();
-
-        float getDensityDpiScale();
-    }
-
-    /**
-     * 默认的 随系统设置的显示大小以及字体大小的变化而变化
-     */
-    public final static IConfig DEFAULT_CONFIG = new IConfig() {
-        @Override
-        public float getFontScale() {
-            return -1;
-        }
-
-        @Override
-        public float getDensityDpiScale() {
-            return -1;
-        }
-    };
-    /**
-     * 不随系统设置的字体大小、显示大小变化而变化
-     */
-    public final static IConfig NOT_ADJUST_CONFIG = new IConfig() {
-        @Override
-        public float getFontScale() {
-            return 1f;
-        }
-
-        @Override
-        public float getDensityDpiScale() {
-            return 1f;
-        }
-    };
 
 }

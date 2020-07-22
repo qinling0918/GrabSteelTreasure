@@ -59,17 +59,17 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ConfigContextWrapper.create(newBase, 360, new ConfigContextWrapper.IConfig() {
+        super.attachBaseContext(ConfigContextWrapper.create(newBase,200/*, new ConfigContextWrapper.IConfig() {
             @Override
-            public float getFontScaleSize() {
+            public float getFontScale() {
                 return 0;
             }
 
             @Override
-            public int getDensityDpi() {
-                return ConfigContextWrapper.getDefaultDisplayDensity();
+            public float getDensityDpiScale() {
+                return -1;
             }
-        }));
+        }*/));
     }
 
     @Override
