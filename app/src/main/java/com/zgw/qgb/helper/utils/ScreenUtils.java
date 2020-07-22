@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
+
+import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -14,7 +16,20 @@ import android.view.WindowManager;
  * Created by tsinling on 16/11/7.
  */
 public class ScreenUtils {
-
+    /**
+     *  获取手机物理尺寸，单位inch
+     * @param mContext 上下文
+     * @return 手机物理尺寸，单位inch
+     */
+    public static double getScreenSizeOfDevice(Context mContext) {
+        Point point = new Point();
+        WindowManager windowManager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getRealSize(point);
+        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
+        double x = Math.pow(point.x/ dm.xdpi, 2);
+        double y = Math.pow(point.y / dm.ydpi, 2);
+        return Math.sqrt(x + y);
+    }
 
     public static DisplayMetrics getDisplayMetrics(Context context) {
         return context.getResources().getDisplayMetrics();
