@@ -11,13 +11,10 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.tencent.tinker.loader.app.TinkerApplication;
-import com.tencent.tinker.loader.shareutil.ShareConstants;
 import com.zgw.qgb.helper.ConfigContextWrapper;
 import com.zgw.qgb.helper.DebugHelper;
 import com.zgw.qgb.helper.RudenessScreenHelper;
 import com.zgw.qgb.helper.Utils;
-import com.zgw.qgb.helper.utils.ScreenUtils;
 
 import java.util.Locale;
 
@@ -72,6 +69,7 @@ public class App extends Application {
 
         //Glide.with(this).applyDefaultRequestOptions(new RequestOptions()).
         instance = this;
+
         init();
     }
 
@@ -101,6 +99,8 @@ public class App extends Application {
 
 
 }
+
+
 
     private void initARouter() {
         if (isDebug()) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效

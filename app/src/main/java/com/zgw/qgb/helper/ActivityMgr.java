@@ -1,4 +1,4 @@
-package com.sgcc.pda.app;
+package com.zgw.qgb.helper;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -25,7 +25,7 @@ import timber.log.Timber;
  * description:
  */
 
-public class ActivityMgr {
+public class ActivityMgr  {
 
     private static Stack<WeakReference<Activity>> mActivityStack;
 
@@ -33,14 +33,33 @@ public class ActivityMgr {
         return mApplication;
     }
 
-    public void setApplication(Application mApplication) {
+/*    public void setApplication(Application mApplication) {
         this.mApplication = mApplication;
-    }
-
-    private Application mApplication;
+    }*/
+    private static Application mApplication;
+    private ActivityLifecycleCallbacks  lifecycleCallbacks;
 
 
     private ActivityMgr() {
+         lifecycleCallbacks = new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                getInstance().addActivity(activity);
+                // getInstance().printAllActivity();
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                getInstance().removeActivity(activity);
+            }
+        };
+    }
+
+    private void registerActivityLifecycleCallbacks(){
+        if (mApplication==null){
+            throw new NullPointerException("mApplication == null, please init first");
+        }
+        mApplication.registerActivityLifecycleCallbacks(lifecycleCallbacks);
     }
 
     private static class SingletonHolder {
@@ -54,21 +73,8 @@ public class ActivityMgr {
     public static void init(Context context) {
         // 注册退出广播
        // new AppExitReceiver(context).register();
-
-        getInstance().setApplication((Application) context.getApplicationContext());
-        getInstance().getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                getInstance().addActivity(activity);
-                // getInstance().printAllActivity();
-
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-                getInstance().removeActivity(activity);
-            }
-        });
+        ActivityMgr.mApplication = (Application) context;
+        ActivityMgr.getInstance().registerActivityLifecycleCallbacks();
     }
 
     public void addActivity(Activity activity) {
@@ -205,4 +211,7 @@ public class ActivityMgr {
 
         }
     }
+
+
+
 }
