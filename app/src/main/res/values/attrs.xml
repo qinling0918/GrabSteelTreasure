@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="CustomView">
+        <attr name="textColor" format="color|reference" />
+    </declare-styleable>
+
     <!--分段控制器-->
     <declare-styleable name="SegmentControl">
         <attr name="cornerRadius" format="dimension|reference" />  <!--设置背景的圆角半径-->

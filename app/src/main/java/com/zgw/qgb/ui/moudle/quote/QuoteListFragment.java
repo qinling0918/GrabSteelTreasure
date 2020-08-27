@@ -545,14 +545,12 @@ String url = "http://192.168.11.125:80/eomfront/FrontSys/reqHttpFileDown.do?SERV
         super.onStop();
     }
 
+
+
     @Override
-    public void onDestroyView() {
+    public void onDestroy() {
         getContext().unbindService(connection);//解绑服务
-
-        super.onDestroyView();
-
+        super.onDestroy();
 
     }
-
-
 }

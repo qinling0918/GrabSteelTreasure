@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="toolbarSize">48dp</dimen>
 
+
    <!--main  bottom_navigation_bar-->
     <dimen name="fixed_icon_grid">21dp</dimen>
     <dimen name="fixed_height_bottom_padding">12dp</dimen>
@@ -12,5 +13,9 @@
     <dimen name="fixed_icon_badge_grid_height">30dp</dimen> <!--this adds 3 dp extra to top and bottom icon -->
     <dimen name="bottom_navigation_height">48dp</dimen>
     <dimen name="badge_text_size">10sp</dimen><!-- 10 -->
+
+
+    <dimen name="iconSize">20dp</dimen>
+    <dimen name="iconSize_big">80dp</dimen>
 
 </resources>

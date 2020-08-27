@@ -178,7 +178,9 @@ public class Bundler {
     }
 
     public Bundler putAll(Bundle map) {
-        bundle.putAll(map);
+        if (map != null) {
+            bundle.putAll(map);
+        }
         return this;
     }
 

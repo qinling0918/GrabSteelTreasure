@@ -24,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import icepick.Icepick;
+import timber.log.Timber;
 
 import static com.trello.rxlifecycle4.internal.Preconditions.checkNotNull;
 
@@ -99,13 +100,16 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (fragmentLayout() != 0) {
-            final Context contextThemeWrapper = new ContextThemeWrapper(getContext(), getContext().getTheme());
+   /*         final Context contextThemeWrapper = new ContextThemeWrapper(getContext(), getContext().getTheme());
             LayoutInflater themeAwareInflater = inflater.cloneInContext(contextThemeWrapper);
             View view = themeAwareInflater.inflate(fragmentLayout(), container, false);
+            Timber.i(getClass().getName()+"onCreateView");*/
+            View view = inflater.inflate(fragmentLayout(), container, false);
             unbinder = ButterKnife.bind(this, view);
 
             return view;
         }
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -123,6 +127,7 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
     public void onDestroy() {
         super.onDestroy();
         mPresenter.detachView();
+
     }
 
     @Override
@@ -135,6 +140,7 @@ public abstract class BaseFragment<P extends IPresenter> extends RxFragment impl
     public void onDetach() {
         super.onDetach();
         callback = null;
+        mPresenter=null;
     }
 
     @Override

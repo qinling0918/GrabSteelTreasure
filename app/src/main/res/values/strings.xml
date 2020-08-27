@@ -106,4 +106,6 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="default_text">default</string>
+    <string name="default_text_big">default_big</string>
 </resources>

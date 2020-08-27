@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -43,6 +44,11 @@ import static com.zgw.qgb.helper.utils.EmptyUtils.checkNotNull;
  */
 
 public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActivity implements IView {
+    // 开启矢量图开关
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     protected final String TAG = this.getClass().getSimpleName();
     protected P mPresenter;
     protected Context mContext;

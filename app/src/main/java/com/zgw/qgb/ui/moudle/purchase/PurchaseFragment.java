@@ -144,4 +144,16 @@ public class PurchaseFragment extends BaseMainFragment<PurchasePresenter> implem
         Log.i("TAG", "onLoaderReset()");
         adapter.setItems(null);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter = null;
+    }
 }

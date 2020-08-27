@@ -3,24 +3,45 @@
     <color name="lightWindowBackground">#FAFAFA</color>
 
     <style name="AppTheme" parent="AppTheme.Base">
+        <!-- Base application theme. -->
+        <item name="icon">@drawable/selector_ic_back</item>
+        <item name="iconSize">@dimen/iconSize</item>
+        <item name="text">@string/default_text</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="icon_color">@color/colorPrimary</item>
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
         <item name="titleColor">@android:color/white</item>
 
-        <item name="android:textColorPrimary">#212121</item>
-        <item name="android:textColorSecondary">#727272</item>
-        <item name="android:textColorTertiary">#686868</item>
+        <item name="icon_color">@color/colorPrimary</item>
+
+        <item name="iconSize">@dimen/iconSize</item>
+        <item name="fontSize">20dp</item>
+
+
+     <!--   <item name="android:text">@string/app_name</item>-->
+        <item name="android:textSize">@dimen/iconSize</item>
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <item name="android:textColorSecondary">@color/colorPrimary</item>
+        <item name="android:textColorTertiary">@color/colorPrimary</item>
 
 
         <!--<item name="android:windowAnimationStyle">@style/ActivityAnim</item>-->
     <!--    <item name="android:windowAnimationStyle">@android:style/Animation</item>-->
     </style>
+
+    <style name="AppTheme.Big" parent="AppTheme">
+        <item name="icon">@mipmap/ic_note</item>
+        <item name="iconSize">@dimen/iconSize_big</item>
+        <item name="text">@string/default_text_big</item>
+        <item name="colorPrimary">@android:color/holo_blue_light</item>
+    </style>
+
+
     <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>

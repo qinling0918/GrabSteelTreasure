@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.Big">
 
         <!--
            <meta-data
@@ -69,17 +69,17 @@
             android:exported="false"> <!-- //是否可以被另一个Application的组件启动 -->
         </service>
 
-        <provider
+      <!--  <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.zgw.qgb"
             android:exported="false"
             android:grantUriPermissions="true">
 
-            <!-- 元数据 -->
+            &lt;!&ndash; 元数据 &ndash;&gt;
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
-        </provider>
+        </provider>-->
 
         <activity
             android:name=".ui.moudle.mine.SettingsActivity"

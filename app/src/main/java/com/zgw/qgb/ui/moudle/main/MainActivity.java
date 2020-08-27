@@ -1,10 +1,7 @@
 package com.zgw.qgb.ui.moudle.main;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
@@ -13,7 +10,6 @@ import com.ashokvarma.bottomnavigation.TextBadgeItem;
 import com.zgw.qgb.R;
 import com.zgw.qgb.base.BaseActivity;
 import com.zgw.qgb.base.adapter.FragmentsPagerAdapter;
-import com.zgw.qgb.helper.ConfigContextWrapper;
 import com.zgw.qgb.helper.utils.ResourceUtils;
 import com.zgw.qgb.model.bean.FragmentPagerAdapterModel;
 import com.zgw.qgb.ui.widgets.NoScrollViewPager;
@@ -30,7 +26,6 @@ import icepick.State;
  */
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.IMainView {
-
 
     @BindView(R.id.bottom_navigation_bar)
     BottomNavigationBar bottomNavigationBar;
@@ -62,17 +57,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(ConfigContextWrapper.create(newBase,200/*, new ConfigContextWrapper.IConfig() {
-            @Override
-            public float getFontScale() {
-                return 0;
-            }
+        super.attachBaseContext(newBase) ;
+        // super.attachBaseContext(ConfigContextWrapper.create(newBase)) ;
 
-            @Override
-            public float getDensityDpiScale() {
-                return -1;
-            }
-        }*/));
     }
 
     @Override
@@ -98,6 +85,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        pagerAdapter = null;
     }
 
     private void setupViewPager() {
@@ -187,4 +175,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+
 }

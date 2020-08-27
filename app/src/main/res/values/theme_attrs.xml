@@ -4,6 +4,11 @@
     <attr name="dividerColor" format="color|reference"/>
     <attr name="titleColor" format="color|reference"/>
     <attr name="toolbarSize" format="dimension"/>
+    <attr name="iconSize" format="dimension"/>
+    <attr name="fontSize" format="dimension"/>
+    <attr name="thumb" format="reference"/>
+    <attr name="text" format="string"/>
+    <attr name="icon" format="reference"/>
    <!-- <attr name="toolbarStyle" format="reference"/>-->
 
 </resources>

@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -46,8 +48,9 @@ public class App extends Application {
         Log.d("density1"  ,"before base.getResources();"+base.getResources().getDisplayMetrics().toString());
         Log.d("density1"  ,"before base.getConfiguration();"+base.getResources().getConfiguration().toString());
        // Log.d("density1"  ,"before getResources();"+getResources().getDisplayMetrics().toString());
-        ConfigContextWrapper contextWrapper = new ConfigContextWrapper(base,200);
-        super.attachBaseContext(contextWrapper);
+      //  ConfigContextWrapper contextWrapper = new ConfigContextWrapper(base,200);
+        ConfigContextWrapper contextWrapper = new ConfigContextWrapper(base);
+        super.attachBaseContext(base);
 
     /*    Log.d("density1"  ,"after DisplayMetrics;"+ dm.toString());
         Log.d("density1"  ,"after Display;"+  manager.getDefaultDisplay().toString());*/
@@ -60,7 +63,7 @@ public class App extends Application {
 
         //支持vector drawable
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-
+        MultiDex.install(this);
 
     }
 
@@ -85,7 +88,7 @@ public class App extends Application {
     private void init() {
 
         Utils.getInstance().init(this);
-        MultiDex.install(this);
+
         DebugHelper.getInstance().syscIsDebug(this);
       //  LeakCanary.install(this);
         //AppHelper.updateAppLanguage(this); 未完成
@@ -117,4 +120,8 @@ public class App extends Application {
         return Locale.CHINA;
     }
 
+    @Override
+    public void registerActivityLifecycleCallbacks(ActivityLifecycleCallbacks callback) {
+        super.registerActivityLifecycleCallbacks(callback);
+    }
 }

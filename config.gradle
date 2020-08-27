@@ -180,7 +180,7 @@ ext.versions = [
 ]
 
 
-
+ext.addRepos = this.&addRepos
 
 def addRepos(RepositoryHandler handler) {
     handler.google()
@@ -192,4 +192,3 @@ def addRepos(RepositoryHandler handler) {
     //handler.maven { url 'https://maven.fabric.io/public' }
     handler.maven { url 'https://dl.bintray.com/jetbrains/anko' }
 }
-ext.addRepos = this.&addRepos

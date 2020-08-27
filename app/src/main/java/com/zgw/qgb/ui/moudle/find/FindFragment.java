@@ -1,8 +1,10 @@
 package com.zgw.qgb.ui.moudle.find;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.Bundler;
@@ -36,6 +38,10 @@ public class FindFragment extends BaseMainFragment<FindPresenter> implements Fin
         super.onViewCreated(view, savedInstanceState);
         setTitle(title);
         setBadgeCount(1,1);
+      /*  TextView tv_icon_bluetooth_off = view.findViewById(R.id.tv_icon_bluetooth_off);
+        tv_icon_bluetooth_off.setTypeface(Typeface.createFromAsset(getContext().getAssets(),"iconfont.ttf"));*/
+        TextView tv_icon_give_a_like = view.findViewById(R.id.tv_icon_give_a_like);
+        tv_icon_give_a_like.setTypeface(Typeface.createFromAsset(getContext().getAssets(),"iconfont.ttf"));
     }
 
     @Override

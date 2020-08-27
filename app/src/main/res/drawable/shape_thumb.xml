@@ -11,7 +11,7 @@
         android:paddingLeft="22dp"
         android:paddingRight="22dp" />
 
-    <solid android:color="#FF000000" />
+    <solid android:color="@color/colorPrimary" />
    <!-- <solid android:color="#FF000000" />
 -->
 </shape>

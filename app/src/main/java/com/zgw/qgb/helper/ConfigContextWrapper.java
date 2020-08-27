@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -30,24 +31,26 @@ import static android.content.res.Configuration.DENSITY_DPI_UNDEFINED;
  * DEFAULT_CONFIG see {@link IConfig}
  * }
  */
-public  class ConfigContextWrapper extends ContextWrapper {
+public class ConfigContextWrapper extends ContextWrapper {
     private final float width;
     private Integer defaultDensityDpi;
+
     /**
      * @param base
      */
     public ConfigContextWrapper(Context base) {
         super(base);
+
         // 此处用系统初始值，该值可能会相对默认值偏大。
         // 在测试机（华为 STL-Al00,2340*1080,6.59inch）系统设置中默认为480，而getDefaultDisplayDensity值为540
         // 若是版本号小于23 无需重置显示大小
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             this.width = 0;
-            return ;
+            return;
         }
-            DisplayMetrics dm = base.getResources().getDisplayMetrics();
-            this.width = dm.widthPixels/( getDefaultDisplayDensity()/160f);
-            setDensity(base,width);
+        DisplayMetrics dm = base.getResources().getDisplayMetrics();
+        this.width = dm.widthPixels / (getDefaultDisplayDensity() / 160f);
+        setDensity(base, width);
     }
 
     /**
@@ -64,6 +67,14 @@ public  class ConfigContextWrapper extends ContextWrapper {
         super(base);
         this.width = width;
         setDensity(base, width);
+
+        try {
+            test();
+            Log.i("declareField: ", "getDisplayContentLocked: " + getDisplayContentLocked());
+
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     /**
@@ -78,6 +89,12 @@ public  class ConfigContextWrapper extends ContextWrapper {
         if (width <= 0) {
             return;
         }
+
+        // 密度 名称           LDPI   MDPI     HDPI     XHDPI     XXHDPI   XXXHDPI
+        // 密度值 densityDpi   120     160      240      320       480      540
+        // 缩放比例 density    0.75     1       1.5       2         3        4
+        // 代表分辨率        240*320 320*480 480*800/854 720*1280 1080*1920 2160*3840
+        // 屏幕                QVGA    HVGA   WVGA/FWVGA  720P     1080p     4K
         DisplayMetrics dm = base.getResources().getDisplayMetrics();
         // 将该上下文对应的Resources的density、scaledDensity、densityDpi重置
         dm.density = dm.widthPixels / width;
@@ -210,12 +227,11 @@ public  class ConfigContextWrapper extends ContextWrapper {
     private int getScaleDensityDpi() {
         float densityDpiScale = getDensityDpiScale();
         densityDpiScale = densityDpiScale <= 0 ? 1 : densityDpiScale;
-       // if ( densityDpiScale <= 0) return DENSITY_DPI_UNDEFINED;
-        setDensity(getBaseContext(),width);
+        // if ( densityDpiScale <= 0) return DENSITY_DPI_UNDEFINED;
+        setDensity(getBaseContext(), width);
         DisplayMetrics dm = getBaseContext().getResources().getDisplayMetrics();
-        return(int) (densityDpiScale * dm.densityDpi);
+        return (int) (densityDpiScale * dm.densityDpi);
     }
-
 
 
     /**
@@ -223,9 +239,10 @@ public  class ConfigContextWrapper extends ContextWrapper {
      * 1、当调节手机系统"显示大小"【调大】的时候，相应的dpi会变大【dp = (dpi/160) * px】,此时dp就会变大，所以相应的UI布局就会变大。
      * 2、当调节手机系统"分辨率"【调小】的时候，相应的dpi会变小【比如由480-->320】。如果此时使用技术手段使dpi保持不变，那么相同的dp就会占用更多的px，所以UI布局就会变大。
      */
-    public  int getDefaultDisplayDensity() {
-       return defaultDensityDpi = defaultDensityDpi==null ?getInitialDisplayDensity() : defaultDensityDpi;
+    public int getDefaultDisplayDensity() {
+        return defaultDensityDpi = defaultDensityDpi == null ? getInitialDisplayDensity() : defaultDensityDpi;
     }
+
     @SuppressLint("PrivateApi")
     public static int getInitialDisplayDensity() {
         try {
@@ -243,9 +260,27 @@ public  class ConfigContextWrapper extends ContextWrapper {
         }
     }
 
+    @SuppressLint("PrivateApi")
+    public static String getDisplayContentLocked() {
+        try {
+            Class aClass = Class.forName("android.view.WindowManagerGlobal");
+            Method method = aClass.getMethod("getWindowManagerService");
+            method.setAccessible(true);
+            Object iwm = method.invoke(aClass);
+            Method getInitialDisplayDensity = iwm.getClass().getMethod("getDisplayContentLocked", int.class);
+            getInitialDisplayDensity.setAccessible(true);
+            Object densityDpi = getInitialDisplayDensity.invoke(iwm, Display.DEFAULT_DISPLAY);
+            return densityDpi.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+
     private void test() throws Throwable {
 
-      //  Log.i("declareField: ", "getBaseDisplayDensity: " +  getBaseDisplayDensity());
+        //  Log.i("declareField: ", "getBaseDisplayDensity: " +  getBaseDisplayDensity());
 
         Class<?> aClass = Class.forName("android.view.WindowManagerGlobal");
         Method method = aClass.getMethod("getWindowManagerService");
@@ -261,6 +296,7 @@ public  class ConfigContextWrapper extends ContextWrapper {
             Log.i("declareField: ", "declaredMethod: " + declaredMethod);
         }
     }
+
     public static ConfigContextWrapper create(Context base) {
         return new ConfigContextWrapper(base);
     }

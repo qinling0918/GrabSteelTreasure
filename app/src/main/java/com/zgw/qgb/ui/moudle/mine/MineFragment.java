@@ -1,9 +1,16 @@
 package com.zgw.qgb.ui.moudle.mine;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.Bundler;
@@ -43,7 +50,23 @@ public class MineFragment extends BaseMainFragment<MinePresenter> implements Min
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setTitle(title);
-       // setBadgeCount(4,4);
+
+        ImageView iv_svg = view.findViewById(R.id.iv_svg);
+        TextView tv_svg = view.findViewById(R.id.tv_svg);
+        tv_svg.setBackgroundResource(R.drawable.ic_back);
+        iv_svg.setImageResource(R.drawable.ic_main_find);
+       // tv_svg.getCompoundDrawables()[0].setTintList(getResources().getColor(R.color.colorAccent));
+       // Drawable drawable = getResources().getDrawable(R.drawable.ic_icon_text);
+      //  Drawable drawable = getResources().getDrawable(R.drawable.ic_note);
+       // iv_svg.setImageDrawable(drawable);
+       // tv_svg.setCompoundDrawables(drawable,null,null,null);
+        //DrawableCompat.get(tv_svg.getCompoundDrawables()[0],);
+     /*   VectorDrawableCompat vectorDrawableCompat = VectorDrawableCompat.create(getResources(),R.drawable.ic_main_find,getContext().getTheme());
+        //你需要改变的颜色
+       // vectorDrawableCompat.setTint(getResources().getColor(R.color.color_blue));
+        iv_svg.setImageDrawable(vectorDrawableCompat);
+        Drawable drawable = vectorDrawableCompat;
+        tv_svg.setCompoundDrawables(null,null,drawable,null);*/
     }
 
 

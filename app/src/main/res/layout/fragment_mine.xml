@@ -3,13 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.zgw.qgb.ui.moudle.mine.MineFragment">
 
     <include layout="@layout/layout_toolbar"/>
     <TextView
+        android:id="@+id/tv_svg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/mine" />
+        android:layout_height="wrap_content"
+        android:text="@string/default_text"
+        android:drawableStart="@drawable/selector_ic_back"/>
+    <ImageView
+        android:id="@+id/iv_svg_src"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/selector_ic_back"/>
+    <ImageView
+        android:id="@+id/iv_svg"
+        android:tint="?colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="?icon"/>
+
 
 </LinearLayout>
