@@ -1,8 +1,11 @@
 package com.zgw.qgb.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
+
+import androidx.annotation.NonNull;
 
 import java.util.Locale;
 
@@ -14,19 +17,15 @@ public class Utils {
     public static Utils getInstance() {
         return SingleTon.sInstance;
     }
-    private Utils() {
-    }
+
     private static class SingleTon {
         private static final Utils sInstance = new Utils();
     }
 
-    private static Application application;
-    public void init(Application application) {
-      this.application = application;
-    }
+    private static Application sApplication;
 
     public static Context getContext() {
-        return application.getApplicationContext();
+        return sApplication.getApplicationContext();
     }
 
     public  boolean isDebug() {
@@ -36,4 +35,40 @@ public class Utils {
     public static Locale getLocale() {
         return Locale.CHINA;
     }
+
+    private Utils() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
+    /**
+     * Init utils.
+     * <p>Init it in the class of Application.</p>
+     *
+     * @param context context
+     */
+    public static void init(@NonNull final Context context) {
+        init((Application) context.getApplicationContext());
+    }
+
+    /**
+     * Init utils.
+     * <p>Init it in the class of Application.</p>
+     *
+     * @param app application
+     */
+    public static void init(@NonNull final Application app) {
+        sApplication = app;
+        //Utils.sApplication.registerActivityLifecycleCallbacks(mCallbacks);
+    }
+
+    /**
+     *
+     * @return the context of Application object
+     */
+    public static Application getApp() {
+        if (sApplication != null) return sApplication;
+        throw new NullPointerException("u should init first ");
+    }
+
+
 }

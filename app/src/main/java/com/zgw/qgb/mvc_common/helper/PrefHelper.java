@@ -4,14 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.collection.SimpleArrayMap;
 import android.util.Base64;
 
-import com.zgw.qgb.mvc_common.Utils;
-import com.zgw.qgb.mvc_common.download.FileUtils;
-import com.zgw.qgb.mvc_common.utils.EmptyUtils;
+import com.zgw.qgb.helper.Utils;
+import com.zgw.qgb.helper.utils.EmptyUtils;
+import com.zgw.qgb.helper.utils.FileUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,18 +20,22 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.collection.SimpleArrayMap;
+
 
 public class PrefHelper {
     private static SimpleArrayMap<String, PrefHelper> SP_MAP = new SimpleArrayMap<>();
     private SharedPreferences sp;
 
-    private PrefHelper() {}
+    private PrefHelper() {
+    }
 
 
     private PrefHelper(String spName) {
         this.sp = getContext().getSharedPreferences(getSharedPreferencesName(spName),
                 Context.MODE_PRIVATE);
-
     }
 
 
@@ -45,8 +46,10 @@ public class PrefHelper {
      * @return the single {@link PrefHelper} instance
      */
     public static PrefHelper getInstance(String spName) {
-        spName = InputHelper.emptyOrDefault(spName,"preferences");
-
+        return getInstance("",spName);
+    }
+    public static PrefHelper getInstance(String userName,String spName) {
+        spName = userName+"_"+ InputHelper.emptyOrDefault(spName, "preferences");
         PrefHelper prefHelper = SP_MAP.get(spName);
         if (EmptyUtils.isEmpty(prefHelper)) {
             prefHelper = new PrefHelper(spName);
@@ -69,14 +72,13 @@ public class PrefHelper {
     }
 
     private String getSharedPreferencesName(String spName) {
-        return  getContext().getPackageName() + "_"+spName;
+        return getContext().getPackageName() + "_" + spName;
     }
 
 
     private SharedPreferences getDefaultSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(getContext());
     }
-
 
 
     public static class Editor {
@@ -94,34 +96,35 @@ public class PrefHelper {
         }
 
         public Editor put(String key, @Nullable String value) {
-            sp_editor.putString(key,value);
+            sp_editor.putString(key, value);
             return this;
         }
 
         public Editor put(String key, @Nullable Set<String> values) {
-            sp_editor.putStringSet(key,values);
+            sp_editor.putStringSet(key, values);
             return this;
         }
 
         public Editor put(String key, int value) {
-            sp_editor.putInt(key,value);
+            sp_editor.putInt(key, value);
             return this;
         }
 
         public Editor put(String key, long value) {
-            sp_editor.putLong(key,value);
+            sp_editor.putLong(key, value);
             return this;
         }
 
         public Editor put(String key, float value) {
-            sp_editor.putFloat(key,value);
+            sp_editor.putFloat(key, value);
             return this;
         }
 
         public Editor put(String key, boolean value) {
-            sp_editor.putBoolean(key,value);
+            sp_editor.putBoolean(key, value);
             return this;
         }
+
         /**
          * 将对象储存到sharepreference
          *
@@ -129,6 +132,10 @@ public class PrefHelper {
          * @param <T>
          */
         public <T extends Serializable> Editor put(String key, T serializable) {
+            if (null == serializable){
+                put(key, (String) null);
+                return this;
+            }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = null;
             try {   //Device为自定义类
@@ -147,6 +154,7 @@ public class PrefHelper {
             }
         }
 
+
         public Editor remove(String key) {
             sp_editor.remove(key);
             return this;
@@ -156,12 +164,13 @@ public class PrefHelper {
             sp_editor.clear();
             return this;
         }
+
         public boolean commit() {
             return sp_editor.commit();
         }
 
         public void apply() {
-             sp_editor.apply();
+            sp_editor.apply();
 
         }
     }
@@ -255,7 +264,6 @@ public class PrefHelper {
     }
 
 
-
     /**
      * Return the boolean value in sp.
      *
@@ -275,6 +283,37 @@ public class PrefHelper {
      */
     public boolean getBoolean(@NonNull final String key, final boolean defaultValue) {
         return sp.getBoolean(key, defaultValue);
+    }
+
+    /**
+     * 将对象从shareprerence中取出来
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public <T extends Serializable> T getSerializable(final String key) {
+        return getSerializable(key,null);
+    }
+    public <T extends Serializable> T getSerializable(final String key,final T defaultValue) {
+        T serializable = defaultValue;
+        String base64Str = getString(key, null);
+        if (base64Str == null ) {
+            return defaultValue;
+        }
+        // 读取字节
+        byte[] base64 = Base64.decode(base64Str.getBytes(), Base64.DEFAULT);
+        // 封装到字节流
+        ByteArrayInputStream bais = new ByteArrayInputStream(base64);
+        ObjectInputStream bis = null;
+        try {
+            bis = new ObjectInputStream(bais);
+            serializable = (T) bis.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            FileUtils.close(bais,bis);
+        }
+        return serializable;
     }
 
 
@@ -299,36 +338,6 @@ public class PrefHelper {
     public Set<String> getStringSet(@NonNull final String key,
                                     final Set<String> defaultValue) {
         return sp.getStringSet(key, defaultValue);
-    }
-    /**
-     * 将对象从shareprerence中取出来
-     *
-     * @param key
-     * @param <T>
-     * @return
-     */
-    public <T extends Serializable> T getSerializable(final String key) {
-        return getSerializable(key,null);
-    }
-    public <T extends Serializable> T getSerializable(final String key,final T defaultValue) {
-        T serializable = defaultValue;
-        String base64Str = getString(key, null);
-        if (base64Str == null) {
-            return defaultValue;
-        }
-        // 读取字节
-        byte[] base64 = Base64.decode(base64Str.getBytes(), Base64.DEFAULT);
-        // 封装到字节流
-        ByteArrayInputStream bais = new ByteArrayInputStream(base64);
-        ObjectInputStream bis = null;
-        try {
-            bis = new ObjectInputStream(bais);
-            serializable = (T) bis.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            FileUtils.close(bais,bis);
-        }
-        return serializable;
     }
 
     /**

@@ -10,6 +10,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.WindowManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -37,6 +38,7 @@ public class App extends Application {
 */
     @Override
     protected void attachBaseContext(Context base) {
+
         Timber.plant(new Timber.DebugTree() );
        /* DisplayMetrics dm =new DisplayMetrics();
         WindowManager manager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
@@ -58,7 +60,7 @@ public class App extends Application {
         Log.d("density1"  ,"after base.getResources();"+base.getResources().getDisplayMetrics().toString());
         Log.d("density1"  ,"after base.getConfiguration();"+contextWrapper.getBaseContext().getResources().getConfiguration().toString());
         Log.d("density1"  ,"after base.getConfiguration();"+contextWrapper.getResources().getConfiguration().toString());
-        Log.d("density1"  ,"after getResources() ;"+getResources().getDisplayMetrics().toString());
+        Log.d(  "density1"  ,"after getResources() ;"+getResources().getDisplayMetrics().toString());
       //  Log.d("density1"  ,"after getConfiguration() ;"+getResources().getConfiguration().toString());
 
         //支持vector drawable
@@ -87,7 +89,7 @@ public class App extends Application {
 
     private void init() {
 
-        Utils.getInstance().init(this);
+        Utils.init(this);
 
         DebugHelper.getInstance().syscIsDebug(this);
       //  LeakCanary.install(this);

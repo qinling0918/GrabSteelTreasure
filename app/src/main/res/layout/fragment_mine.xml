@@ -12,13 +12,11 @@
         android:id="@+id/tv_svg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/default_text"
-        android:drawableStart="@drawable/selector_ic_back"/>
+        android:text="@string/default_text"/>
     <ImageView
         android:id="@+id/iv_svg_src"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/selector_ic_back"/>
+        android:layout_height="wrap_content"/>
     <ImageView
         android:id="@+id/iv_svg"
         android:tint="?colorPrimary"

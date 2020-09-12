@@ -14,9 +14,13 @@ import android.widget.TextView;
 
 import com.zgw.qgb.R;
 import com.zgw.qgb.helper.Bundler;
+import com.zgw.qgb.mvc_common.helper.PrefUtils;
 import com.zgw.qgb.ui.moudle.main.BaseMainFragment;
 import com.zgw.qgb.ui.moudle.mine.contract.MineContract;
 import com.zgw.qgb.ui.moudle.mine.presenter.MinePresenter;
+
+import java.io.Serializable;
+import java.util.Arrays;
 
 import static com.zgw.qgb.helper.BundleConstant.EXTRA;
 
@@ -45,6 +49,26 @@ public class MineFragment extends BaseMainFragment<MinePresenter> implements Min
 
 
     }
+public  static  final class Bean implements Serializable {
+    public Bean(int age, String name) {
+        this.age = age;
+        this.name = name;
+    }
+
+    int age ;
+        String name ;
+
+
+
+
+    @Override
+    public String toString() {
+        return "Bean{" +
+                "age=" + age +
+                ", name='" + name + '\'' +
+                '}';
+    }
+}
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -55,6 +79,12 @@ public class MineFragment extends BaseMainFragment<MinePresenter> implements Min
         TextView tv_svg = view.findViewById(R.id.tv_svg);
         tv_svg.setBackgroundResource(R.drawable.ic_back);
         iv_svg.setImageResource(R.drawable.ic_main_find);
+
+
+
+
+
+
        // tv_svg.getCompoundDrawables()[0].setTintList(getResources().getColor(R.color.colorAccent));
        // Drawable drawable = getResources().getDrawable(R.drawable.ic_icon_text);
       //  Drawable drawable = getResources().getDrawable(R.drawable.ic_note);

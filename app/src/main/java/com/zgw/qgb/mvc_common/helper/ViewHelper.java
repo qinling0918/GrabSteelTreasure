@@ -18,6 +18,8 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.tabs.TabLayout;
+import com.zgw.qgb.helper.Utils;
+
 import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -28,7 +30,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.zgw.qgb.mvc_common.Utils;
 
 import java.util.Arrays;
 

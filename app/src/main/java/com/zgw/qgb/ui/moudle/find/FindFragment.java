@@ -41,7 +41,7 @@ public class FindFragment extends BaseMainFragment<FindPresenter> implements Fin
       /*  TextView tv_icon_bluetooth_off = view.findViewById(R.id.tv_icon_bluetooth_off);
         tv_icon_bluetooth_off.setTypeface(Typeface.createFromAsset(getContext().getAssets(),"iconfont.ttf"));*/
         TextView tv_icon_give_a_like = view.findViewById(R.id.tv_icon_give_a_like);
-        tv_icon_give_a_like.setTypeface(Typeface.createFromAsset(getContext().getAssets(),"iconfont.ttf"));
+     //   tv_icon_give_a_like.setTypeface(Typeface.createFromAsset(getContext().getAssets(),"iconfont.ttf"));
     }
 
     @Override

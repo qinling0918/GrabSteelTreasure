@@ -12,9 +12,7 @@
     <TextView
         android:id="@+id/tv_icon_give_a_like"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/selector_ic_back"
-        android:text="自定义字体库（点赞）：&#xe604;" />
+        android:layout_height="wrap_content" />
 
 <!--    <TextView
 

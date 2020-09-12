@@ -4,7 +4,7 @@
 
     <style name="AppTheme" parent="AppTheme.Base">
         <!-- Base application theme. -->
-        <item name="icon">@drawable/selector_ic_back</item>
+      <!--  <item name="icon">@drawable/selector_ic_back</item>-->
         <item name="iconSize">@dimen/iconSize</item>
         <item name="text">@string/default_text</item>
         <item name="colorPrimary">@color/colorPrimary</item>
