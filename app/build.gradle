@@ -110,6 +110,7 @@ dependencies {
     implementation deps.androidx.vectorDrawable
     implementation deps.androidx.constraint
     implementation deps.androidx.multidex
+    implementation 'androidx.navigation:navigation-fragment:2.1.0'
 
 
     kapt deps.kapt.glide_compiler
