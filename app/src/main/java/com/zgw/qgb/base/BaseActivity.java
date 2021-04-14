@@ -43,7 +43,7 @@ import static com.zgw.qgb.helper.utils.EmptyUtils.checkNotNull;
  * description:
  */
 
-public abstract class BaseActivity<P extends IPresenter> extends RxAppCompatActivity implements IView {
+public abstract class BaseActivity<P extends IPresenter<? extends IView>> extends RxAppCompatActivity implements IView {
     // 开启矢量图开关
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
