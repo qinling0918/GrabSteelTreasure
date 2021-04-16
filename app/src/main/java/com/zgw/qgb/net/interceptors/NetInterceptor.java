@@ -18,7 +18,10 @@ import okhttp3.Response;
  */
 
 public class NetInterceptor implements Interceptor {
-    private RequestHandler handler;
+    private final RequestHandler handler;
+    public NetInterceptor() {
+        this(null);
+    }
 
     public NetInterceptor(RequestHandler handler) {
         this.handler = handler;
@@ -26,7 +29,10 @@ public class NetInterceptor implements Interceptor {
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
-        Request request = chain.request();
+        Request request = chain.request().newBuilder()
+                .addHeader("Content-Type", "application/json")
+                .addHeader("charset", "UTF-8")
+                .build();
         if (handler != null) {
             request = handler.onBeforeRequest(request, chain);
         }

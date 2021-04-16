@@ -26,10 +26,10 @@ public class PrefUtils {
    /* public static void init(String account) {
         accountSt = account ;
     }*/
-   public static PrefHelper getSp() {
+   public static PrefHelper.PrefGetter getSp() {
         return PrefHelper.getInstance("");
     }
-    public static PrefHelper getSp(String spName) {
+    public static PrefHelper.PrefGetter getSp(String spName) {
         return PrefHelper.getInstance(spName);
     }
     public static void setToken(@Nullable String token) {
@@ -90,7 +90,7 @@ public class PrefUtils {
 
 
 
-    public static PrefHelper history() {
+    public static PrefHelper.PrefGetter history() {
         return getSp(SP_NAME_HISTORY);
     }
 
@@ -120,7 +120,6 @@ public class PrefUtils {
     }
 
     public static void saveHistories(String key, ArrayList<String> history) {
-
         PrefHelper.getInstance(SP_NAME_HISTORY).edit().put(key, history).commit();
     }
 
