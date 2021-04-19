@@ -115,7 +115,8 @@ dependencies {
 
     kapt deps.kapt.glide_compiler
     implementation deps.retrofit.core
-    implementation deps.retrofit.converter
+    implementation deps.retrofit.converter_gson
+    implementation deps.retrofit.converter_moshi
     implementation deps.retrofit.rxjava3
     //network
     implementation deps.okhttp.core
@@ -152,6 +153,7 @@ dependencies {
     implementation deps.icepick
     kapt deps.kapt.icepick_processor
     implementation deps.gson
+    implementation deps.moshi
     implementation deps.stream
     implementation deps.threetenabp
     implementation deps.arouter

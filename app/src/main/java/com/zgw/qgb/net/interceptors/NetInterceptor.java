@@ -11,16 +11,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-/**
- * 界面描述：
- * <p>
- * Created by tianyang on 2017/9/27.
- */
 
+/**
+ * author: tisnling
+ * created on: 2021/4/19 16:10
+ * description: 网络请求拦截者
+ */
 public class NetInterceptor implements Interceptor {
     private final RequestHandler handler;
     public NetInterceptor() {
-        this(null);
+        this(DEFAULT);
     }
 
     public NetInterceptor(RequestHandler handler) {
@@ -29,10 +29,7 @@ public class NetInterceptor implements Interceptor {
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
-        Request request = chain.request().newBuilder()
-                .addHeader("Content-Type", "application/json")
-                .addHeader("charset", "UTF-8")
-                .build();
+        Request request = chain.request();
         if (handler != null) {
             request = handler.onBeforeRequest(request, chain);
         }
@@ -45,4 +42,19 @@ public class NetInterceptor implements Interceptor {
         }
         return response;
     }
+
+
+    public static final RequestHandler DEFAULT = new RequestHandler(){
+        @Override
+        public Request onBeforeRequest(Request request, Interceptor.Chain chain) {
+            return request.newBuilder()
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("charset", "UTF-8")
+                    .build();
+        }
+        @Override
+        public Response onAfterRequest(Response response, Interceptor.Chain chain) throws IOException {
+            return response;
+        }
+    };
 }
