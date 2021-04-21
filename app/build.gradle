@@ -5,6 +5,18 @@ apply plugin: 'kotlin-kapt'
 //apply plugin: 'io.fabric'
 // apply from:  rootProject.file('tinkerpatch.gradle')
 
+// 配置keystroe  keystore.properties为本地保存,不上传到svn
+/*def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))*/
+
+// keystore.properties 的内容如下
+/*
+storePassword = 123456
+keyPassword = 123456
+keyAlias ​​= desktop
+storeFile = E:/keystore/test.jks
+ */
 
 android {
     compileSdkVersion versions.compileSdk
@@ -26,8 +38,8 @@ android {
              }
          }*/
 
-        // 可以将这些存放到gradle.properties 里面。
-        /*    signingConfigs {
+        // 可以将这些存放到gradle.properties(或者新建一个properties,添加到忽略文件中) 里面。
+     /*       signingConfigs {
             release {
                 try {
                     storeFile file('E:/keystore/test.jks')
@@ -38,7 +50,19 @@ android {
                     throw new InvalidUserDataException(ex.toString())
                 }
             }
-        }*/
+        }
+
+        signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+
+        */
 
         buildFeatures{
             viewBinding = true
