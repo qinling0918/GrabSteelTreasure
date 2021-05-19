@@ -1,17 +1,16 @@
 /**
- *  Copyright tsinling
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
+ * Copyright tsinling
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.zgw.qgb.helper;
@@ -36,7 +35,9 @@ public class ActivityStack extends ActivityLifecycleCallbacks {
     private Stack<WeakReference<Activity>> mActivityStack;
     private boolean init; //是否初始化过
 
-    private ActivityStack(){}
+    private ActivityStack() {
+    }
+
     private static class SingletonHolder {
         private static final ActivityStack mInstance = new ActivityStack();
     }
@@ -70,8 +71,9 @@ public class ActivityStack extends ActivityLifecycleCallbacks {
      * @return Activity的数
      */
     public int stackSize() {
-        return null!= mActivityStack && !mActivityStack.empty() ? mActivityStack.size() : 0;
+        return null != mActivityStack && !mActivityStack.empty() ? mActivityStack.size() : 0;
     }
+
     /***
      * 获得Activity栈
      *
@@ -80,6 +82,7 @@ public class ActivityStack extends ActivityLifecycleCallbacks {
     public Stack<WeakReference<Activity>> getStack() {
         return mActivityStack;
     }
+
     /**
      * 添加Activity到堆栈
      */
@@ -89,13 +92,14 @@ public class ActivityStack extends ActivityLifecycleCallbacks {
         }
         mActivityStack.add(new WeakReference<>(activity));
     }
+
     /**
      * 从 堆栈移除
      *
      * @param activity
      */
     public void removeActivity(Activity activity) {
-        if (mActivityStack != null) {
+        if (mActivityStack != null && activity != null) {
             Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator();
             while (iterator.hasNext()) {
                 WeakReference<Activity> stackActivity = iterator.next();
@@ -103,7 +107,11 @@ public class ActivityStack extends ActivityLifecycleCallbacks {
                     iterator.remove();
                     continue;
                 }
-                if (stackActivity.get().getClass().getName().equals(activity.getClass().getName())) {
+              /*  if (stackActivity.get().getClass().getName().equals(activity.getClass().getName())) {
+                    iterator.remove();
+                    break;
+                }*/
+                if (stackActivity.get().equals(activity)) {
                     iterator.remove();
                     break;
                 }
@@ -111,4 +119,6 @@ public class ActivityStack extends ActivityLifecycleCallbacks {
         }
 
     }
+
+
 }

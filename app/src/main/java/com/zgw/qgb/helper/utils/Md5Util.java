@@ -2,6 +2,8 @@ package com.zgw.qgb.helper.utils;
 
 import androidx.annotation.IntRange;
 
+import com.afollestad.materialdialogs.internal.MDAdapter;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,7 +20,7 @@ public class Md5Util {
      * @return md5 value
      */
 
-    public static String getMD5(String filePath) {
+    public static String getFileMD5(String filePath) {
         BigInteger bigInt = null;
         try {
             FileInputStream fis = new FileInputStream(filePath);
@@ -52,20 +54,15 @@ public class Md5Util {
     }
 
 
-
-
-
-
-
     public static String generate(String password) {
         return generate(password, 0);
     }
 
-    public static String generate(String password, @IntRange(from = 0,to = 65535) int validDays) {
+    public static String generate(String password, @IntRange(from = 0, to = 65535) int validDays) {
         return generate(password, validDays, TimeUnit.DAY);
     }
 
-    public static String generate(String password, @IntRange(from = 0,to = 65535)int validTime, TimeUnit timeUnit) {
+    public static String generate(String password, @IntRange(from = 0, to = 65535) int validTime, TimeUnit timeUnit) {
         // 随机生成盐(16 位),或者当前时间与有效期的盐(16 位)
         String salt = validTime <= 0 ? randomSalt() : timeSalt(validTime, timeUnit);
         // 将盐以及明文分别做 MD5 计算,然后将两者的 MD5值交叉合并
@@ -81,7 +78,6 @@ public class Md5Util {
         String saltMD5 = md5Hex(salt);
         return mergeMD5(passwordMD5, saltMD5);
     }
-
 
 
     public enum TimeUnit {
@@ -195,7 +191,8 @@ public class Md5Util {
 
     /**
      * 将两个 MD5交叉,然后生成一个 64 位的字符串,在基于该字符串生成一个 md5 值
-     * @param MD5 原文的 md5
+     *
+     * @param MD5     原文的 md5
      * @param saltMD5 盐值对应的 md5
      * @return
      */
@@ -213,8 +210,6 @@ public class Md5Util {
     }
 
 
-
-
     /**
      * 校验加盐后是否和原文一致
      *
@@ -223,6 +218,10 @@ public class Md5Util {
      * @return
      */
     public static boolean verify(String password, String md5) {
+        if (md5 == null || md5.isEmpty()) return false;
+        if (md5.length() == 32) return md5Hex(password).equals(md5);
+        if (md5.length() != 48) return false;
+
         char[] cs1 = new char[32];
         char[] cs2 = new char[16];
         for (int i = 0; i < 48; i += 3) {
@@ -295,16 +294,14 @@ public class Md5Util {
     }
 
 
-
-
     public static void main(String[] args) {
         // 原文
-        String plaintext = "背夹厂家";
+        String plaintext = "我是明文";
 
 
         String code = generate(plaintext);
-        String code_minute = generate(plaintext,1,TimeUnit.MINUTE);
-        String code_second = generate(plaintext,1,TimeUnit.SECOND);
+        String code_minute = generate(plaintext, 1, TimeUnit.MINUTE);
+        String code_second = generate(plaintext, 1, TimeUnit.SECOND);
 
         System.out.println(code);
         System.out.println(code_minute);
@@ -319,9 +316,6 @@ public class Md5Util {
         System.out.println(verify(plaintext, code));
         System.out.println(verify(plaintext, code_minute));
         System.out.println(verify(plaintext, code_second));
-
-
-
 
 
     }

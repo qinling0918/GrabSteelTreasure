@@ -25,6 +25,7 @@ public final class DebugHelper {
     }
     /**
      * 同步lib调试与应用程序的调试值。 应在模块Application中调用
+     * 若是項目中有多個lib,moudle等,拿被依賴的buildConfig.debug的值可能一直為false
      * Sync lib debug with app's debug value. Should be called in module Application
      * @param context
      */

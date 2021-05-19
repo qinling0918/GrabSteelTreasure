@@ -25,7 +25,7 @@ import timber.log.Timber;
  * description:
  */
 
-public class ActivityMgr  {
+public class ActivityMgr  extends ActivityLifecycleCallbacks{
 
     private static Stack<WeakReference<Activity>> mActivityStack;
 
@@ -120,7 +120,7 @@ public class ActivityMgr  {
 
 
     public void removeActivity(Activity activity) {
-        if (activity != null) {
+        if (activity != null && mActivityStack != null) {
             for (Iterator<WeakReference<Activity>> it = mActivityStack.iterator(); it.hasNext(); ) {
                 WeakReference<Activity> activityReference = it.next();
                 Activity temp = activityReference.get();
@@ -167,50 +167,7 @@ public class ActivityMgr  {
         mApplication = null;
     }
 
-    public static final class AppExitReceiver extends BroadcastReceiver {
-        private static final String ACTION = "com.sgcc.pda.TaskAppExitReceiver";
-        private Context context;
 
-        public AppExitReceiver(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                String action = intent.getAction();
-                Timber.d("AppExitReceiver : " + action);
-                if (TextUtils.equals(action, ACTION)) {
-                    unregister();
-                    getInstance().appExit();
-                }
-            }
-        }
-
-        private void register() {
-            unregister();
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(ACTION);
-            try {
-                context.registerReceiver(this, filter);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        /**
-         * 解除广播
-         */
-        private void unregister() {
-            try {
-                context.unregisterReceiver(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
 
 
 

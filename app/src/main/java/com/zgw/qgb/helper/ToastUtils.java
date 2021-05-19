@@ -228,6 +228,7 @@ public final class ToastUtils {
 			public void run() {
 				cancel();
 				sToast = Toast.makeText(getContext(), text, duration);
+
 				// solve the font of toast
 				TextView tvMessage = (TextView) sToast.getView().findViewById(android.R.id.message);
 				tvMessage.setTypeface(Typeface.create("sans-serif-condensed", Typeface.NORMAL));
