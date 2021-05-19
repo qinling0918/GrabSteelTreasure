@@ -194,7 +194,10 @@ def addRepos(RepositoryHandler handler) {
     handler.mavenCentral()
     handler.maven { url "https://jitpack.io" }
     handler.maven { url "https://clojars.org/repo/" }//icepick
-    handler.maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+  //  handler.maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     //handler.maven { url 'https://maven.fabric.io/public' }
     handler.maven { url 'https://dl.bintray.com/jetbrains/anko' }
+    handler.maven { url 'https://maven.aliyun.com/repository/public' } // jcenter http://jcenter.bintray.com/
+    handler.maven { url 'https://maven.aliyun.com/repository/google' }
+    handler.maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
 }
